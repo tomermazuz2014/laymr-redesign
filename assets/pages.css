@@ -1,7 +1,6 @@
 
 /* ===== sub-pages ===== */
 body.sub header{color:var(--ink);background:color-mix(in srgb,var(--warm) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--warm-line)}
-body.sub header .h-mark-text{opacity:0}body.sub header .h-mark-logo{opacity:1}
 body.sub .ticker{margin-top:52px}
 .pg{padding:clamp(22px,3vw,40px) var(--pad) clamp(60px,7vw,100px);min-height:60vh}
 .crumbs{display:flex;gap:10px;align-items:center;font-size:12px;color:#6f6252;letter-spacing:.02em;margin-bottom:clamp(14px,2vw,24px)}

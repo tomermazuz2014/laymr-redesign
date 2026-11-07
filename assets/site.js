@@ -16,7 +16,7 @@ $('#fshop').innerHTML = D.nav.map(n => '<li><a href="' + n.u + '">' + n.t + '</a
 const MSGS = ['משלוח חינם בקנייה מעל 199 ₪', 'עד 199 ₪ — משלוח ב-29 ₪ בלבד', 'משלוח מהיר עד 5 ימי עסקים עם שליח עד הבית', 'LAYMR — SUMMER SALE'];
 const tHTML = MSGS.concat(MSGS, MSGS).map(m => '<span dir="rtl">' + m + '</span>').join('');
 $('#tickerA').innerHTML = tHTML; $('#tickerB').innerHTML = tHTML;
-document.querySelector('header').classList.add('scrolled');
+const hdrEl = document.querySelector('header'); const onScr = () => hdrEl.classList.toggle('scrolled', scrollY > 8); onScr(); addEventListener('scroll', onScr, {passive:true});
 const scrim = $('#scrim'), menuOverlay = $('#menuOverlay'), cartDrawer = $('#cartDrawer');
 const closeAll = () => { scrim.classList.remove('open'); menuOverlay.classList.remove('open'); cartDrawer.classList.remove('open'); };
 $('#menuOpen').onclick = () => menuOverlay.classList.add('open');
