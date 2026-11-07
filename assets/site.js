@@ -57,8 +57,8 @@ function card(p){
   const sizeAvail = sz => p.variants.some(x => [x.o1, x.o2, x.o3][si] === sz && x.avail);
   const isNew = NEWSET.has(p.handle);
   const sizes = si >= 0 ? '<div class="pc-sizes">' + p.options[si].values.map(sz => '<button data-sz="' + esc(sz) + '" class="' + (sizeAvail(sz) ? '' : 'off') + '">' + esc(sz) + '</button>').join('') + '</div>' : '<span></span>';
-  return '<div class="pc" data-h="' + esc(p.handle) + '"><a class="pc-img" href="product.html?p=' + encodeURIComponent(p.handle) + '"><img loading="lazy" src="' + im0 + '" alt="' + esc(p.title) + '">' + (im1 ? '<img loading="lazy" class="alt" src="' + im1 + '" alt="">' : '') + '</a>' + dots +
-    (out ? '<span class="pc-tag">Sold out</span>' : '') + (isNew && !out ? '<span class="pc-new">New</span>' : '') +
+  return '<div class="pc" data-h="' + esc(p.handle) + '"><a class="pc-img" href="product.html?p=' + encodeURIComponent(p.handle) + '"><img loading="lazy" src="' + im0 + '" alt="' + esc(p.title) + '">' + (im1 ? '<img loading="lazy" class="alt" src="' + im1 + '" alt="">' : '') + '</a><div class="pc-top">' + (isNew && !out ? '<span class="pc-new">New</span>' : '') + dots + '</div>' +
+    (out ? '<span class="pc-tag">Sold out</span>' : '') +
     '<div class="pc-panel"><div class="pc-row"><a class="pc-title" href="product.html?p=' + encodeURIComponent(p.handle) + '">' + esc(p.title) + '</a><button class="pc-plus" aria-label="בחירת מידה">+</button><div class="pc-price' + (sale ? ' sale' : '') + '">' + (sale ? '<s>' + price(v.cmp) + '</s>' : '') + '<span class="now">' + price(v.price) + '</span></div></div>' +
     '<div class="pc-row2">' + sizes + '<button class="pc-add"' + (out ? ' disabled' : '') + '>' + (out ? 'אזל' : 'הוספה לסל') + '</button></div></div></div>';
 }
@@ -85,10 +85,23 @@ if (page === 'collection'){
   document.title = title + ' — LAYMR'; $('#colTitle').textContent = title;
   const cats = [{t: 'הכל', u: 'collection.html?c=all'}].concat(D.nav);
   $('#colCats').innerHTML = cats.map(n => { const ch = dec((n.u.split('c=')[1] || '')); return '<a href="' + n.u + '" class="' + (ch === h ? 'on' : '') + '">' + n.t + '</a>'; }).join('');
+  const onCat = $('#colCats a.on'); if (onCat) onCat.scrollIntoView({block: 'nearest', inline: 'center'});
   const sizeSet = []; list.forEach(p => { const si = optIdx(p, isSize); if (si >= 0) p.options[si].values.forEach(v => { if (!sizeSet.includes(v)) sizeSet.push(v); }); });
   const order = ['XS','S','M','L','XL','XXL','XXXL','2XL','3XL','4XL']; sizeSet.sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99) || a.localeCompare(b));
   $('#sizeOpts').innerHTML = sizeSet.map(v => '<button data-v="' + esc(v) + '">' + esc(v) + '</button>').join('');
-  const FEATS = ['GUYP1172.jpg','Snapinst.app_350143470_999611704364660_6428162201381596142_n_1080.jpg','GUYP1327.jpg','LAYMR212211.jpg','GUYP1263.jpg','Snapinst.app_353623109_943617180224884_1525858055982929976_n_1080.jpg','GUYP1226.jpg','10_78f335ef-829e-47a2-b195-afca1506cd2a.png'];
+  const FEAT_SETS = {
+  'all': ['GUYP1172.jpg','Snapinst.app_350143470_999611704364660_6428162201381596142_n_1080.jpg','GUYP1327.jpg','LAYMR212211.jpg','GUYP1263.jpg','Snapinst.app_353623109_943617180224884_1525858055982929976_n_1080.jpg','GUYP1226.jpg','10_78f335ef-829e-47a2-b195-afca1506cd2a.png'],
+  'קיץ-new': ['LAYMR211944.jpg','LAYMR212016.jpg','LAYMR211985.jpg','LAYMR212025.jpg'],
+  'קולקציית-חג': ['EyalGolanbrand0085.jpg','EyalGolanbrand5002_1.jpg','EyalGolanbrand0328.jpg','EyalGolanbrand0425_2.jpg'],
+  'קפוצונים': ['LAYMR212100.jpg','LAYMR212256.jpg','LAYMR212029.jpg','LAYMR212485.jpg'],
+  'חולצות': ['GUYP1226.jpg','LAYMR212016.jpg','LAYMR212211.jpg','GUYP1263.jpg'],
+  'גופיות': ['Snapinst.app_350143470_999611704364660_6428162201381596142_n_1080.jpg','IMG_4301_copy.jpg','Snapinst.app_353623109_943617180224884_1525858055982929976_n_1080.jpg','10_78f335ef-829e-47a2-b195-afca1506cd2a.png'],
+  'חליפות': ['EyalGolanbrand1144.jpg','EyalGolanbrand0093.jpg','EyalGolanbrand0501.jpg','Eyal_Golan_brand0870_1.jpg'],
+  'ספורט': ['LAYMR211944.jpg','LAYMR212211.jpg','LAYMR212457.jpg','LAYMR211985.jpg'],
+  'קולקציית-קיץ': ['GUYP1327.jpg','GUYP1172.jpg','EyalGolanbrand0644.jpg','EyalGolanbrand4726_1.jpg'],
+  'בגדי-ים': ['10_78f335ef-829e-47a2-b195-afca1506cd2a.png','EyalGolanbrand0890_1.jpg','EyalGolanbrand1001_1.jpg','GUYP1172.jpg'],
+  'best-sellers': ['EyalGolanbrand0890_1.jpg','LAYMR211978.jpg','GUYP1263.jpg','Snapinst.app_353623109_943617180224884_1525858055982929976_n_1080.jpg']
+};
   const state = {sort: 'featured', size: null, hideOut: false};
   const grid = $('#grid'), cnt = $('#count');
   const draw = () => { let l = list.slice();
@@ -99,7 +112,7 @@ if (page === 'collection'){
     if (state.sort === 'new') l.sort((a, b) => (b.published || '').localeCompare(a.published || ''));
     cnt.textContent = l.length;
     let html = '', f = 0;
-    l.forEach((p, i) => { if ((l.length >= 8 && i % 8 === 4) || (l.length >= 3 && l.length < 8 && i === 2)){ html += '<div class="feat' + (f % 2 ? ' l' : '') + '"><img loading="lazy" src="images/' + FEATS[f % FEATS.length] + '" alt=""></div>'; f++; } html += card(p); });
+    l.forEach((p, i) => { if ((l.length >= 8 && i % 8 === 4) || (l.length >= 3 && l.length < 8 && i === 2)){ html += '<div class="feat' + (f % 2 ? ' l' : '') + '"><img loading="lazy" src="images/' + (FEAT_SETS[h] || FEAT_SETS.all)[f % (FEAT_SETS[h] || FEAT_SETS.all).length] + '" alt=""></div>'; f++; } html += card(p); });
     grid.innerHTML = l.length ? html : '<div class="empty">אין פריטים שמתאימים לסינון</div>'; };
   $('#sortOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.sort = b.dataset.v; $('#sortOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); draw(); };
   $('#sizeOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.size = state.size === b.dataset.v ? null : b.dataset.v; $('#sizeOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.v === state.size)); draw(); };
