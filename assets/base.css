@@ -256,7 +256,8 @@ footer{border-top:1px solid var(--warm-line);background:var(--warm)}
 .btn-line:hover{background:var(--ink);color:var(--bg)}
 
 /* ===== אודות ===== */
-.about-overlay{position:fixed;inset:0;background:var(--bg);z-index:90;transform:translateY(103%);transition:transform .6s var(--ease-io);display:flex;flex-direction:column}
+.about-overlay{position:fixed;inset:0;background:var(--bg);z-index:90;transform:translateY(103%);transition:transform .6s var(--ease-io);display:flex;flex-direction:column;overflow:hidden}
+.about-overlay:not(.open) .mo-head{visibility:hidden}
 .about-overlay.open{transform:none}
 .about-body{flex:1;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,64px);padding:clamp(24px,4vw,56px) var(--pad);align-items:center}
 @media(max-width:860px){.about-body{grid-template-columns:1fr;align-items:start}}
