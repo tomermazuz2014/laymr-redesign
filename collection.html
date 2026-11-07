@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/base.css?v=1794092827">
-<link rel="stylesheet" href="assets/pages.css?v=1794092827">
+<link rel="stylesheet" href="assets/base.css?v=1794093001">
+<link rel="stylesheet" href="assets/pages.css?v=1794093001">
 </head>
 <body class="sub" data-page="collection">
 <header>
@@ -30,11 +30,18 @@
 
 <main class="pg">
 
-<nav class="crumbs" aria-label="פירורי לחם"><a href="index.html">בית</a><i></i><span id="crumb"></span></nav>
-<div class="col-head">
-  <h1 class="col-title" id="colTitle"></h1>
-  <div class="col-tools"><span id="count"></span>
-    <select id="sort" aria-label="מיון"><option value="featured">מומלצים</option><option value="new">חדש ביותר</option><option value="low">מחיר: נמוך לגבוה</option><option value="high">מחיר: גבוה לנמוך</option></select>
+<div class="col-bar">
+  <h1 class="col-name"><span id="colTitle"></span><small id="count"></small></h1>
+  <nav class="col-cats" id="colCats" aria-label="קטגוריות"></nav>
+  <div class="col-filter">
+    <button class="filter-btn" id="filterBtn" aria-expanded="false">סינון<svg viewBox="0 0 24 24"><path d="M4 7h16M7 12h10M10 17h4"/></svg></button>
+    <div class="filter-pop" id="filterPop">
+      <div class="fp-group"><span class="fp-label">מיון</span>
+        <div class="fp-opts" id="sortOpts"><button data-v="featured" class="on">מומלצים</button><button data-v="new">חדש ביותר</button><button data-v="low">מחיר: נמוך לגבוה</button><button data-v="high">מחיר: גבוה לנמוך</button></div></div>
+      <div class="fp-group"><span class="fp-label">מידה</span><div class="fp-opts fp-sizes" id="sizeOpts"></div></div>
+      <div class="fp-group"><label class="fp-check"><input type="checkbox" id="hideOut"> הסתר פריטים שאזלו</label></div>
+      <button class="fp-clear" id="fpClear">ניקוי</button>
+    </div>
   </div>
 </div>
 <div class="plist" id="grid"></div>
@@ -139,7 +146,7 @@
 <button class="a11y-btn" title="נגישות" aria-label="נגישות">א</button>
 
 
-<script src="data/laymr-data.js?v=1794092827"></script>
-<script src="assets/site.js?v=1794092827"></script>
+<script src="data/laymr-data.js?v=1794093001"></script>
+<script src="assets/site.js?v=1794093001"></script>
 </body>
 </html>

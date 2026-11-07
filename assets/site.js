@@ -75,17 +75,32 @@ document.addEventListener('click', e => {
 /* ---- pages ---- */
 const page = document.body.dataset.page;
 if (page === 'collection'){
+  document.querySelector('main.pg').classList.add('collection');
   const h = dec(q.get('c') || 'all'); const title = h === 'all' ? 'כל המוצרים' : colTitle(h);
-  let list = h === 'all' ? P.slice() : (D.collectionProducts[h] || []).map(x => byHandle[x]).filter(Boolean);
-  document.title = title + ' — LAYMR';
-  $('#colTitle').innerHTML = '<small>Collection</small>' + esc(title); $('#crumb').textContent = title;
-  const grid = $('#grid'), sort = $('#sort'), cnt = $('#count');
-  const draw = () => { let l = list.slice(); const s = sort.value;
-    if (s === 'low') l.sort((a, b) => Number(cheapest(a).price) - Number(cheapest(b).price));
-    if (s === 'high') l.sort((a, b) => Number(cheapest(b).price) - Number(cheapest(a).price));
-    if (s === 'new') l.sort((a, b) => (b.published || '').localeCompare(a.published || ''));
-    cnt.textContent = l.length + ' פריטים'; grid.innerHTML = l.length ? l.map(card).join('') : '<div class="empty">אין כרגע פריטים בקולקציה הזו</div>'; };
-  sort.onchange = draw; draw();
+  const list = h === 'all' ? P.slice() : (D.collectionProducts[h] || []).map(x => byHandle[x]).filter(Boolean);
+  document.title = title + ' — LAYMR'; $('#colTitle').textContent = title;
+  const cats = [{t: 'הכל', u: 'collection.html?c=all'}].concat(D.nav);
+  $('#colCats').innerHTML = cats.map(n => { const ch = dec((n.u.split('c=')[1] || '')); return '<a href="' + n.u + '" class="' + (ch === h ? 'on' : '') + '">' + n.t + '</a>'; }).join('');
+  const sizeSet = []; list.forEach(p => { const si = optIdx(p, isSize); if (si >= 0) p.options[si].values.forEach(v => { if (!sizeSet.includes(v)) sizeSet.push(v); }); });
+  const order = ['XS','S','M','L','XL','XXL','XXXL','2XL','3XL','4XL']; sizeSet.sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99) || a.localeCompare(b));
+  $('#sizeOpts').innerHTML = sizeSet.map(v => '<button data-v="' + esc(v) + '">' + esc(v) + '</button>').join('');
+  const state = {sort: 'featured', size: null, hideOut: false};
+  const grid = $('#grid'), cnt = $('#count');
+  const draw = () => { let l = list.slice();
+    if (state.size) l = l.filter(p => { const si = optIdx(p, isSize); return si >= 0 && p.variants.some(v => [v.o1, v.o2, v.o3][si] === state.size && v.avail); });
+    if (state.hideOut) l = l.filter(p => p.variants.some(v => v.avail));
+    if (state.sort === 'low') l.sort((a, b) => Number(cheapest(a).price) - Number(cheapest(b).price));
+    if (state.sort === 'high') l.sort((a, b) => Number(cheapest(b).price) - Number(cheapest(a).price));
+    if (state.sort === 'new') l.sort((a, b) => (b.published || '').localeCompare(a.published || ''));
+    cnt.textContent = l.length; grid.innerHTML = l.length ? l.map(card).join('') : '<div class="empty">אין פריטים שמתאימים לסינון</div>'; };
+  $('#sortOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.sort = b.dataset.v; $('#sortOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); draw(); };
+  $('#sizeOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.size = state.size === b.dataset.v ? null : b.dataset.v; $('#sizeOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.v === state.size)); draw(); };
+  $('#hideOut').onchange = e => { state.hideOut = e.target.checked; draw(); };
+  $('#fpClear').onclick = () => { state.sort = 'featured'; state.size = null; state.hideOut = false; $('#hideOut').checked = false; $('#sortOpts').querySelectorAll('button').forEach((x, i) => x.classList.toggle('on', i === 0)); $('#sizeOpts').querySelectorAll('button').forEach(x => x.classList.remove('on')); draw(); };
+  const pop = $('#filterPop'), fbtn = $('#filterBtn');
+  fbtn.onclick = () => { const o = pop.classList.toggle('open'); fbtn.setAttribute('aria-expanded', o); };
+  document.addEventListener('click', e => { if (!e.target.closest('.col-filter')) pop.classList.remove('open'); });
+  draw();
 }
 if (page === 'product'){
   const p = byHandle[dec(q.get('p') || '')] || P[0];
