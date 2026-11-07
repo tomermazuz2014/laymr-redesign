@@ -130,37 +130,51 @@ if (page === 'collection'){
 if (page === 'product'){
   const p = byHandle[dec(q.get('p') || '')] || P[0];
   document.title = p.title + ' — LAYMR';
+  document.querySelector('main.pg').classList.add('product');
   const col = Object.entries(D.collectionProducts).find(([h, l]) => h !== 'all' && h !== 'frontpage' && l.includes(p.handle));
-  if (col) $('#crumbCol').innerHTML = '<a href="collection.html?c=' + encodeURIComponent(col[0]) + '">' + esc(colTitle(col[0])) + '</a><i></i>';
-  $('#crumb').textContent = p.title; $('#ptitle').textContent = p.title; $('#ptype').textContent = p.type || p.vendor || 'LAYMR';
+  if (col) $('#crumbCol').innerHTML = '<a href="collection.html?c=' + encodeURIComponent(col[0]) + '">' + esc(colTitle(col[0])) + '</a><span>/</span>';
+  $('#crumb').textContent = p.title; $('#ptitle').textContent = p.title;
+  /* gallery: snap slider */
   const imgs = p.images.length ? p.images : [{src: 'images/logo-lm.png'}];
-  const main = $('#galMain'), thumbs = $('#galThumbs'); let cur = 0;
-  const show = i => { cur = i; main.innerHTML = '<img src="' + imgs[i].src + '" alt="' + esc(p.title) + '">'; thumbs.querySelectorAll('button').forEach((b, n) => b.classList.toggle('on', n === i)); };
-  thumbs.innerHTML = imgs.map((im, i) => '<button aria-label="תמונה ' + (i + 1) + '"><img src="' + im.src + '" alt=""></button>').join('');
-  thumbs.querySelectorAll('button').forEach((b, i) => b.onclick = () => show(i)); show(0);
-  main.addEventListener('click', () => show((cur + 1) % imgs.length));
+  const track = $('#galTrack'), dots = $('#galDots'), gal = document.querySelector('.pdp-gal'); let cur = 0;
+  track.innerHTML = imgs.map((im, i) => '<div class="pdp-slide"><img ' + (i ? 'loading="lazy" ' : '') + 'src="' + im.src + '" alt="' + esc(p.title) + '"></div>').join('');
+  dots.innerHTML = imgs.map((_, i) => '<i class="' + (i ? '' : 'on') + '"></i>').join('');
+  if (imgs.length < 2) gal.classList.add('single');
+  const goTo = i => { cur = (i + imgs.length) % imgs.length; track.scrollTo({left: cur * track.clientWidth, behavior: 'smooth'}); };
+  track.addEventListener('scroll', () => { const i = Math.round(track.scrollLeft / track.clientWidth); if (i !== cur){ cur = i; dots.querySelectorAll('i').forEach((d, n) => d.classList.toggle('on', n === i)); } }, {passive: true});
+  $('#galNext').onclick = () => goTo(cur + 1); $('#galPrev').onclick = () => goTo(cur - 1);
+  dots.querySelectorAll('i').forEach((d, i) => d.onclick = () => goTo(i));
+  $('#saveBtn').onclick = e => e.currentTarget.classList.toggle('on');
+  /* options */
   const sel = {}; const realOpts = p.options.filter(o => !(o.values.length === 1 && o.values[0] === 'Default Title'));
-  realOpts.forEach((o, i) => { sel[i] = o.values[0]; });
+  const firstAvail = p.variants.find(v => v.avail) || p.variants[0];
+  realOpts.forEach((o, i) => { sel[i] = firstAvail ? ([firstAvail.o1, firstAvail.o2, firstAvail.o3][i] || o.values[0]) : o.values[0]; });
   const optsEl = $('#opts');
   const variantFor = () => p.variants.find(v => realOpts.every((o, i) => [v.o1, v.o2, v.o3][i] === sel[i])) || p.variants[0];
   const availFor = (i, val) => p.variants.some(v => [v.o1, v.o2, v.o3][i] === val && v.avail);
-  const drawOpts = () => { optsEl.innerHTML = realOpts.map((o, i) => '<div class="opt"><div class="opt-head"><span>' + esc(o.name) + '</span><span>' + esc(sel[i]) + '</span></div><div class="opt-vals">' +
-      o.values.map(v => '<button data-i="' + i + '" data-v="' + esc(v) + '" class="' + (sel[i] === v ? 'on' : '') + (availFor(i, v) ? '' : ' off') + '">' + esc(v) + '</button>').join('') + '</div></div>').join('');
-    optsEl.querySelectorAll('button').forEach(b => b.onclick = () => { sel[+b.dataset.i] = b.dataset.v; drawOpts(); drawPrice(); });
+  const dot = c => '<i style="background:' + (COLORS[String(c).trim()] || '#bdb5aa') + '"></i>';
+  const drawOpts = () => {
+    optsEl.innerHTML = realOpts.map((o, i) => {
+      if (isColor(o)) return '<div class="pdp-row" data-i="' + i + '"><span class="lbl">בחירת צבע</span><button class="pdp-cur" type="button">' + dot(sel[i]) + esc(sel[i]) + '<svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button><div class="pdp-list">' +
+        o.values.map(v => '<button type="button" data-i="' + i + '" data-v="' + esc(v) + '" class="' + (sel[i] === v ? 'on' : '') + (availFor(i, v) ? '' : ' off') + '">' + dot(v) + esc(v) + '</button>').join('') + '</div></div>';
+      return '<div class="pdp-size"><span class="lbl">' + (isSize(o) ? 'בחירת מידה:' : esc(o.name) + ':') + '</span><div class="pdp-chips">' +
+        o.values.map(v => '<button type="button" data-i="' + i + '" data-v="' + esc(v) + '" class="' + (sel[i] === v ? 'on' : '') + (availFor(i, v) ? '' : ' off') + '">' + esc(v) + '</button>').join('') + '</div></div>';
+    }).join('');
+    optsEl.querySelectorAll('.pdp-cur').forEach(b => b.onclick = () => b.parentElement.classList.toggle('open'));
+    optsEl.querySelectorAll('button[data-v]').forEach(b => b.onclick = () => { sel[+b.dataset.i] = b.dataset.v; drawOpts(); drawPrice(); });
   };
   const priceEl = $('#pprice'), addBtn = $('#addBtn');
   const drawPrice = () => { const v = variantFor(); const sale = v.cmp && Number(v.cmp) > Number(v.price);
-    priceEl.className = 'pd-price' + (sale ? ' sale' : '');
+    priceEl.className = 'pdp-price' + (sale ? ' sale' : '');
     priceEl.innerHTML = (sale ? '<span class="pct">-' + Math.round((1 - Number(v.price) / Number(v.cmp)) * 100) + '%</span><s>' + price(v.cmp) + '</s>' : '') + '<span class="now">' + price(v.price) + '</span>';
-    addBtn.disabled = !v.avail; addBtn.textContent = v.avail ? 'הוספה לעגלה' : 'אזל מהמלאי';
-    if (v.img){ const k = imgs.findIndex(im => im.id === v.img); if (k >= 0) show(k); } };
+    addBtn.disabled = !v.avail; addBtn.textContent = v.avail ? 'הוספה לסל' : 'אזל מהמלאי';
+    if (v.img){ const k = imgs.findIndex(im => im.id === v.img); if (k >= 0 && k !== cur) goTo(k); } };
   drawOpts(); drawPrice();
-  let qty = 1; const qtyEl = $('#qty');
-  $('#qMinus').onclick = () => { qty = Math.max(1, qty - 1); qtyEl.textContent = qty; }; $('#qPlus').onclick = () => { qty = Math.min(9, qty + 1); qtyEl.textContent = qty; };
-  addBtn.onclick = () => { const v = variantFor(); addToCart({vid: v.id, handle: p.handle, title: p.title, variant: v.title === 'Default Title' ? '' : v.title, price: v.price, qty, img: imgs[cur].src}); };
+  addBtn.onclick = () => { const v = variantFor(); addToCart({vid: v.id, handle: p.handle, title: p.title, variant: v.title === 'Default Title' ? '' : v.title, price: v.price, qty: 1, img: imgs[cur].src}); };
   $('#pdesc').innerHTML = p.body || '<p>פריט מקולקציית LAYMR.</p>';
-  const related = (col ? col[1].map(x => byHandle[x]) : P).filter(x => x && x.handle !== p.handle).slice(0, 4);
-  $('#related').innerHTML = related.map(card).join('');
+  const pair = (col ? col[1].map(x => byHandle[x]) : P).filter(x => x && x.handle !== p.handle && x.images.length).slice(0, 3);
+  $('#pair').innerHTML = pair.map(x => { const v = cheapest(x); return '<a href="product.html?p=' + encodeURIComponent(x.handle) + '"><div class="im"><img loading="lazy" src="' + x.images[0].src + '" alt="' + esc(x.title) + '"></div><span class="t">' + esc(x.title) + '</span><span class="pr">' + price(v.price) + '</span></a>'; }).join('');
+  if (!pair.length) document.querySelector('.pdp-pair').remove();
 }
 if (page === 'page'){
   const id = q.get('id') || 'privacy-policy'; const pg = D.pages[id] || {title: 'עמוד', html: '<p>העמוד לא נמצא.</p>'};

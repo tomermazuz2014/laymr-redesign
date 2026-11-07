@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/base.css?v=1794095547">
-<link rel="stylesheet" href="assets/pages.css?v=1794095547">
+<link rel="stylesheet" href="assets/base.css?v=1794095677">
+<link rel="stylesheet" href="assets/pages.css?v=1794095677">
 </head>
 <body class="sub" data-page="product">
 <header>
@@ -30,24 +30,28 @@
 
 <main class="pg">
 
-<nav class="crumbs" aria-label="פירורי לחם"><a href="index.html">בית</a><i></i><span id="crumbCol"></span><span id="crumb"></span></nav>
-<div class="prod">
-  <div class="gal"><div class="gal-thumbs" id="galThumbs"></div><div class="gal-main" id="galMain"></div></div>
-  <div class="pd-info">
-    <span class="micro" id="ptype"></span>
-    <h1 class="ptitle" id="ptitle"></h1>
-    <div class="pd-price" id="pprice"></div>
+<div class="pdp">
+  <div class="pdp-gal">
+    <div class="pdp-track" id="galTrack"></div>
+    <button class="pdp-arr pdp-prev" id="galPrev" aria-label="הקודם"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>
+    <button class="pdp-arr pdp-next" id="galNext" aria-label="הבא"><svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
+    <div class="pdp-dots" id="galDots"></div>
+    <button class="pdp-save" id="saveBtn" aria-label="שמירה"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg></button>
+  </div>
+  <div class="pdp-info">
+    <nav class="pdp-crumbs" aria-label="פירורי לחם"><a href="index.html">בית</a><span>/</span><span id="crumbCol"></span><span id="crumb"></span></nav>
+    <h1 class="pdp-title" id="ptitle"></h1>
+    <div class="pdp-price" id="pprice"></div>
     <div id="opts"></div>
-    <div class="buy"><div class="qty"><button id="qMinus" aria-label="פחות">−</button><span id="qty">1</span><button id="qPlus" aria-label="יותר">+</button></div><button class="pd-add" id="addBtn">הוספה לעגלה</button></div>
-    <div class="pnote"><span>משלוח חינם מעל 199 ₪</span><span>החלפה עד הבית</span><span>תשלום מאובטח</span></div>
-    <div class="acc">
-      <details open><summary>תיאור<i></i></summary><div class="acc-body" id="pdesc"></div></details>
-      <details><summary>משלוחים<i></i></summary><div class="acc-body"><p>משלוח חינם בקנייה מעל 199 ₪. עד 199 ₪ — משלוח ב-29 ₪ בלבד. משלוח מהיר עד 5 ימי עסקים עם שליח עד הבית.</p><p><a href="page.html?id=shipping-policy">למדיניות המשלוחים המלאה</a></p></div></details>
-      <details><summary>החלפות והחזרות<i></i></summary><div class="acc-body"><p>ניתן להחליף או להחזיר פריט בהתאם למדיניות החנות.</p><p><a href="page.html?id=refund-policy">למדיניות ההחלפות וההחזרות</a></p></div></details>
+    <button class="pdp-add" id="addBtn">הוספה לסל</button>
+    <div class="pdp-acc">
+      <details><summary>פרטי המוצר<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></summary><div class="pdp-acc-body" id="pdesc"></div></details>
+      <details><summary>משלוחים<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></summary><div class="pdp-acc-body"><p>משלוח חינם בקנייה מעל 199 ₪. עד 199 ₪ — משלוח ב-29 ₪ בלבד. משלוח מהיר עד 5 ימי עסקים עם שליח עד הבית.</p><p><a href="page.html?id=shipping-policy">למדיניות המשלוחים המלאה</a></p></div></details>
+      <details><summary>החלפות והחזרות<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></summary><div class="pdp-acc-body"><p>ניתן להחליף או להחזיר פריט בהתאם למדיניות החנות.</p><p><a href="page.html?id=refund-policy">למדיניות ההחלפות וההחזרות</a></p></div></details>
     </div>
+    <div class="pdp-pair"><h3>משלימים את הלוק</h3><div class="pdp-pair-grid" id="pair"></div></div>
   </div>
 </div>
-<section class="related"><h2>אולי יעניין אותך</h2><div class="plist" id="related"></div></section>
 
 </main>
 <footer>
@@ -171,7 +175,7 @@
 <button class="a11y-btn" title="נגישות" aria-label="נגישות">א</button>
 
 
-<script src="data/laymr-data.js?v=1794095547"></script>
-<script src="assets/site.js?v=1794095547"></script>
+<script src="data/laymr-data.js?v=1794095677"></script>
+<script src="assets/site.js?v=1794095677"></script>
 </body>
 </html>
