@@ -45,13 +45,32 @@ renderCart();
 
 /* ---- cards ---- */
 const cheapest = p => p.variants.reduce((a, v) => Number(v.price) < Number(a.price) ? v : a, p.variants[0]);
+const COLORS = {'שחור':'#141414','שחור.':'#141414','לבן':'#ffffff','אפור':'#9a9a9a','אבן':'#cfc6b8','ג\'ינס':'#5b7aa6','ג׳ינס':'#5b7aa6','ג׳ינס כהה':'#2f4468','ירוק':'#6b7a4a','חום':'#6b4a2f','כחול':'#2c4a8a','כחול נייבי':'#1c2b55','כחול עם לוגו צהוב':'#2c4a8a','ורוד':'#e9a9b8','סגול':'#8b6fb3','שמנת':'#efe6d4','בז\'':'#d9c7a8','פיסטוק':'#b9c79a','אדום':'#b23a2a','תכלת':'#9cc6e8','צהוב':'#e6c74a','זהב':'#c9a24a','מוקה':'#8a6a53','קאמל':'#c19a6b','black':'#141414','white':'#ffffff','grey':'#9a9a9a','gray':'#9a9a9a','blue':'#2c4a8a','green':'#6b7a4a','brown':'#6b4a2f','beige':'#d9c7a8'};
+const isColor = o => /צבע|color/i.test(o.name), isSize = o => /מידה|size/i.test(o.name);
+const optIdx = (p, test) => p.options.findIndex(test);
 function card(p){
   const v = cheapest(p); const sale = v.cmp && Number(v.cmp) > Number(v.price); const out = !p.variants.some(x => x.avail);
   const im0 = p.images[0] ? p.images[0].src : 'images/logo-lm.png', im1 = p.images[1] ? p.images[1].src : null;
-  return '<a class="pc" href="product.html?p=' + encodeURIComponent(p.handle) + '"><div class="pc-img"><img loading="lazy" src="' + im0 + '" alt="' + esc(p.title) + '">' + (im1 ? '<img loading="lazy" class="alt" src="' + im1 + '" alt="">' : '') +
-    (out ? '<span class="pc-tag out">Sold out</span>' : sale ? '<span class="pc-tag">Sale</span>' : '') + '</div>' +
-    '<div class="pc-info"><h3 class="pc-title">' + esc(p.title) + '</h3><div class="pc-price' + (sale ? ' sale' : '') + '">' + (sale ? '<s>' + price(v.cmp) + '</s>' : '') + '<span class="now">' + price(v.price) + '</span></div></div></a>';
+  const ci = optIdx(p, isColor), si = optIdx(p, isSize);
+  const dots = ci >= 0 ? '<div class="pc-dots">' + p.options[ci].values.slice(0, 6).map(c => '<span title="' + esc(c) + '" style="background:' + (COLORS[c.trim()] || '#bdb5aa') + '"></span>').join('') + '</div>' : '';
+  const sizeAvail = sz => p.variants.some(x => [x.o1, x.o2, x.o3][si] === sz && x.avail);
+  const sizes = si >= 0 ? '<div class="pc-sizes">' + p.options[si].values.map(sz => '<button data-sz="' + esc(sz) + '" class="' + (sizeAvail(sz) ? '' : 'off') + '">' + esc(sz) + '</button>').join('') + '</div>' : '<span></span>';
+  return '<div class="pc" data-h="' + esc(p.handle) + '"><a class="pc-img" href="product.html?p=' + encodeURIComponent(p.handle) + '"><img loading="lazy" src="' + im0 + '" alt="' + esc(p.title) + '">' + (im1 ? '<img loading="lazy" class="alt" src="' + im1 + '" alt="">' : '') + '</a>' + dots +
+    (out ? '<span class="pc-tag">Sold out</span>' : '') +
+    '<div class="pc-panel"><div class="pc-row"><a class="pc-title" href="product.html?p=' + encodeURIComponent(p.handle) + '">' + esc(p.title) + '</a><div class="pc-price' + (sale ? ' sale' : '') + '">' + (sale ? '<s>' + price(v.cmp) + '</s>' : '') + '<span class="now">' + price(v.price) + '</span></div></div>' +
+    '<div class="pc-row2">' + sizes + '<button class="pc-add"' + (out ? ' disabled' : '') + '>' + (out ? 'אזל' : 'הוספה לסל') + '</button></div></div></div>';
 }
+/* grid interactions: size pick + quick add */
+document.addEventListener('click', e => {
+  const szBtn = e.target.closest('.pc-sizes button');
+  if (szBtn){ if (szBtn.classList.contains('off')) return; szBtn.parentElement.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === szBtn)); return; }
+  const addBtn = e.target.closest('.pc-add');
+  if (addBtn){ const pc = addBtn.closest('.pc'); const p = byHandle[pc.dataset.h]; if (!p) return;
+    const si = optIdx(p, isSize); const chosen = pc.querySelector('.pc-sizes button.on');
+    let v = p.variants.find(x => x.avail && (si < 0 || !chosen || [x.o1, x.o2, x.o3][si] === chosen.dataset.sz)) || p.variants.find(x => x.avail) || p.variants[0];
+    if (si >= 0 && !chosen){ pc.querySelector('.pc-sizes button:not(.off)')?.classList.add('on'); const first = pc.querySelector('.pc-sizes button.on'); if (first) v = p.variants.find(x => x.avail && [x.o1, x.o2, x.o3][si] === first.dataset.sz) || v; }
+    addToCart({vid: v.id, handle: p.handle, title: p.title, variant: v.title === 'Default Title' ? '' : v.title, price: v.price, qty: 1, img: p.images[0] ? p.images[0].src : 'images/logo-lm.png'}); }
+});
 
 /* ---- pages ---- */
 const page = document.body.dataset.page;
