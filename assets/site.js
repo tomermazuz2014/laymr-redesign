@@ -47,6 +47,7 @@ renderCart();
 const cheapest = p => p.variants.reduce((a, v) => Number(v.price) < Number(a.price) ? v : a, p.variants[0]);
 const COLORS = {'שחור':'#141414','שחור.':'#141414','לבן':'#ffffff','אפור':'#9a9a9a','אבן':'#cfc6b8','ג\'ינס':'#5b7aa6','ג׳ינס':'#5b7aa6','ג׳ינס כהה':'#2f4468','ירוק':'#6b7a4a','חום':'#6b4a2f','כחול':'#2c4a8a','כחול נייבי':'#1c2b55','כחול עם לוגו צהוב':'#2c4a8a','ורוד':'#e9a9b8','סגול':'#8b6fb3','שמנת':'#efe6d4','בז\'':'#d9c7a8','פיסטוק':'#b9c79a','אדום':'#b23a2a','תכלת':'#9cc6e8','צהוב':'#e6c74a','זהב':'#c9a24a','מוקה':'#8a6a53','קאמל':'#c19a6b','black':'#141414','white':'#ffffff','grey':'#9a9a9a','gray':'#9a9a9a','blue':'#2c4a8a','green':'#6b7a4a','brown':'#6b4a2f','beige':'#d9c7a8'};
 const isColor = o => /צבע|color/i.test(o.name), isSize = o => /מידה|size/i.test(o.name);
+const NEWSET = new Set(D.collectionProducts['קיץ-new'] || []);
 const optIdx = (p, test) => p.options.findIndex(test);
 function card(p){
   const v = cheapest(p); const sale = v.cmp && Number(v.cmp) > Number(v.price); const out = !p.variants.some(x => x.avail);
@@ -54,16 +55,19 @@ function card(p){
   const ci = optIdx(p, isColor), si = optIdx(p, isSize);
   const dots = ci >= 0 ? '<div class="pc-dots">' + p.options[ci].values.slice(0, 6).map(c => '<span title="' + esc(c) + '" style="background:' + (COLORS[c.trim()] || '#bdb5aa') + '"></span>').join('') + '</div>' : '';
   const sizeAvail = sz => p.variants.some(x => [x.o1, x.o2, x.o3][si] === sz && x.avail);
+  const isNew = NEWSET.has(p.handle);
   const sizes = si >= 0 ? '<div class="pc-sizes">' + p.options[si].values.map(sz => '<button data-sz="' + esc(sz) + '" class="' + (sizeAvail(sz) ? '' : 'off') + '">' + esc(sz) + '</button>').join('') + '</div>' : '<span></span>';
   return '<div class="pc" data-h="' + esc(p.handle) + '"><a class="pc-img" href="product.html?p=' + encodeURIComponent(p.handle) + '"><img loading="lazy" src="' + im0 + '" alt="' + esc(p.title) + '">' + (im1 ? '<img loading="lazy" class="alt" src="' + im1 + '" alt="">' : '') + '</a>' + dots +
-    (out ? '<span class="pc-tag">Sold out</span>' : '') +
-    '<div class="pc-panel"><div class="pc-row"><a class="pc-title" href="product.html?p=' + encodeURIComponent(p.handle) + '">' + esc(p.title) + '</a><div class="pc-price' + (sale ? ' sale' : '') + '">' + (sale ? '<s>' + price(v.cmp) + '</s>' : '') + '<span class="now">' + price(v.price) + '</span></div></div>' +
+    (out ? '<span class="pc-tag">Sold out</span>' : '') + (isNew && !out ? '<span class="pc-new">New</span>' : '') +
+    '<div class="pc-panel"><div class="pc-row"><a class="pc-title" href="product.html?p=' + encodeURIComponent(p.handle) + '">' + esc(p.title) + '</a><button class="pc-plus" aria-label="בחירת מידה">+</button><div class="pc-price' + (sale ? ' sale' : '') + '">' + (sale ? '<s>' + price(v.cmp) + '</s>' : '') + '<span class="now">' + price(v.price) + '</span></div></div>' +
     '<div class="pc-row2">' + sizes + '<button class="pc-add"' + (out ? ' disabled' : '') + '>' + (out ? 'אזל' : 'הוספה לסל') + '</button></div></div></div>';
 }
 /* grid interactions: size pick + quick add */
 document.addEventListener('click', e => {
   const szBtn = e.target.closest('.pc-sizes button');
   if (szBtn){ if (szBtn.classList.contains('off')) return; szBtn.parentElement.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === szBtn)); return; }
+  const plus = e.target.closest('.pc-plus');
+  if (plus){ const pc = plus.closest('.pc'); const was = pc.classList.contains('open'); document.querySelectorAll('.pc.open').forEach(x => x.classList.remove('open')); pc.classList.toggle('open', !was); return; }
   const addBtn = e.target.closest('.pc-add');
   if (addBtn){ const pc = addBtn.closest('.pc'); const p = byHandle[pc.dataset.h]; if (!p) return;
     const si = optIdx(p, isSize); const chosen = pc.querySelector('.pc-sizes button.on');
@@ -95,7 +99,7 @@ if (page === 'collection'){
     if (state.sort === 'new') l.sort((a, b) => (b.published || '').localeCompare(a.published || ''));
     cnt.textContent = l.length;
     let html = '', f = 0;
-    l.forEach((p, i) => { if (l.length >= 6 && i % 8 === 4){ html += '<div class="feat' + (f % 2 ? ' l' : '') + '"><img loading="lazy" src="images/' + FEATS[f % FEATS.length] + '" alt=""></div>'; f++; } html += card(p); });
+    l.forEach((p, i) => { if ((l.length >= 8 && i % 8 === 4) || (l.length >= 3 && l.length < 8 && i === 2)){ html += '<div class="feat' + (f % 2 ? ' l' : '') + '"><img loading="lazy" src="images/' + FEATS[f % FEATS.length] + '" alt=""></div>'; f++; } html += card(p); });
     grid.innerHTML = l.length ? html : '<div class="empty">אין פריטים שמתאימים לסינון</div>'; };
   $('#sortOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.sort = b.dataset.v; $('#sortOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); draw(); };
   $('#sizeOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.size = state.size === b.dataset.v ? null : b.dataset.v; $('#sizeOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.v === state.size)); draw(); };
@@ -103,7 +107,8 @@ if (page === 'collection'){
   $('#fpClear').onclick = () => { state.sort = 'featured'; state.size = null; state.hideOut = false; $('#hideOut').checked = false; $('#sortOpts').querySelectorAll('button').forEach((x, i) => x.classList.toggle('on', i === 0)); $('#sizeOpts').querySelectorAll('button').forEach(x => x.classList.remove('on')); draw(); };
   const pop = $('#filterPop'), fbtn = $('#filterBtn');
   fbtn.onclick = () => { const o = pop.classList.toggle('open'); fbtn.setAttribute('aria-expanded', o); };
-  document.addEventListener('click', e => { if (!e.target.closest('.col-filter')) pop.classList.remove('open'); });
+  $('#mFilterBtn').onclick = e => { e.stopPropagation(); pop.classList.toggle('open'); };
+  document.addEventListener('click', e => { if (!e.target.closest('.col-filter') && !e.target.closest('#mFilterBtn')) pop.classList.remove('open'); });
   draw();
 }
 if (page === 'product'){
