@@ -286,6 +286,8 @@ footer{border-top:1px solid var(--warm-line);background:var(--warm)}
 .header-row{position:relative}
 .h-mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1}
 
+/* iOS: בלי כפתור Play מעל וידאו רקע */
+video::-webkit-media-controls{display:none!important}video::-webkit-media-controls-start-playback-button{display:none!important;-webkit-appearance:none}video::-webkit-media-controls-panel{display:none!important}
 /* ===== הירו 2: LAYMR SALE (מתחלף אחרי הווידאו) ===== */
 .hsale{position:absolute;inset:0;z-index:2;background:#e5443a;color:#fff;opacity:0;visibility:hidden;transition:opacity 1s var(--ease),visibility 0s 1s;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(18px,2.6vw,38px);padding:90px var(--pad) 120px}
 .hero.sale-on .hsale{opacity:1;visibility:visible;transition:opacity 1s var(--ease)}
@@ -808,6 +810,11 @@ if (hv && heroEl){
   const showRep = () => { heroEl.classList.add('rep-on'); if (rv){ rv.currentTime = 0; const q = rv.play(); if (q && q.catch) q.catch(() => {}); } setTimeout(() => heroEl.classList.remove('sale-on'), 1000); clearTimeout(seqT); seqT = setTimeout(backToVideo, REP_MS); };
   const backToVideo = () => { heroEl.classList.remove('sale-on', 'rep-on'); if (rv) rv.pause(); hv.currentTime = 0; const p = hv.play(); if (p && p.catch) p.catch(() => {}); };
   hv.addEventListener('ended', showSale);
+  /* iOS / Low Power Mode: autoplay עלול להיחסם — מנסים שוב אחרי המגע הראשון, ואם הווידאו לא רץ ממשיכים למחזור הסליידים */
+  const kickVideos = () => { document.querySelectorAll('video[autoplay]').forEach(v => { if (v.paused){ const q = v.play(); if (q && q.catch) q.catch(() => {}); } }); };
+  ['touchstart','scroll','click','keydown'].forEach(ev => addEventListener(ev, kickVideos, {once:true, passive:true}));
+  const p0 = hv.play();
+  if (p0 && p0.catch) p0.catch(() => { setTimeout(() => { if (hv.paused && !heroEl.classList.contains('sale-on') && !heroEl.classList.contains('rep-on')) showSale(); }, 9000); });
   if (matchMedia('(prefers-reduced-motion: reduce)').matches){ heroEl.classList.add('rep-on'); }
 }
 
