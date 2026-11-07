@@ -84,6 +84,7 @@ if (page === 'collection'){
   const sizeSet = []; list.forEach(p => { const si = optIdx(p, isSize); if (si >= 0) p.options[si].values.forEach(v => { if (!sizeSet.includes(v)) sizeSet.push(v); }); });
   const order = ['XS','S','M','L','XL','XXL','XXXL','2XL','3XL','4XL']; sizeSet.sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99) || a.localeCompare(b));
   $('#sizeOpts').innerHTML = sizeSet.map(v => '<button data-v="' + esc(v) + '">' + esc(v) + '</button>').join('');
+  const FEATS = ['GUYP1172.jpg','Snapinst.app_350143470_999611704364660_6428162201381596142_n_1080.jpg','GUYP1327.jpg','LAYMR212211.jpg','GUYP1263.jpg','Snapinst.app_353623109_943617180224884_1525858055982929976_n_1080.jpg','GUYP1226.jpg','10_78f335ef-829e-47a2-b195-afca1506cd2a.png'];
   const state = {sort: 'featured', size: null, hideOut: false};
   const grid = $('#grid'), cnt = $('#count');
   const draw = () => { let l = list.slice();
@@ -92,7 +93,10 @@ if (page === 'collection'){
     if (state.sort === 'low') l.sort((a, b) => Number(cheapest(a).price) - Number(cheapest(b).price));
     if (state.sort === 'high') l.sort((a, b) => Number(cheapest(b).price) - Number(cheapest(a).price));
     if (state.sort === 'new') l.sort((a, b) => (b.published || '').localeCompare(a.published || ''));
-    cnt.textContent = l.length; grid.innerHTML = l.length ? l.map(card).join('') : '<div class="empty">אין פריטים שמתאימים לסינון</div>'; };
+    cnt.textContent = l.length;
+    let html = '', f = 0;
+    l.forEach((p, i) => { if (l.length >= 6 && i % 8 === 4){ html += '<div class="feat' + (f % 2 ? ' l' : '') + '"><img loading="lazy" src="images/' + FEATS[f % FEATS.length] + '" alt=""></div>'; f++; } html += card(p); });
+    grid.innerHTML = l.length ? html : '<div class="empty">אין פריטים שמתאימים לסינון</div>'; };
   $('#sortOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.sort = b.dataset.v; $('#sortOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); draw(); };
   $('#sizeOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.size = state.size === b.dataset.v ? null : b.dataset.v; $('#sizeOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.v === state.size)); draw(); };
   $('#hideOut').onchange = e => { state.hideOut = e.target.checked; draw(); };
