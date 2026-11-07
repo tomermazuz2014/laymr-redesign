@@ -812,7 +812,11 @@ if (hv && heroEl){
   const backToVideo = () => { heroEl.classList.remove('sale-on', 'rep-on'); if (rv) rv.pause(); hv.currentTime = 0; const p = hv.play(); if (p && p.catch) p.catch(() => {}); };
   hv.addEventListener('ended', showSale);
   /* iOS / Low Power Mode: autoplay עלול להיחסם — מנסים שוב אחרי המגע הראשון, ואם הווידאו לא רץ ממשיכים למחזור הסליידים */
-  const kickVideos = () => { document.querySelectorAll('video[autoplay]').forEach(v => { if (v.paused){ const q = v.play(); if (q && q.catch) q.catch(() => {}); } }); };
+  const kickVideos = () => {
+    document.querySelectorAll('video[autoplay]').forEach(v => { if (v.paused){ const q = v.play(); if (q && q.catch) q.catch(() => {}); } });
+    /* "פתיחת" וידאו הקמפיין בתוך מחוות המשתמש כדי ש-iOS יאפשר להפעיל אותו אחר כך מהטיימר */
+    if (rv && rv.paused){ const q = rv.play(); if (q && q.then) q.then(() => { if (!heroEl.classList.contains('rep-on')){ rv.pause(); rv.currentTime = 0; } }).catch(() => {}); }
+  };
   ['touchstart','scroll','click','keydown'].forEach(ev => addEventListener(ev, kickVideos, {once:true, passive:true}));
   const p0 = hv.play();
   if (p0 && p0.catch) p0.catch(() => { setTimeout(() => { if (hv.paused && !heroEl.classList.contains('sale-on') && !heroEl.classList.contains('rep-on')) showSale(); }, 9000); });
