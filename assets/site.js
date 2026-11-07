@@ -24,27 +24,12 @@ const scrim = $('#scrim'), menuOverlay = $('#menuOverlay'), cartDrawer = $('#car
 const closeAll = () => { scrim.classList.remove('open'); menuOverlay.classList.remove('open'); cartDrawer.classList.remove('open'); };
 $('#menuOpen').onclick = () => menuOverlay.classList.add('open');
 $('#menuClose').onclick = closeAll; $('#cartClose').onclick = closeAll; scrim.onclick = closeAll;
-$('#cartOpen').onclick = () => { renderCart(); scrim.classList.add('open'); cartDrawer.classList.add('open'); };
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
 const nf = $('#newsForm'); if (nf) nf.addEventListener('submit', e => { e.preventDefault(); $('#newsOk').style.display = 'block'; });
 const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }), {threshold:.1});
 document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
 
-/* ---- cart (demo, localStorage) ---- */
-const cartGet = () => { try { return JSON.parse(localStorage.getItem('laymr-cart') || '[]'); } catch(e){ return []; } };
-const cartSet = c => { try { localStorage.setItem('laymr-cart', JSON.stringify(c)); } catch(e){} renderCart(); };
-function renderCart(){
-  const c = cartGet(); const n = c.reduce((a, b) => a + b.qty, 0);
-  $('#cartDrawer .cd-head span').textContent = 'עגלה (' + n + ')';
-  const body = $('#cartDrawer .cd-body');
-  if (!c.length){ body.innerHTML = '<p>עגלת הקניות שלך ריקה</p><a class="btn-line" href="collection.html?c=all">המשך בקנייה</a>'; return; }
-  const total = c.reduce((a, b) => a + Number(b.price) * b.qty, 0);
-  body.innerHTML = '<div class="cd-items">' + c.map((it, i) => '<div class="cd-item"><img src="' + it.img + '" alt=""><div><a href="product.html?p=' + encodeURIComponent(it.handle) + '">' + esc(it.title) + '</a><div class="cd-meta">' + esc(it.variant) + ' · ' + price(it.price) + '</div><div class="cd-qty"><button data-i="' + i + '" data-d="-1">−</button><span>' + it.qty + '</span><button data-i="' + i + '" data-d="1">+</button></div></div></div>').join('') + '</div>' +
-    '<div class="cd-total"><span>סה"כ</span><span dir="ltr">' + price(total) + '</span></div><a class="pd-add cd-go" href="#">לתשלום (דמו)</a>';
-  body.querySelectorAll('.cd-qty button').forEach(b => b.onclick = () => { const c2 = cartGet(); const it = c2[+b.dataset.i]; it.qty += +b.dataset.d; if (it.qty <= 0) c2.splice(+b.dataset.i, 1); cartSet(c2); });
-}
-window.addToCart = item => { const c = cartGet(); const ex = c.find(x => x.vid === item.vid); if (ex) ex.qty += item.qty; else c.push(item); cartSet(c); scrim.classList.add('open'); cartDrawer.classList.add('open'); };
-renderCart();
+/* cart lives in assets/cart.js */
 
 /* ---- cards ---- */
 const cheapest = p => p.variants.reduce((a, v) => Number(v.price) < Number(a.price) ? v : a, p.variants[0]);

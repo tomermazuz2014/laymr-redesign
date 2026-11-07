@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/base.css?v=1794095677">
-<link rel="stylesheet" href="assets/pages.css?v=1794095677">
+<link rel="stylesheet" href="assets/base.css?v=1794095940">
+<link rel="stylesheet" href="assets/pages.css?v=1794095940">
 </head>
 <body class="sub" data-page="page">
 <header>
@@ -143,19 +143,19 @@
 <div class="scrim" id="scrim"></div>
 <aside class="cart-drawer" id="cartDrawer" aria-label="עגלת קניות">
   <div class="cd-head">
-    <span class="micro-he">עגלה (0)</span>
-    <button id="cartClose" class="micro-he">סגירה</button>
+    <h3 class="cd-title">העגלה שלך <span class="cd-count" id="cdCount">0</span></h3>
+    <button id="cartClose" class="cd-x" aria-label="סגירה"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
-  <div class="cd-body">
-    <p>עגלת הקניות שלך ריקה</p>
-    <a class="btn-line" href="collection.html?c=all">המשך בקנייה</a>
-  </div>
+  <div class="cd-ship" id="cdShip"><p></p><div class="cd-bar"><i></i></div></div>
+  <div class="cd-body" id="cdBody"></div>
+  <div class="cd-foot" id="cdFoot"></div>
 </aside>
 
 <button class="a11y-btn" title="נגישות" aria-label="נגישות">א</button>
 
 
-<script src="data/laymr-data.js?v=1794095677"></script>
-<script src="assets/site.js?v=1794095677"></script>
+<script src="data/laymr-data.js?v=1794095940"></script>
+<script src="assets/site.js?v=1794095940"></script>
+<script src="assets/cart.js?v=1794095940"></script>
 </body>
 </html>

@@ -262,11 +262,61 @@ footer{border-top:1px solid var(--warm-line);background:var(--warm)}
 .mo-social a{width:40px;height:40px;border-radius:50%;border:1px solid rgba(46,42,36,.22);display:grid;place-items:center}
 .mo-social img,.mo-social svg{width:17px;height:17px;display:block}
 .mo-social svg{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.cart-drawer{position:fixed;top:0;bottom:0;left:0;width:min(420px,90vw);background:var(--bg);z-index:95;transform:translateX(-103%);transition:transform .55s var(--ease-io);display:flex;flex-direction:column;border-inline-end:1px solid var(--line)}
+.cart-drawer{position:fixed;top:0;bottom:0;left:0;width:min(440px,100vw);background:var(--bg);z-index:95;transform:translateX(-103%);transition:transform .55s var(--ease-io);display:flex;flex-direction:column;border-inline-end:1px solid var(--line);box-shadow:30px 0 80px -40px rgba(0,0,0,.25)}
 .cart-drawer.open{transform:none}
-.cd-head{display:flex;justify-content:space-between;align-items:center;padding:0 22px;height:52px;border-bottom:1px solid var(--line)}
-.cd-body{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:22px;text-align:center}
-.cd-body p{font-size:16px;font-weight:500}
+.cd-head{display:flex;justify-content:space-between;align-items:center;padding:0 24px;height:64px;border-bottom:1px solid var(--line);flex:none}
+.cd-title{margin:0;font-family:var(--font-he);font-weight:500;font-size:17px;display:flex;align-items:center;gap:10px}
+.cd-count{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:var(--ink);color:#fff;font-family:var(--font-lat);font-size:11px;font-weight:600}
+.cd-x{width:40px;height:40px;display:grid;place-items:center;margin-left:-10px;background:transparent;border:0;cursor:pointer}
+.cd-x svg{width:20px;height:20px;fill:none;stroke:var(--ink);stroke-width:1.3;stroke-linecap:round}
+.cd-ship{padding:16px 24px 0;flex:none}
+.cd-ship p{margin:0 0 10px;font-size:12.5px;color:#5a5248}
+.cd-ship p b{font-weight:600;color:var(--ink)}
+.cd-ship.done p{color:#2e6b3f}
+.cd-bar{height:2px;background:rgba(46,42,36,.12);overflow:hidden}
+.cd-bar i{display:block;height:100%;width:0;background:var(--ink);transition:width .8s var(--ease)}
+.cd-ship.done .cd-bar i{background:#2e6b3f}
+.cart-drawer.empty .cd-ship{display:none}
+.cd-body{flex:1;overflow-y:auto;padding:8px 24px 24px}
+.cd-item{display:grid;grid-template-columns:84px 1fr;gap:16px;padding:18px 0;border-bottom:1px solid var(--line);opacity:0;transform:translateY(12px);animation:cdIn .6s var(--ease) forwards}
+@keyframes cdIn{to{opacity:1;transform:none}}
+.cd-item:nth-child(2){animation-delay:.06s}.cd-item:nth-child(3){animation-delay:.12s}.cd-item:nth-child(4){animation-delay:.18s}.cd-item:nth-child(5){animation-delay:.24s}
+.cd-item img{width:84px;aspect-ratio:3/4;object-fit:cover;background:#ebe9e4;display:block}
+.cd-item .cd-ttl{font-size:14px;font-weight:500;display:block;line-height:1.3}
+.cd-item .cd-var{font-size:12px;color:#6f6252;margin-top:4px}
+.cd-item .cd-row{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:12px}
+.cd-qty{display:inline-flex;align-items:center;border:1px solid var(--line);height:32px}
+.cd-qty button{width:30px;height:100%;border:0;background:transparent;cursor:pointer;font-size:15px;color:var(--ink)}
+.cd-qty span{min-width:24px;text-align:center;font-family:var(--font-lat);font-size:12.5px}
+.cd-item .cd-pr{font-family:var(--font-lat);font-size:13.5px;direction:ltr}
+.cd-rm{display:inline-block;margin-top:10px;font-size:11.5px;color:#8a7e6f;text-decoration:underline;text-underline-offset:3px;background:transparent;border:0;cursor:pointer;padding:0;font-family:inherit}
+.cd-rm:hover{color:var(--ink)}
+.cd-foot{flex:none;padding:16px 24px 22px;border-top:1px solid var(--line);background:var(--bg)}
+.cart-drawer.empty .cd-foot{display:none}
+.cd-sub{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:500}
+.cd-sub span:last-child{font-family:var(--font-lat);font-size:16px;direction:ltr}
+.cd-note{margin:6px 0 14px;font-size:11.5px;color:#8a7e6f}
+.cd-go{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 22px;background:var(--ink);color:#fff;font-size:13px;letter-spacing:.12em;text-transform:uppercase;transition:background .3s,transform .3s var(--ease)}
+.cd-go:hover{background:#000}
+.cd-go span:last-child{font-family:var(--font-lat);font-size:14px;letter-spacing:0;direction:ltr}
+.cd-more{display:block;text-align:center;margin-top:12px;font-size:12.5px;color:#5a5248;text-decoration:underline;text-underline-offset:3px}
+.cd-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding:30px 0}
+.cd-empty svg{width:46px;height:46px;fill:none;stroke:var(--ink);stroke-width:1;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+.cd-empty h4{margin:6px 0 0;font-family:var(--font-he);font-weight:500;font-size:20px}
+.cd-empty p{margin:0;font-size:13.5px;color:#6f6252;max-width:26ch}
+.cd-empty .btn-line{margin-top:10px}
+.cd-sugg{margin-top:28px;width:100%}
+.cd-sugg h5{margin:0 0 12px;font-family:var(--font-lat);font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:#6f6252;font-weight:600}
+.cd-sugg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cd-sugg-grid a{display:block;text-align:right}
+.cd-sugg-grid .im{aspect-ratio:3/4;background:#ebe9e4;overflow:hidden}
+.cd-sugg-grid img{width:100%;height:100%;object-fit:cover;display:block}
+.cd-sugg-grid .t{display:block;font-size:11.5px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cd-sugg-grid .pr{display:block;font-family:var(--font-lat);font-size:11px;color:#6f6252;direction:ltr;text-align:right}
+.hic{position:relative}
+.hic-badge{position:absolute;top:2px;right:0;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--ink);color:#fff;font-family:var(--font-lat);font-size:9.5px;font-weight:600;display:grid;place-items:center;transform:scale(0);transition:transform .35s var(--ease)}
+.hic-badge.on{transform:none}
+header.scrolled .hic-badge,.sub .hic-badge{background:var(--ink)}
 .btn-line{font-size:12.5px;letter-spacing:.06em;border:1px solid var(--ink);padding:12px 26px;transition:background .3s,color .3s}
 .btn-line:hover{background:var(--ink);color:var(--bg)}
 
@@ -672,13 +722,12 @@ footer{position:relative;overflow:hidden}
 <div class="scrim" id="scrim"></div>
 <aside class="cart-drawer" id="cartDrawer" aria-label="עגלת קניות">
   <div class="cd-head">
-    <span class="micro-he">עגלה (0)</span>
-    <button id="cartClose" class="micro-he">סגירה</button>
+    <h3 class="cd-title">העגלה שלך <span class="cd-count" id="cdCount">0</span></h3>
+    <button id="cartClose" class="cd-x" aria-label="סגירה"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
-  <div class="cd-body">
-    <p>עגלת הקניות שלך ריקה</p>
-    <a class="btn-line" href="collection.html?c=all">המשך בקנייה</a>
-  </div>
+  <div class="cd-ship" id="cdShip"><p></p><div class="cd-bar"><i></i></div></div>
+  <div class="cd-body" id="cdBody"></div>
+  <div class="cd-foot" id="cdFoot"></div>
 </aside>
 
 <button class="a11y-btn" title="נגישות" aria-label="נגישות">א</button>
@@ -938,5 +987,6 @@ const onScr = () => hdr.classList.toggle('scrolled', scrollY > 8);
 onScr(); addEventListener('scroll', onScr, {passive:true});
 
 </script>
+<script src="assets/cart.js"></script>
 </body>
 </html>
