@@ -11,11 +11,14 @@ const colTitle = h => (D.collections.find(c => c.handle === h) || {}).title || h
 
 /* ---- shell ---- */
 $('#hnav').innerHTML = D.nav.slice(0, 6).map(n => '<a href="' + n.u + '">' + n.t + '</a>').join('') + '<a href="index.html#about" data-about>אודות</a>';
-$('#moLinks').innerHTML = D.nav.map(n => '<a href="' + n.u + '">' + n.t + '</a>').join('') + '<a href="index.html#about">אודות</a>';
+const moChev = '<svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg>';
+const curC = (() => { try { return decodeURIComponent(new URLSearchParams(location.search).get('c') || ''); } catch (e) { return ''; } })();
+$('#moLinks').innerHTML = D.nav.map((n, i) => { const ch = (() => { try { return decodeURIComponent((n.u.split('c=')[1] || '')); } catch (e) { return ''; } })(); return '<a href="' + n.u + '" class="' + (ch && ch === curC ? 'on' : '') + '" style="transition-delay:' + (0.06 + i*0.04) + 's"><span>' + n.t + '</span>' + moChev + '</a>'; }).join('') + '<a href="index.html#about" style="transition-delay:.46s"><span>אודות</span></a>';
 $('#fshop').innerHTML = D.nav.map(n => '<li><a href="' + n.u + '">' + n.t + '</a></li>').join('');
 const MSGS = ['משלוח חינם בקנייה מעל 199 ₪', 'עד 199 ₪ — משלוח ב-29 ₪ בלבד', 'משלוח מהיר עד 5 ימי עסקים עם שליח עד הבית', 'LAYMR — SUMMER SALE'];
 const tHTML = MSGS.concat(MSGS, MSGS).map(m => '<span dir="rtl">' + m + '</span>').join('');
 $('#tickerA').innerHTML = tHTML; $('#tickerB').innerHTML = tHTML;
+document.querySelectorAll('footer .fcol h3').forEach(h => h.addEventListener('click', () => { if (matchMedia('(max-width:700px)').matches) h.parentElement.classList.toggle('open'); }));
 const hdrEl = document.querySelector('header'); const onScr = () => hdrEl.classList.toggle('scrolled', scrollY > 8); onScr(); addEventListener('scroll', onScr, {passive:true});
 const scrim = $('#scrim'), menuOverlay = $('#menuOverlay'), cartDrawer = $('#cartDrawer');
 const closeAll = () => { scrim.classList.remove('open'); menuOverlay.classList.remove('open'); cartDrawer.classList.remove('open'); };

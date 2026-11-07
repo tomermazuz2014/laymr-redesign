@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/base.css?v=1794094416">
-<link rel="stylesheet" href="assets/pages.css?v=1794094416">
+<link rel="stylesheet" href="assets/base.css?v=1794095118">
+<link rel="stylesheet" href="assets/pages.css?v=1794095118">
 </head>
 <body class="sub" data-page="product">
 <header>
@@ -105,14 +105,20 @@
 </footer>
 <div class="menu-overlay" id="menuOverlay" aria-label="תפריט">
   <div class="mo-head">
-    <span class="micro-he">תפריט</span>
-    <button id="menuClose" class="micro-he">סגירה</button>
+    <a class="mo-logo" href="index.html" aria-label="LAYMR"><img src="images/logo-lm.png" alt="LAYMR"></a>
+    <button id="menuClose" class="mo-x" aria-label="סגירה"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
   <div class="mo-body" id="moLinks"></div>
   <div class="mo-foot">
-    <a href="search.html">חיפוש</a>
-    <a href="#">חשבון</a>
-    <a href="https://www.instagram.com/laymr.official/">Instagram ↗</a>
+    <div class="mo-foot-row">
+      <span class="mo-region">ישראל | ILS ₪</span>
+      <div class="mo-links"><a href="search.html">חיפוש</a><a href="#">חשבון</a></div>
+    </div>
+    <div class="mo-social">
+      <a href="https://www.instagram.com/laymr.official/" target="_blank" rel="noopener" aria-label="Instagram"><img src="images/icons/icon-instagram.svg" alt=""></a>
+      <a href="https://wa.me/972505506008" target="_blank" rel="noopener" aria-label="WhatsApp"><img src="images/icons/icon-whatsapp.svg" alt=""></a>
+      <a href="mailto:laymr@eyal-golan.co.il" aria-label="אימייל"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
+    </div>
   </div>
 </div>
 
@@ -125,12 +131,27 @@
   </div>
   <div class="about-body">
     <div class="about-text">
-      <span class="micro">About / אודות</span>
-      <p class="about-statement">LAYMR הוא מותג אופנה ואקססוריז המתמקד בהבאת סגנון אישי וייחודי לקהל לקוחותינו — איכות גבוהה, מחירים נגישים.</p>
-      <p>המותג מציע מגוון פריטים המשלבים עיצוב מודרני בשילוב אלמנטים המייצגים את זהותו האישית של אייל.</p>
-      <p>אנו שואפים לייצר חווית קניה ייחודית, המשלבת את עולם האופנה ומציעה פריטים מותאמים לכל גיל ולכל סגנון.</p>
+      <span class="ab-kick"><i></i>About — LAYMR by Eyal Golan</span>
+      <h2 class="ab-title">אופנה<br>עם <em>זהות.</em></h2>
+      <p class="ab-lead">LAYMR הוא מותג האופנה של אייל גולן — פריטים ואקססוריז שמביאים סגנון אישי וייחודי לכל אחד, עם איכות גבוהה ומחירים נגישים.</p>
+      <p class="ab-p">המותג מציע מגוון פריטים המשלבים עיצוב מודרני עם אלמנטים המייצגים את זהותו האישית של אייל — גזרות נוחות, בדים נעימים ופרטים קטנים שעושים את ההבדל.</p>
+      <p class="ab-p">אנחנו שואפים לייצר חווית קנייה ייחודית, שמחברת בין עולם האופנה לאנשים שלובשים אותו — פריטים מותאמים לכל גיל ולכל סגנון, מהבמה ועד הרחוב.</p>
+      <ul class="ab-vals">
+        <li><b>01</b><span>עיצוב ישראלי</span></li>
+        <li><b>02</b><span>איכות ללא פשרות</span></li>
+        <li><b>03</b><span>מחיר נגיש לכולם</span></li>
+        <li><b>04</b><span>שירות אישי</span></li>
+      </ul>
+      <div class="ab-ctas">
+        <a class="ab-btn" href="collection.html?c=%D7%A7%D7%99%D7%A5-new">לקולקציה החדשה<svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg></a>
+        <a class="ab-link" href="https://www.instagram.com/laymr.official/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+      <div class="ab-sign" aria-hidden="true">LAYMR</div>
     </div>
-    <img class="about-img" src="images/EyalGolanbrand0890_1.jpg" alt="LAYMR" loading="lazy">
+    <div class="about-media">
+      <video class="about-video" muted loop playsinline preload="none" poster="images/about-poster.jpg" data-msrc="media/about-m.mp4" data-mposter="images/about-m-poster.jpg" aria-label="LAYMR — אייל גולן"><source src="media/about.mp4" type="video/mp4"></video>
+      <span class="ab-tag">LAYMR · 2026</span>
+    </div>
   </div>
 </div>
 
@@ -149,7 +170,7 @@
 <button class="a11y-btn" title="נגישות" aria-label="נגישות">א</button>
 
 
-<script src="data/laymr-data.js?v=1794094416"></script>
-<script src="assets/site.js?v=1794094416"></script>
+<script src="data/laymr-data.js?v=1794095118"></script>
+<script src="assets/site.js?v=1794095118"></script>
 </body>
 </html>
