@@ -285,7 +285,7 @@ body.sub .ticker{margin-top:52px}
 .acc-addr{grid-template-columns:1fr}
 .acc-sugg .plist{grid-template-columns:repeat(2,1fr)}
 }
-.pfill{position:relative;display:flex;flex-direction:column;justify-content:space-between;padding:22px 22px 20px;background:#17150f url(../images/about-m-poster.jpg) 50% 15%/cover no-repeat;color:#fff;overflow:hidden;min-height:0;cursor:pointer;isolation:isolate}
+.pfill{position:relative;display:flex;flex-direction:column;justify-content:space-between;padding:22px 22px 20px;background:#17150f 50% 15%/cover no-repeat;color:#fff;overflow:hidden;min-height:0;aspect-ratio:3/4;cursor:pointer;isolation:isolate}
 .pf-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%;z-index:-3;opacity:0;transition:opacity 1s var(--ease)}
 .pf-vid.on{opacity:1}
 .pf-shade{position:absolute;inset:0;z-index:-2;background:linear-gradient(to top,rgba(20,18,15,.96) 0%,rgba(20,18,15,.78) 45%,rgba(20,18,15,.45) 100%);pointer-events:none}
@@ -307,7 +307,7 @@ body.sub .ticker{margin-top:52px}
 .pf-btn{display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 16px;border-radius:20px;background:#fff;color:var(--ink);font-size:13px;font-weight:500;transition:transform .35s var(--ease),background .3s}
 .pf-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s var(--ease)}
 .pfill:hover .pf-btn{transform:translateY(-2px)}.pfill:hover .pf-btn svg{transform:translateX(-4px)}
-.pimg{position:relative;display:block;overflow:hidden;background:#ebe9e4;min-height:0}
+.pimg{position:relative;display:block;overflow:hidden;background:#ebe9e4;min-height:0;aspect-ratio:3/4}
 .pimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block;transition:transform 1.4s var(--ease)}
 .pimg:hover img{transform:scale(1.04)}
 .pimg span{position:absolute;left:12px;bottom:10px;font-family:var(--font-lat);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#fff;opacity:.85;direction:ltr;text-shadow:0 1px 8px rgba(0,0,0,.4)}
