@@ -70,13 +70,6 @@ if (page === 'collection'){
   document.querySelector('main.pg').classList.add('collection');
   const h = dec(q.get('c') || 'all'); const title = h === 'all' ? 'כל המוצרים' : colTitle(h);
   const list = h === 'all' ? P.slice() : (D.collectionProducts[h] || []).map(x => byHandle[x]).filter(Boolean);
-  document.title = title + ' — LAYMR'; $('#colTitle').textContent = title;
-  const cats = [{t: 'הכל', u: 'collection.html?c=all'}].concat(D.nav);
-  $('#colCats').innerHTML = cats.map(n => { const ch = dec((n.u.split('c=')[1] || '')); return '<a href="' + n.u + '" class="' + (ch === h ? 'on' : '') + '">' + n.t + '</a>'; }).join('');
-  const onCat = $('#colCats a.on'); if (onCat) onCat.scrollIntoView({block: 'nearest', inline: 'center'});
-  const sizeSet = []; list.forEach(p => { const si = optIdx(p, isSize); if (si >= 0) p.options[si].values.forEach(v => { if (!sizeSet.includes(v)) sizeSet.push(v); }); });
-  const order = ['XS','S','M','L','XL','XXL','XXXL','2XL','3XL','4XL']; sizeSet.sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99) || a.localeCompare(b));
-  $('#sizeOpts').innerHTML = sizeSet.map(v => '<button data-v="' + esc(v) + '">' + esc(v) + '</button>').join('');
   const FEAT_SETS = {
   'all': ['GUYP1172.jpg','Snapinst.app_350143470_999611704364660_6428162201381596142_n_1080.jpg','GUYP1327.jpg','LAYMR212211.jpg','GUYP1263.jpg','Snapinst.app_353623109_943617180224884_1525858055982929976_n_1080.jpg','GUYP1226.jpg','10_78f335ef-829e-47a2-b195-afca1506cd2a.png'],
   'קיץ-new': ['LAYMR211944.jpg','LAYMR212016.jpg','LAYMR211985.jpg','LAYMR212025.jpg'],
@@ -90,6 +83,16 @@ if (page === 'collection'){
   'בגדי-ים': ['10_78f335ef-829e-47a2-b195-afca1506cd2a.png','EyalGolanbrand0890_1.jpg','EyalGolanbrand1001_1.jpg','GUYP1172.jpg'],
   'best-sellers': ['EyalGolanbrand0890_1.jpg','LAYMR211978.jpg','GUYP1263.jpg','Snapinst.app_353623109_943617180224884_1525858055982929976_n_1080.jpg']
 };
+  document.title = title + ' — LAYMR'; $('#colTitle').textContent = title;
+  const heroSet = (FEAT_SETS[h] || FEAT_SETS.all); const mainEl = document.querySelector('main.pg');
+  mainEl.insertAdjacentHTML('afterbegin', '<div class="col-hero"><img src="images/' + heroSet[0] + '" alt=""><div class="col-hero-txt"><span class="k"><i></i>LAYMR · Collection</span><h1>' + esc(title) + '<small id="heroCount"></small></h1></div></div>');
+  const tk = document.querySelector('.ticker'); if (tk) mainEl.querySelector('.col-hero').after(tk);
+  const cats = [{t: 'הכל', u: 'collection.html?c=all'}].concat(D.nav);
+  $('#colCats').innerHTML = cats.map(n => { const ch = dec((n.u.split('c=')[1] || '')); return '<a href="' + n.u + '" class="' + (ch === h ? 'on' : '') + '">' + n.t + '</a>'; }).join('');
+  const onCat = $('#colCats a.on'); if (onCat) onCat.scrollIntoView({block: 'nearest', inline: 'center'});
+  const sizeSet = []; list.forEach(p => { const si = optIdx(p, isSize); if (si >= 0) p.options[si].values.forEach(v => { if (!sizeSet.includes(v)) sizeSet.push(v); }); });
+  const order = ['XS','S','M','L','XL','XXL','XXXL','2XL','3XL','4XL']; sizeSet.sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99) || a.localeCompare(b));
+  $('#sizeOpts').innerHTML = sizeSet.map(v => '<button data-v="' + esc(v) + '">' + esc(v) + '</button>').join('');
   const state = {sort: 'featured', size: null, hideOut: false};
   const grid = $('#grid'), cnt = $('#count');
   const draw = () => { let l = list.slice();
@@ -98,7 +101,7 @@ if (page === 'collection'){
     if (state.sort === 'low') l.sort((a, b) => Number(cheapest(a).price) - Number(cheapest(b).price));
     if (state.sort === 'high') l.sort((a, b) => Number(cheapest(b).price) - Number(cheapest(a).price));
     if (state.sort === 'new') l.sort((a, b) => (b.published || '').localeCompare(a.published || ''));
-    cnt.textContent = l.length;
+    cnt.textContent = l.length; const hc = $('#heroCount'); if (hc) hc.textContent = l.length + ' ITEMS';
     let html = '', f = 0;
     l.forEach((p, i) => { if ((l.length >= 8 && i % 8 === 4) || (l.length >= 3 && l.length < 8 && i === 2)){ html += '<div class="feat' + (f % 2 ? ' l' : '') + '"><img loading="lazy" src="images/' + (FEAT_SETS[h] || FEAT_SETS.all)[f % (FEAT_SETS[h] || FEAT_SETS.all).length] + '" alt=""></div>'; f++; } html += card(p); });
     grid.innerHTML = l.length ? html : '<div class="empty">אין פריטים שמתאימים לסינון</div>'; };

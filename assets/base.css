@@ -68,7 +68,7 @@ header.nav-open .h-nav a:nth-child(1){transition-delay:.05s}header.nav-open .h-n
 header.nav-open .menu-toggle .l1{transform:translateY(6px) rotate(45deg)}
 header.nav-open .menu-toggle .l2{opacity:0}
 header.nav-open .menu-toggle .l3{transform:translateY(-6px) rotate(-45deg)}
-.h-nav a{font-size:12.5px;letter-spacing:.05em;font-weight:500;position:relative;padding:4px 0}
+.h-nav a{font-size:15.5px;letter-spacing:.03em;font-weight:500;position:relative;padding:4px 0}
 .h-nav a::after{content:'';position:absolute;bottom:0;right:0;height:1px;width:0;background:currentColor;transition:width .35s var(--ease)}
 .h-nav a:hover::after{width:100%}
 .hic{display:block;padding:7px}
@@ -81,7 +81,8 @@ header.nav-open .menu-toggle .l3{transform:translateY(-6px) rotate(-45deg)}
 header.scrolled .h-mark-text{opacity:0}
 header.scrolled .h-mark-logo{opacity:1}
 .h-util{display:flex;gap:18px;align-items:center}
-.menu-toggle{display:block;padding:6px;margin-right:-6px}
+.menu-toggle{display:block;padding:6px;margin-right:-6px;border:0;background:transparent;color:inherit;cursor:pointer;outline:none}
+.menu-toggle:focus-visible{outline:1px solid currentColor;outline-offset:2px}
 @media(max-width:1180px){
   .h-nav{display:none}
 }
@@ -89,6 +90,16 @@ header.scrolled .h-mark-logo{opacity:1}
 /* ============ וורדמארק ענק + Hero ============ */
 .masthead{position:relative}
 .hero{position:relative;overflow:hidden;background:#e7e5e0}
+.vposter{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.hero > .vposter{object-position:68% 22%}
+.hrep-photo .vposter{object-position:center 22%}
+.about-media .vposter{object-position:50% 0}
+video.vfade{opacity:0;transition:opacity .7s var(--ease)}
+video.vfade.playing{opacity:1}
+.hero video{position:relative;z-index:1}
+.hrep-photo video{position:relative;z-index:0}
+.about-video{position:relative;z-index:1}
+@media(max-width:700px){.hero > .vposter{object-position:50% 20%}.hrep-photo .vposter{object-position:center 30%}}
 .hero video{width:100%;height:100vh;height:100svh;object-fit:cover;object-position:68% 22%;display:block;background:#e7e5e0}
 .hero-campaign{position:absolute;bottom:calc(var(--pad) + 6px);left:var(--pad);z-index:3;color:#fff;direction:ltr;text-align:left}
 @media(max-width:700px){.hero-campaign{bottom:calc(var(--pad) + 86px)}}

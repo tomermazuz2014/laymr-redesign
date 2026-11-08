@@ -1,7 +1,20 @@
 
 /* ===== sub-pages ===== */
-body.sub header{color:var(--ink);background:color-mix(in srgb,var(--warm) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--warm-line)}
+body.sub header{color:#fff;background:#1d1a17;border-bottom:1px solid rgba(255,255,255,.08)}
+body.sub header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--warm) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--warm-line)}
 body.sub .ticker{margin-top:52px}
+body[data-page="collection"] header:not(.scrolled){background:transparent;border-bottom-color:transparent}
+body[data-page="collection"] .ticker{margin-top:0}
+.col-hero{position:relative;height:clamp(300px,48vh,540px);overflow:hidden;background:#2b2824}
+.col-hero img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;display:block}
+.col-hero::before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(to bottom,rgba(0,0,0,.5),rgba(0,0,0,0) 38%),linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,0) 55%)}
+.col-hero-txt{position:absolute;right:var(--pad);bottom:30px;z-index:2;color:#fff}
+.col-hero-txt .k{display:flex;align-items:center;gap:12px;font-family:var(--font-lat);font-size:10.5px;letter-spacing:.38em;text-transform:uppercase;font-weight:600;opacity:.85;direction:ltr;justify-content:flex-end}
+.col-hero-txt .k i{display:block;width:26px;height:1px;background:currentColor}
+.col-hero-txt h1{margin:10px 0 0;font-family:var(--font-he);font-weight:600;font-size:clamp(42px,5.4vw,78px);line-height:.98;letter-spacing:-.02em;display:flex;align-items:baseline;gap:16px}
+.col-hero-txt h1 small{font-family:var(--font-lat);font-size:14px;font-weight:500;letter-spacing:.1em;opacity:.8}
+body[data-page="collection"] .col-name{display:none}
+@media(max-width:700px){.col-hero{height:42svh;min-height:260px}.col-hero-txt{bottom:22px}.col-hero-txt h1{font-size:44px}}
 .pg{padding:clamp(22px,3vw,40px) var(--pad) clamp(60px,7vw,100px);min-height:60vh}
 .crumbs{display:flex;gap:10px;align-items:center;font-size:12px;color:#6f6252;letter-spacing:.02em;margin-bottom:clamp(14px,2vw,24px)}
 .crumbs a{color:inherit}.crumbs a:hover{text-decoration:underline;text-underline-offset:3px}
