@@ -36,6 +36,8 @@ const cheapest = p => p.variants.reduce((a, v) => Number(v.price) < Number(a.pri
 const COLORS = {'שחור':'#141414','שחור.':'#141414','לבן':'#ffffff','אפור':'#9a9a9a','אבן':'#cfc6b8','ג\'ינס':'#5b7aa6','ג׳ינס':'#5b7aa6','ג׳ינס כהה':'#2f4468','ירוק':'#6b7a4a','חום':'#6b4a2f','כחול':'#2c4a8a','כחול נייבי':'#1c2b55','כחול עם לוגו צהוב':'#2c4a8a','ורוד':'#e9a9b8','סגול':'#8b6fb3','שמנת':'#efe6d4','בז\'':'#d9c7a8','פיסטוק':'#b9c79a','אדום':'#b23a2a','תכלת':'#9cc6e8','צהוב':'#e6c74a','זהב':'#c9a24a','מוקה':'#8a6a53','קאמל':'#c19a6b','black':'#141414','white':'#ffffff','grey':'#9a9a9a','gray':'#9a9a9a','blue':'#2c4a8a','green':'#6b7a4a','brown':'#6b4a2f','beige':'#d9c7a8'};
 const isColor = o => /צבע|color/i.test(o.name), isSize = o => /מידה|size/i.test(o.name);
 const NEWSET = new Set(D.collectionProducts['קיץ-new'] || []);
+/* product cards that play a campaign clip instead of the first photo (hover still shows the 2nd photo) */
+const CARD_VIDEOS = {'בגד-ים-אייל': 'media/pc-swim-hat.mp4', 'בגד-ים-אייל-כחול': 'media/pc-swim-pool.mp4'};
 const optIdx = (p, test) => p.options.findIndex(test);
 function card(p){
   const v = cheapest(p); const sale = v.cmp && Number(v.cmp) > Number(v.price); const out = !p.variants.some(x => x.avail);
@@ -45,7 +47,9 @@ function card(p){
   const sizeAvail = sz => p.variants.some(x => [x.o1, x.o2, x.o3][si] === sz && x.avail);
   const isNew = NEWSET.has(p.handle);
   const sizes = si >= 0 ? '<div class="pc-sizes">' + p.options[si].values.map(sz => '<button data-sz="' + esc(sz) + '" class="' + (sizeAvail(sz) ? '' : 'off') + '">' + esc(sz) + '</button>').join('') + '</div>' : '<span></span>';
-  return '<div class="pc" data-h="' + esc(p.handle) + '"><a class="pc-img" href="product.html?p=' + encodeURIComponent(p.handle) + '"><img loading="lazy" src="' + im0 + '" alt="' + esc(p.title) + '">' + (im1 ? '<img loading="lazy" class="alt" src="' + im1 + '" alt="">' : '') + '</a><div class="pc-top">' + (isNew && !out ? '<span class="pc-new">New</span>' : '') + dots + '</div>' +
+  const vid = CARD_VIDEOS[p.handle];
+  const primary = vid ? '<video class="pc-vid" autoplay muted loop playsinline preload="metadata" poster="' + im0 + '"><source src="' + vid + '" type="video/mp4"></video>' : '<img loading="lazy" src="' + im0 + '" alt="' + esc(p.title) + '">';
+  return '<div class="pc" data-h="' + esc(p.handle) + '"><a class="pc-img" href="product.html?p=' + encodeURIComponent(p.handle) + '">' + primary + (im1 ? '<img loading="lazy" class="alt" src="' + im1 + '" alt="">' : '') + '</a><div class="pc-top">' + (isNew && !out ? '<span class="pc-new">New</span>' : '') + dots + '</div>' +
     (out ? '<span class="pc-tag">Sold out</span>' : '') +
     '<div class="pc-panel"><div class="pc-row"><a class="pc-title" href="product.html?p=' + encodeURIComponent(p.handle) + '">' + esc(p.title) + '</a><button class="pc-plus" aria-label="בחירת מידה">+</button><div class="pc-price' + (sale ? ' sale' : '') + '">' + (sale ? '<s>' + price(v.cmp) + '</s>' : '') + '<span class="now">' + price(v.price) + '</span></div></div>' +
     '<div class="pc-row2">' + sizes + '<button class="pc-add"' + (out ? ' disabled' : '') + '>' + (out ? 'אזל' : 'הוספה לסל') + '</button></div></div></div>';
@@ -153,7 +157,7 @@ if (page === 'product'){
   /* gallery: snap slider */
   const imgs = p.images.length ? p.images : [{src: 'images/logo-lm.png'}];
   const track = $('#galTrack'), dots = $('#galDots'), gal = document.querySelector('.pdp-gal'); let cur = 0;
-  track.innerHTML = imgs.map((im, i) => '<div class="pdp-slide"><img ' + (i ? 'loading="lazy" ' : '') + 'src="' + im.src + '" alt="' + esc(p.title) + '"></div>').join('');
+  track.innerHTML = imgs.map((im, i) => '<div class="pdp-slide"><img class="bg" aria-hidden="true" ' + (i ? 'loading="lazy" ' : '') + 'src="' + im.src + '" alt=""><img class="main" ' + (i ? 'loading="lazy" ' : '') + 'src="' + im.src + '" alt="' + esc(p.title) + '"></div>').join('');
   dots.innerHTML = imgs.map((_, i) => '<i class="' + (i ? '' : 'on') + '"></i>').join('');
   if (imgs.length < 2) gal.classList.add('single');
   const goTo = i => { cur = (i + imgs.length) % imgs.length; track.scrollTo({left: cur * track.clientWidth, behavior: 'smooth'}); };
