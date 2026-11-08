@@ -47,7 +47,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .ticker{background:var(--warm);border-bottom:1px solid var(--warm-line);overflow:hidden;display:flex;user-select:none}
 .ticker__inner{display:flex;flex-shrink:0;align-items:center;gap:0;animation:marquee 36s linear infinite;direction:ltr}
 .ticker:hover .ticker__inner{animation-play-state:paused}
-.ticker span{display:inline-block;padding:8px 2.6rem 8px 0;font-size:var(--micro);letter-spacing:.12em;white-space:nowrap;color:#fff}
+.ticker span{display:inline-block;padding:10px 2.6rem 10px 0;font-size:14px;letter-spacing:.1em;white-space:nowrap;color:#fff;font-weight:500}
 .ticker span::after{content:'·';margin-right:2.6rem;color:rgba(255,255,255,.6)}
 @keyframes marquee{to{transform:translateX(-100%)}}
 
