@@ -101,7 +101,28 @@ if (page === 'collection'){
     cnt.textContent = l.length;
     let html = '', f = 0;
     l.forEach((p, i) => { if ((l.length >= 8 && i % 8 === 4) || (l.length >= 3 && l.length < 8 && i === 2)){ html += '<div class="feat' + (f % 2 ? ' l' : '') + '"><img loading="lazy" src="images/' + (FEAT_SETS[h] || FEAT_SETS.all)[f % (FEAT_SETS[h] || FEAT_SETS.all).length] + '" alt=""></div>'; f++; } html += card(p); });
-    grid.innerHTML = l.length ? html : '<div class="empty">אין פריטים שמתאימים לסינון</div>'; };
+    grid.innerHTML = l.length ? html : '<div class="empty">אין פריטים שמתאימים לסינון</div>';
+    if (typeof fillGaps === 'function') requestAnimationFrame(fillGaps); };
+  /* promo tiles for leftover cells at the end of the grid */
+  const PROMOS = [
+    '<div class="pfill" data-acct><span class="pf-k"><i></i>LAYMR Club</span><div><h3>10% הנחה<br>על ההזמנה הראשונה</h3><p>הצטרפו למועדון וקבלו את הקוד <b>WELCOME10</b>, השקות לפני כולם ומשלוח חינם מעל 199 ₪.</p></div><span class="pf-link">להרשמה<svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg></span><span class="pf-giant" aria-hidden="true">LAYMR</span></div>',
+    '<a class="pfill" href="page.html?id=shipping-policy"><span class="pf-k"><i></i>Shipping</span><div><h3>משלוח חינם<br>מעל 199 ₪</h3><p>עד 199 ₪ — משלוח ב-29 ₪ בלבד. שליח עד הבית תוך 5 ימי עסקים, והחלפה קלה עד הבית.</p></div><span class="pf-link">למדיניות המשלוחים<svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg></span><span class="pf-giant" aria-hidden="true">FREE</span></a>',
+    '<a class="pfill" href="https://www.instagram.com/laymr.official/" target="_blank" rel="noopener"><span class="pf-k"><i></i>Instagram</span><div><h3>@laymr.official</h3><p>הלוקים מהקמפיין, מאחורי הקלעים וההשקות — קודם באינסטגרם.</p></div><span class="pf-link">לעקוב<svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg></span><span class="pf-giant" aria-hidden="true">IG</span></a>'
+  ];
+  const fillGaps = () => {
+    grid.querySelectorAll('.pfill').forEach(x => x.remove());
+    if (!grid.children.length) return;
+    for (let round = 0, k = 0; round < 6; round++){
+      const cs = getComputedStyle(grid); const cols = cs.gridTemplateColumns.split(' ').length; const gap = parseFloat(cs.columnGap) || 0;
+      const gw = grid.getBoundingClientRect().width; const cellW = (gw - gap * (cols - 1)) / cols;
+      const kids = [...grid.children]; let maxB = 0; kids.forEach(c => { maxB = Math.max(maxB, c.getBoundingClientRect().bottom); });
+      let used = 0; kids.forEach(c => { const r = c.getBoundingClientRect(); if (Math.abs(r.bottom - maxB) < 2) used += Math.max(1, Math.round((r.width + gap) / (cellW + gap))); });
+      const empty = cols - used; if (empty <= 0) break;
+      for (let i = 0; i < empty; i++, k++) grid.insertAdjacentHTML('beforeend', PROMOS[k % PROMOS.length]);
+    }
+    grid.querySelectorAll('.pfill[data-acct]').forEach(el => el.onclick = () => { const b = $('#acctOpen'); if (b) b.click(); });
+  };
+  fillGaps(); let rsT; addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(fillGaps, 150); });
   $('#sortOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.sort = b.dataset.v; $('#sortOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); draw(); };
   $('#sizeOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.size = state.size === b.dataset.v ? null : b.dataset.v; $('#sizeOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.v === state.size)); draw(); };
   $('#hideOut').onchange = e => { state.hideOut = e.target.checked; draw(); };
