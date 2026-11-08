@@ -10,7 +10,7 @@ const P = D.products, byHandle = Object.fromEntries(P.map(p => [p.handle, p]));
 const colTitle = h => (D.collections.find(c => c.handle === h) || {}).title || h;
 
 /* ---- shell ---- */
-$('#hnav').innerHTML = D.nav.slice(0, 6).map(n => '<a href="' + n.u + '">' + n.t + '</a>').join('') + '<a href="index.html#about" data-about>אודות</a>';
+$('#hnav').innerHTML = D.nav.map(n => '<a href="' + n.u + '">' + n.t + '</a>').join('') + '<a href="index.html#about" data-about>אודות</a>';
 const moChev = '<svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg>';
 const curC = (() => { try { return decodeURIComponent(new URLSearchParams(location.search).get('c') || ''); } catch (e) { return ''; } })();
 $('#moLinks').innerHTML = D.nav.map((n, i) => { const ch = (() => { try { return decodeURIComponent((n.u.split('c=')[1] || '')); } catch (e) { return ''; } })(); return '<a href="' + n.u + '" class="' + (ch && ch === curC ? 'on' : '') + '" style="transition-delay:' + (0.06 + i*0.04) + 's"><span>' + n.t + '</span>' + moChev + '</a>'; }).join('') + '<a href="index.html#about" style="transition-delay:.46s"><span>אודות</span></a>';
@@ -21,7 +21,7 @@ $('#tickerA').innerHTML = tHTML; $('#tickerB').innerHTML = tHTML;
 document.querySelectorAll('footer .fcol h3').forEach(h => h.addEventListener('click', () => { if (matchMedia('(max-width:700px)').matches) h.parentElement.classList.toggle('open'); }));
 const hdrEl = document.querySelector('header'); const onScr = () => hdrEl.classList.toggle('scrolled', scrollY > 8); onScr(); addEventListener('scroll', onScr, {passive:true});
 const scrim = $('#scrim'), menuOverlay = $('#menuOverlay'), cartDrawer = $('#cartDrawer');
-const closeAll = () => { scrim.classList.remove('open'); menuOverlay.classList.remove('open'); cartDrawer.classList.remove('open'); };
+const closeAll = () => { scrim.classList.remove('open'); menuOverlay.classList.remove('open'); cartDrawer.classList.remove('open'); const ad = $('#acctDrawer'); if (ad) ad.classList.remove('open'); };
 $('#menuOpen').onclick = () => menuOverlay.classList.add('open');
 $('#menuClose').onclick = closeAll; $('#cartClose').onclick = closeAll; scrim.onclick = closeAll;
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
@@ -160,6 +160,65 @@ if (page === 'product'){
   const pair = (col ? col[1].map(x => byHandle[x]) : P).filter(x => x && x.handle !== p.handle && x.images.length).slice(0, 3);
   $('#pair').innerHTML = pair.map(x => { const v = cheapest(x); return '<a href="product.html?p=' + encodeURIComponent(x.handle) + '"><div class="im"><img loading="lazy" src="' + x.images[0].src + '" alt="' + esc(x.title) + '"></div><span class="t">' + esc(x.title) + '</span><span class="pr">' + price(v.price) + '</span></a>'; }).join('');
   if (!pair.length) document.querySelector('.pdp-pair').remove();
+}
+if (page === 'account'){
+  const getUser = () => { try { return JSON.parse(localStorage.getItem('laymr-user') || 'null'); } catch (e) { return null; } };
+  const store = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || 'null') || d; } catch (e) { return d; } };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  const wrap = $('#accWrap'), gate = $('#accGate'), main = $('#accMain');
+  const PIN = '<svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+  const BOX = '<svg viewBox="0 0 24 24"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5v-9Z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></svg>';
+  const field = (id, label, val, type, lat, cls) => '<div class="ac-field' + (lat ? ' lat' : '') + (cls ? ' ' + cls : '') + '"><input id="' + id + '" type="' + (type || 'text') + '" placeholder=" " value="' + esc(val || '') + '"><label for="' + id + '">' + label + '</label></div>';
+  const newIn = () => (D.collectionProducts['קיץ-new'] || []).map(h => byHandle[h]).filter(x => x && x.images.length);
+  const views = {};
+  views.overview = u => {
+    const addr = store('laymr-addr', []); const pics = ['images/GUYP1327.jpg', 'images/Snapinst.app_350143470_999611704364660_6428162201381596142_n_1080.jpg', 'images/LAYMR211944.jpg'];
+    return '<span class="acc-kick"><i></i>Overview</span><h1 class="acc-h1">היי, <em>' + esc(u.first) + '</em></h1><p class="acc-sub">טוב לראות אותך שוב. כאן תוכלו לעקוב אחרי ההזמנות, לנהל כתובות ולהתעדכן בהטבות המועדון.</p>' +
+      '<div class="acc-grid"><div class="acc-stat"><span class="acc-chip">Orders</span><small>הזמנות</small><b>0</b></div><div class="acc-stat"><span class="acc-chip">Saved</span><small>פריטים שמורים</small><b>0</b></div><div class="acc-stat"><span class="acc-chip">Addresses</span><small>כתובות</small><b>' + addr.length + '</b></div></div>' +
+      '<div class="acc-club"><div><b>LAYMR Club · Member</b><h3>מועדון הלקוחות של LAYMR</h3><p>צוברים 5% מכל הזמנה, מקבלים גישה מוקדמת להשקות ומשלוח חינם מעל 199 ₪. 10% הנחה על ההזמנה הראשונה עם הקוד <strong style="font-family:var(--font-lat);font-size:13px">WELCOME10</strong>.</p></div><div class="tier"><b>Points</b><strong>0</strong></div><div class="bar"><i></i></div><div class="bar-txt"><span>Member</span><span>Gold · 1,500 נק׳</span></div></div>' +
+      '<div class="acc-split"><div class="acc-card"><h3>ההזמנות האחרונות<a href="#orders">לכל ההזמנות</a></h3><div class="acc-empty">' + BOX + '<p>עדיין לא ביצעתם הזמנה. ברגע שתזמינו, המעקב והסטטוס יופיעו כאן.</p><a class="acc-btn" href="collection.html?c=%D7%A7%D7%99%D7%A5-new">לקולקציה החדשה</a></div></div>' +
+      '<div class="acc-collage">' + pics.map(s => '<img src="' + s + '" alt="">').join('') + '<span class="cap">New season · 2026</span></div></div>';
+  };
+  views.orders = () => '<span class="acc-kick"><i></i>Orders</span><h1 class="acc-h1">ההזמנות <em>שלי</em></h1><p class="acc-sub">כל ההזמנות, הסטטוסים והמעקב — במקום אחד.</p>' +
+    '<div class="acc-orders-empty">' + BOX + '<h3>עדיין אין הזמנות</h3><p>ברוכים הבאים ל-LAYMR. מוכנים לקנות? ההזמנה הראשונה שלכם מחכה — עם 10% הנחה בקוד WELCOME10.</p><a class="pdp-add" style="display:inline-flex;width:auto;padding:0 34px;align-items:center" href="collection.html?c=all">לקנייה</a></div>' +
+    '<div class="acc-sugg"><h3>חדש באתר</h3><div class="plist">' + newIn().slice(0, 4).map(card).join('') + '</div></div>';
+  views.profile = u => '<span class="acc-kick"><i></i>Profile</span><h1 class="acc-h1">פרטים <em>אישיים</em></h1><p class="acc-sub">הפרטים משמשים אותנו למשלוחים, לעדכונים על ההזמנה ולהטבות המועדון.</p>' +
+    '<div class="acc-card"><h3>פרטי קשר</h3><form class="acc-form" id="profForm" novalidate>' + field('pFirst', 'שם פרטי', u.first) + field('pLast', 'שם משפחה', u.last) + field('pEmail', 'אימייל', u.email, 'email', true) + field('pPhone', 'טלפון', u.phone, 'tel', true) + field('pBday', 'תאריך לידה (להטבת יום הולדת)', u.bday, 'text', true, 'full') +
+    '<div class="full acc-actions"><button class="acc-save" type="submit">שמירת שינויים</button><span class="acc-saved" id="profSaved">נשמר ✓</span></div></form></div>' +
+    '<div class="acc-card" style="margin-top:14px"><h3>סיסמה</h3><form class="acc-form" id="passForm" novalidate>' + field('pwCur', 'סיסמה נוכחית', '', 'password', true) + field('pwNew', 'סיסמה חדשה (6 תווים לפחות)', '', 'password', true) + '<div class="full acc-actions"><button class="acc-ghost" type="submit">עדכון סיסמה</button><span class="acc-saved" id="passSaved">הסיסמה עודכנה ✓</span></div></form></div>';
+  views.addresses = () => { const a = store('laymr-addr', []);
+    return '<span class="acc-kick"><i></i>Addresses</span><h1 class="acc-h1">כתובות <em>למשלוח</em></h1><p class="acc-sub">שמרו כתובות כדי לסיים את הקנייה הבאה בלחיצה.</p>' +
+      '<div class="acc-addr" id="addrList">' + a.map((x, i) => '<div class="acc-addr-card' + (x.def ? ' def' : '') + '">' + (x.def ? '<span class="tag">Default</span>' : '') + '<b>' + esc(x.name) + '</b>' + esc(x.street) + '<br>' + esc(x.city) + (x.zip ? ', ' + esc(x.zip) : '') + '<br><span dir="ltr">' + esc(x.phone) + '</span><div class="ops">' + (x.def ? '' : '<button data-def="' + i + '">הגדרה כברירת מחדל</button>') + '<button data-del="' + i + '">מחיקה</button></div></div>').join('') +
+      '<button class="acc-addr-new" id="addrNew"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>הוספת כתובת</button></div>' +
+      '<div class="acc-card" id="addrFormWrap" hidden style="margin-top:14px"><h3>כתובת חדשה</h3><form class="acc-form" id="addrForm" novalidate>' + field('aName', 'שם מלא', '', 'text', false, 'full') + field('aStreet', 'רחוב ומספר', '', 'text', false, 'full') + field('aCity', 'עיר', '') + field('aZip', 'מיקוד', '', 'text', true) + field('aPhone', 'טלפון', '', 'tel', true, 'full') +
+      '<div class="full acc-actions"><label class="ac-check" style="font-size:13px"><input type="checkbox" id="aDef" checked> כתובת ברירת מחדל</label></div><div class="full acc-actions"><button class="acc-save" type="submit">שמירת כתובת</button><button class="acc-ghost" type="button" id="addrCancel">ביטול</button><span class="acc-saved" id="addrMsg" style="color:#b4452f"></span></div></form></div>'; };
+  views.prefs = () => { const p = store('laymr-prefs', {email: true, sms: false, wa: true});
+    const sw = (k, t, d) => '<div class="acc-pref"><div><b>' + t + '</b><small>' + d + '</small></div><button class="sw' + (p[k] ? ' on' : '') + '" data-k="' + k + '" role="switch" aria-checked="' + !!p[k] + '" aria-label="' + t + '"></button></div>';
+    return '<span class="acc-kick"><i></i>Preferences</span><h1 class="acc-h1">העדפות <em>דיוור</em></h1><p class="acc-sub">בחרו איך תרצו לשמוע מאיתנו. אפשר לשנות בכל רגע.</p><div class="acc-card">' + sw('email', 'אימייל', 'השקות, הטבות מועדון ועדכוני SALE — פעם-פעמיים בחודש.') + sw('sms', 'SMS', 'עדכוני משלוח והטבות בזק.') + sw('wa', 'WhatsApp', 'עדכונים על ההזמנה ושירות לקוחות בצ׳אט.') + '</div>'; };
+  const render = () => {
+    const u = getUser();
+    if (!u){ wrap.hidden = true; gate.hidden = false; return; }
+    wrap.hidden = false; gate.hidden = true;
+    $('#accAv').textContent = ((u.first || '?')[0] + (u.last ? u.last[0] : '')).toUpperCase(); $('#accName').textContent = (u.first + ' ' + (u.last || '')).trim(); $('#accMail').textContent = u.email;
+    const v = (location.hash || '#overview').slice(1); const view = views[v] ? v : 'overview';
+    document.querySelectorAll('#accNav a').forEach(a => a.classList.toggle('on', a.dataset.v === view));
+    main.innerHTML = views[view](u); main.style.animation = 'none'; void main.offsetWidth; main.style.animation = '';
+    if (view === 'profile'){
+      $('#profForm').onsubmit = e => { e.preventDefault(); const nu = Object.assign({}, u, {first: $('#pFirst').value.trim() || u.first, last: $('#pLast').value.trim(), email: $('#pEmail').value.trim() || u.email, phone: $('#pPhone').value.trim(), bday: $('#pBday').value.trim()}); save('laymr-user', nu); $('#profSaved').classList.add('on'); setTimeout(() => $('#profSaved').classList.remove('on'), 2200); $('#accName').textContent = (nu.first + ' ' + nu.last).trim(); $('#accMail').textContent = nu.email; $('#accAv').textContent = ((nu.first || '?')[0] + (nu.last ? nu.last[0] : '')).toUpperCase(); };
+      $('#passForm').onsubmit = e => { e.preventDefault(); if ($('#pwNew').value.length < 6) return; $('#passSaved').classList.add('on'); setTimeout(() => $('#passSaved').classList.remove('on'), 2200); e.target.reset(); };
+    }
+    if (view === 'addresses'){
+      const fw = $('#addrFormWrap'); $('#addrNew').onclick = () => { fw.hidden = false; fw.scrollIntoView({behavior: 'smooth', block: 'start'}); setTimeout(() => $('#aName').focus(), 300); }; $('#addrCancel').onclick = () => fw.hidden = true;
+      $('#addrForm').onsubmit = e => { e.preventDefault(); const n = $('#aName').value.trim(), st = $('#aStreet').value.trim(), c = $('#aCity').value.trim(); if (!n || !st || !c){ $('#addrMsg').textContent = 'נא למלא שם, רחוב ועיר'; return; } const a = store('laymr-addr', []); const def = $('#aDef').checked || !a.length; if (def) a.forEach(x => x.def = false); a.push({name: n, street: st, city: c, zip: $('#aZip').value.trim(), phone: $('#aPhone').value.trim(), def}); save('laymr-addr', a); render(); };
+      main.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { const a = store('laymr-addr', []); a.splice(+b.dataset.del, 1); if (a.length && !a.some(x => x.def)) a[0].def = true; save('laymr-addr', a); render(); });
+      main.querySelectorAll('[data-def]').forEach(b => b.onclick = () => { const a = store('laymr-addr', []); a.forEach((x, i) => x.def = i === +b.dataset.def); save('laymr-addr', a); render(); });
+    }
+    if (view === 'prefs') main.querySelectorAll('.sw').forEach(b => b.onclick = () => { const p = store('laymr-prefs', {email: true, sms: false, wa: true}); p[b.dataset.k] = !p[b.dataset.k]; save('laymr-prefs', p); b.classList.toggle('on', p[b.dataset.k]); b.setAttribute('aria-checked', p[b.dataset.k]); });
+  };
+  addEventListener('hashchange', render); document.addEventListener('laymr:auth', render);
+  $('#accOut').onclick = () => { try { localStorage.removeItem('laymr-user'); } catch (e) {} document.body.classList.remove('logged'); location.href = 'index.html'; };
+  $('#gateLogin').onclick = () => $('#acctOpen').click();
+  render();
 }
 if (page === 'page'){
   const id = q.get('id') || 'privacy-policy'; const pg = D.pages[id] || {title: 'עמוד', html: '<p>העמוד לא נמצא.</p>'};

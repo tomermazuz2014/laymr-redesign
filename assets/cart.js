@@ -34,7 +34,12 @@
     body.innerHTML = c.map((it, i) => '<div class="cd-item"><a href="product.html?p=' + encodeURIComponent(it.handle) + '"><img src="' + it.img + '" alt=""></a><div><a class="cd-ttl" href="product.html?p=' + encodeURIComponent(it.handle) + '">' + esc(it.title) + '</a>' + (it.variant ? '<div class="cd-var">' + esc(it.variant) + '</div>' : '') +
       '<div class="cd-row"><div class="cd-qty"><button data-i="' + i + '" data-d="1" aria-label="יותר">+</button><span>' + it.qty + '</span><button data-i="' + i + '" data-d="-1" aria-label="פחות">−</button></div><span class="cd-pr">' + price(Number(it.price) * it.qty) + '</span></div>' +
       '<button class="cd-rm" data-rm="' + i + '">הסרה</button></div></div>').join('');
-    foot.innerHTML = '<div class="cd-sub"><span>סכום ביניים</span><span>' + price(total) + '</span></div><p class="cd-note">משלוח ומיסים מחושבים בקופה</p><a class="cd-go" href="#"><span>לתשלום</span><span>' + price(total) + '</span></a><a class="cd-more" href="collection.html?c=all">המשך בקנייה</a>';
+    const shipFee = left > 0 ? 29 : 0; const grand = total + shipFee; const note = (() => { try { return localStorage.getItem('laymr-note') || ''; } catch (e) { return ''; } })();
+    foot.innerHTML = '<div class="cd-lines"><div class="cd-line"><span>סה"כ מוצרים</span><span>' + price(total) + '</span></div><div class="cd-line"><span>משלוח</span><span>' + (shipFee ? price(shipFee) : 'חינם') + '</span></div></div>' +
+      '<div class="cd-sub"><span>עלות כולל משלוח</span><span>' + price(grand) + '</span></div><p class="cd-note">המס כלול. <a href="page.html?id=shipping-policy">דמי משלוח</a> יחושבו סופית בעת התשלום.</p>' +
+      '<details class="cd-memo"' + (note ? ' open' : '') + '><summary>הוספת הערה להזמנה</summary><textarea id="cdNote" rows="3" placeholder="לדוגמה: להשאיר אצל השכן, מידה חלופית אם אזל…">' + esc(note) + '</textarea></details>' +
+      '<a class="cd-go" href="#"><span>לתשלום</span><span>' + price(grand) + '</span></a><a class="cd-more" href="collection.html?c=all">המשך בקנייה</a>';
+    const ta = $('#cdNote'); if (ta) ta.oninput = () => { try { localStorage.setItem('laymr-note', ta.value); } catch (e) {} };
     body.querySelectorAll('.cd-qty button').forEach(b => b.onclick = () => { const c2 = get(); const it = c2[+b.dataset.i]; it.qty += +b.dataset.d; if (it.qty <= 0) c2.splice(+b.dataset.i, 1); set(c2); });
     body.querySelectorAll('.cd-rm').forEach(b => b.onclick = () => { const c2 = get(); c2.splice(+b.dataset.rm, 1); set(c2); });
   }

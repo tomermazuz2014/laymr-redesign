@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>החשבון שלי — LAYMR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/base.css?v=1794096536">
+<link rel="stylesheet" href="assets/pages.css?v=1794096536">
+</head>
+<body class="sub" data-page="account">
+<header>
+  <div class="header-row">
+    <nav class="h-nav" id="hnav" aria-label="ניווט ראשי"></nav>
+    <button class="menu-toggle" id="menuOpen" aria-label="תפריט"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    <a class="h-mark" href="index.html"><span class="h-mark-text">LAYMR</span><img class="h-mark-logo" src="images/logo-lm.png" alt="LAYMR"></a>
+    <div class="h-util">
+      <a class="hic" href="search.html" aria-label="חיפוש"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></a>
+      <button class="hic" id="acctOpen" aria-label="חשבון"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg><span class="hic-dot"></span></button>
+      <button class="hic" id="cartOpen" aria-label="עגלה"><svg viewBox="0 0 24 24"><path d="M6 8h12l1 13H5L6 8Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="ticker" dir="ltr" aria-label="הודעות משלוח">
+  <div class="ticker__inner" id="tickerA"></div>
+  <div class="ticker__inner" aria-hidden="true" id="tickerB"></div>
+</div>
+
+<main class="pg">
+
+<div class="acc-wrap" id="accWrap">
+  <aside class="acc-side">
+    <div class="acc-me"><div class="acc-av" id="accAv"></div><div><b id="accName"></b><span id="accMail"></span></div></div>
+    <nav class="acc-nav" id="accNav">
+      <a href="#overview" data-v="overview">סקירה</a>
+      <a href="#orders" data-v="orders">ההזמנות שלי</a>
+      <a href="#profile" data-v="profile">פרטים אישיים</a>
+      <a href="#addresses" data-v="addresses">כתובות</a>
+      <a href="#prefs" data-v="prefs">העדפות דיוור</a>
+    </nav>
+    <button class="acc-out" id="accOut">התנתקות</button>
+  </aside>
+  <section class="acc-main" id="accMain"></section>
+</div>
+<div class="acc-gate" id="accGate" hidden>
+  <span class="ab-kick"><i></i>LAYMR Account</span>
+  <h1>האזור האישי שלך</h1>
+  <p>התחברו כדי לעקוב אחרי הזמנות, לנהל כתובות ולשמור פריטים אהובים.</p>
+  <button class="pdp-add" id="gateLogin" style="max-width:320px;margin-top:8px">התחברות / הרשמה</button>
+</div>
+
+</main>
+<footer>
+  <div class="ft-top" data-reveal>
+    <div class="ft-cta">
+      <img class="ft-cta-mark" src="images/logo-lm.png" alt="LAYMR">
+      <span class="ft-kick"><i></i>Newsletter</span>
+      <h3 class="ft-h">הצטרפו למועדון <em>LAYMR</em></h3>
+      <p class="fnote">הטבות, השקות ועדכונים — ראשונים אצלכם במייל</p>
+      <form class="nform ft-form" id="newsForm">
+        <input type="email" placeholder="כתובת אימייל" required aria-label="כתובת אימייל">
+        <button type="submit" aria-label="הרשמה"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg></button>
+      </form>
+      <p class="nok" id="newsOk">תודה — נרשמת בהצלחה (דמו)</p>
+    </div>
+    <div class="ft-cols">
+      <div class="fcol">
+        <h3>Shop</h3>
+        <ul id="fshop"></ul>
+      </div>
+      <div class="fcol">
+        <h3>Info</h3>
+        <ul>
+          <li><a href="page.html?id=privacy-policy">מדיניות פרטיות</a></li>
+          <li><a href="page.html?id=refund-policy">החלפות והחזרות</a></li>
+          <li><a href="page.html?id=shipping-policy">מדיניות משלוחים</a></li>
+          <li><a href="page.html?id=terms-of-service">תקנון ותנאי שימוש</a></li>
+          <li><a href="#">הצהרת נגישות</a></li>
+          <li><a href="#">ביטול עסקה</a></li>
+        </ul>
+      </div>
+      <div class="fcol">
+        <h3>Service</h3>
+        <ul>
+          <li>מענה טלפוני: ב'-ה', 09:00-16:00</li>
+          <li><a href="https://wa.me/972505506008">וואטסאפ: 0505506008</a></li>
+          <li><a href="mailto:laymr@eyal-golan.co.il">laymr@eyal-golan.co.il</a></li>
+        </ul>
+        <div class="ft-giant" aria-hidden="true">LAYMR</div>
+      </div>
+    </div>
+  </div>
+  <div class="ft-mid">
+    <div class="ft-social">
+      <a class="ft-soc" href="https://www.instagram.com/laymr.official/" target="_blank" rel="noopener" aria-label="Instagram"><img src="images/icons/icon-instagram.svg" alt="" width="18" height="18"></a>
+      <a class="ft-soc" href="https://wa.me/972505506008" target="_blank" rel="noopener" aria-label="WhatsApp"><img src="images/icons/icon-whatsapp.svg" alt="" width="18" height="18"></a>
+      <a class="ft-soc" href="mailto:laymr@eyal-golan.co.il" aria-label="אימייל"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
+    </div>
+    <a class="ft-up" href="#"><span>חזרה למעלה</span><svg viewBox="0 0 24 24"><path d="M12 19V5"/><path d="m6 11 6-6 6 6"/></svg></a>
+  </div>
+  <div class="fbottom">
+    <span>© 2026 LAYMR</span>
+    <span>כל הזכויות שמורות</span>
+  </div>
+</footer>
+<div class="menu-overlay" id="menuOverlay" aria-label="תפריט">
+  <div class="mo-head">
+    <a class="mo-logo" href="index.html" aria-label="LAYMR"><img src="images/logo-lm.png" alt="LAYMR"></a>
+    <button id="menuClose" class="mo-x" aria-label="סגירה"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="mo-body" id="moLinks"></div>
+  <div class="mo-foot">
+    <div class="mo-foot-row">
+      <span class="mo-region">ישראל | ILS ₪</span>
+      <div class="mo-links"><a href="search.html">חיפוש</a><a href="#" data-acct>חשבון</a></div>
+    </div>
+    <div class="mo-social">
+      <a href="https://www.instagram.com/laymr.official/" target="_blank" rel="noopener" aria-label="Instagram"><img src="images/icons/icon-instagram.svg" alt=""></a>
+      <a href="https://wa.me/972505506008" target="_blank" rel="noopener" aria-label="WhatsApp"><img src="images/icons/icon-whatsapp.svg" alt=""></a>
+      <a href="mailto:laymr@eyal-golan.co.il" aria-label="אימייל"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
+    </div>
+  </div>
+</div>
+
+<!-- עגלה -->
+<!-- אודות -->
+<div class="about-overlay" id="aboutOverlay" aria-label="אודות">
+  <div class="mo-head">
+    <span class="micro-he">אודות</span>
+    <button id="aboutClose" class="micro-he">סגירה</button>
+  </div>
+  <button class="ab-x" id="aboutX" aria-label="סגירה"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <div class="about-body">
+    <div class="about-text">
+      <span class="ab-kick"><i></i>About — LAYMR by Eyal Golan</span>
+      <h2 class="ab-title">אופנה<br>עם <em>זהות.</em></h2>
+      <p class="ab-lead">LAYMR הוא מותג האופנה של אייל גולן — פריטים ואקססוריז שמביאים סגנון אישי וייחודי לכל אחד, עם איכות גבוהה ומחירים נגישים.</p>
+      <p class="ab-p">המותג מציע מגוון פריטים המשלבים עיצוב מודרני עם אלמנטים המייצגים את זהותו האישית של אייל — גזרות נוחות, בדים נעימים ופרטים קטנים שעושים את ההבדל.</p>
+      <p class="ab-p">אנחנו שואפים לייצר חווית קנייה ייחודית, שמחברת בין עולם האופנה לאנשים שלובשים אותו — פריטים מותאמים לכל גיל ולכל סגנון, מהבמה ועד הרחוב.</p>
+      <ul class="ab-vals">
+        <li><b>01</b><span>עיצוב ישראלי</span></li>
+        <li><b>02</b><span>איכות ללא פשרות</span></li>
+        <li><b>03</b><span>מחיר נגיש לכולם</span></li>
+        <li><b>04</b><span>שירות אישי</span></li>
+      </ul>
+      <div class="ab-ctas">
+        <a class="ab-btn" href="collection.html?c=%D7%A7%D7%99%D7%A5-new">לקולקציה החדשה<svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg></a>
+        <a class="ab-link" href="https://www.instagram.com/laymr.official/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+      <div class="ab-sign" aria-hidden="true">LAYMR</div>
+    </div>
+    <div class="about-media">
+      <video class="about-video" muted loop playsinline preload="none" poster="images/about-poster.jpg" data-msrc="media/about-m.mp4" data-mposter="images/about-m-poster.jpg" aria-label="LAYMR — אייל גולן"><source src="media/about.mp4" type="video/mp4"></video>
+      <span class="ab-tag">LAYMR · 2026</span>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="cart-drawer" id="cartDrawer" aria-label="עגלת קניות">
+  <div class="cd-head">
+    <h3 class="cd-title">העגלה שלך <span class="cd-count" id="cdCount">0</span></h3>
+    <button id="cartClose" class="cd-x" aria-label="סגירה"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="cd-ship" id="cdShip"><p></p><div class="cd-bar"><i></i></div></div>
+  <div class="cd-body" id="cdBody"></div>
+  <div class="cd-foot" id="cdFoot"></div>
+</aside>
+
+<aside class="acct-drawer" id="acctDrawer" aria-label="חשבון">
+  <div class="cd-head">
+    <h3 class="cd-title" id="acctTitle">החשבון שלי</h3>
+    <button id="acctClose" class="cd-x" aria-label="סגירה"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="ac-body" id="acctBody"></div>
+</aside>
+
+<button class="a11y-btn" title="נגישות" aria-label="נגישות">א</button>
+
+
+<script src="data/laymr-data.js?v=1794096536"></script>
+<script src="assets/site.js?v=1794096536"></script>
+<script src="assets/cart.js?v=1794096536"></script>
+<script src="assets/account.js?v=1794096536"></script>
+</body>
+</html>
