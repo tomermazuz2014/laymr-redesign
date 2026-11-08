@@ -90,6 +90,7 @@ if (page === 'collection'){
   const sizeSet = []; list.forEach(p => { const si = optIdx(p, isSize); if (si >= 0) p.options[si].values.forEach(v => { if (!sizeSet.includes(v)) sizeSet.push(v); }); });
   const order = ['XS','S','M','L','XL','XXL','XXXL','2XL','3XL','4XL']; sizeSet.sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99) || a.localeCompare(b));
   $('#sizeOpts').innerHTML = sizeSet.map(v => '<button data-v="' + esc(v) + '">' + esc(v) + '</button>').join('');
+  const heroSet = FEAT_SETS[h] || FEAT_SETS.all;
   const state = {sort: 'featured', size: null, hideOut: false};
   const grid = $('#grid'), cnt = $('#count');
   const draw = () => { let l = list.slice();
@@ -103,22 +104,30 @@ if (page === 'collection'){
     l.forEach((p, i) => { if ((l.length >= 8 && i % 8 === 4) || (l.length >= 3 && l.length < 8 && i === 2)){ html += '<div class="feat' + (f % 2 ? ' l' : '') + '"><img loading="lazy" src="images/' + (FEAT_SETS[h] || FEAT_SETS.all)[f % (FEAT_SETS[h] || FEAT_SETS.all).length] + '" alt=""></div>'; f++; } html += card(p); });
     grid.innerHTML = l.length ? html : '<div class="empty">אין פריטים שמתאימים לסינון</div>';
     if (typeof fillGaps === 'function') requestAnimationFrame(fillGaps); };
-  /* promo tiles for leftover cells at the end of the grid */
+  /* leftover cells at the end of the grid: ONE bold message tile + editorial image tiles */
+  const ARROW = '<svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg>';
   const PROMOS = [
-    '<div class="pfill" data-acct><span class="pf-k"><i></i>LAYMR Club</span><div><h3>10% הנחה<br>על ההזמנה הראשונה</h3><p>הצטרפו למועדון וקבלו את הקוד <b>WELCOME10</b>, השקות לפני כולם ומשלוח חינם מעל 199 ₪.</p></div><span class="pf-link">להרשמה<svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg></span><span class="pf-giant" aria-hidden="true">LAYMR</span></div>',
-    '<a class="pfill" href="page.html?id=shipping-policy"><span class="pf-k"><i></i>Shipping</span><div><h3>משלוח חינם<br>מעל 199 ₪</h3><p>עד 199 ₪ — משלוח ב-29 ₪ בלבד. שליח עד הבית תוך 5 ימי עסקים, והחלפה קלה עד הבית.</p></div><span class="pf-link">למדיניות המשלוחים<svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg></span><span class="pf-giant" aria-hidden="true">FREE</span></a>',
-    '<a class="pfill" href="https://www.instagram.com/laymr.official/" target="_blank" rel="noopener"><span class="pf-k"><i></i>Instagram</span><div><h3>@laymr.official</h3><p>הלוקים מהקמפיין, מאחורי הקלעים וההשקות — קודם באינסטגרם.</p></div><span class="pf-link">לעקוב<svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg></span><span class="pf-giant" aria-hidden="true">IG</span></a>'
+    '<div class="pfill" data-acct><span class="pf-k"><i></i>LAYMR Club</span><div class="pf-mid"><span class="pf-big">10<small>%</small></span><span class="pf-sub">הנחה על ההזמנה הראשונה</span></div><div class="pf-bot"><span class="pf-code">WELCOME10</span><span class="pf-btn">להרשמה' + ARROW + '</span></div></div>',
+    '<a class="pfill" href="page.html?id=shipping-policy"><span class="pf-k"><i></i>Free Shipping</span><div class="pf-mid"><span class="pf-big">199<small>₪</small></span><span class="pf-sub">משלוח חינם מעל 199 ₪ · עד 5 ימי עסקים עד הבית</span></div><div class="pf-bot"><span class="pf-code">EXPRESS</span><span class="pf-btn">למדיניות' + ARROW + '</span></div></a>',
+    '<a class="pfill" href="https://www.instagram.com/laymr.official/" target="_blank" rel="noopener"><span class="pf-k"><i></i>Instagram</span><div class="pf-mid"><span class="pf-big pf-ig">@laymr</span><span class="pf-sub">הלוקים מהקמפיין, מאחורי הקלעים וההשקות — קודם באינסטגרם</span></div><div class="pf-bot"><span class="pf-code">.official</span><span class="pf-btn">לעקוב' + ARROW + '</span></div></a>'
   ];
+  const promoIdx = Math.max(0, D.nav.findIndex(n => dec((n.u.split('c=')[1] || '')) === h)) % PROMOS.length;
   const fillGaps = () => {
-    grid.querySelectorAll('.pfill').forEach(x => x.remove());
-    if (!grid.children.length) return;
-    for (let round = 0, k = 0; round < 6; round++){
+    grid.querySelectorAll('.pfill, .pimg').forEach(x => x.remove());
+    if (!grid.querySelector('.pc')) return;
+    const usedFeats = grid.querySelectorAll('.feat').length;
+    const pool = heroSet.slice(usedFeats).concat(FEAT_SETS.all.filter(x => !heroSet.includes(x)));
+    let promoDone = false, imgK = 0;
+    for (let round = 0; round < 6; round++){
       const cs = getComputedStyle(grid); const cols = cs.gridTemplateColumns.split(' ').length; const gap = parseFloat(cs.columnGap) || 0;
       const gw = grid.getBoundingClientRect().width; const cellW = (gw - gap * (cols - 1)) / cols;
       const kids = [...grid.children]; let maxB = 0; kids.forEach(c => { maxB = Math.max(maxB, c.getBoundingClientRect().bottom); });
       let used = 0; kids.forEach(c => { const r = c.getBoundingClientRect(); if (Math.abs(r.bottom - maxB) < 2) used += Math.max(1, Math.round((r.width + gap) / (cellW + gap))); });
       const empty = cols - used; if (empty <= 0) break;
-      for (let i = 0; i < empty; i++, k++) grid.insertAdjacentHTML('beforeend', PROMOS[k % PROMOS.length]);
+      for (let i = 0; i < empty; i++){
+        if (!promoDone){ grid.insertAdjacentHTML('beforeend', PROMOS[promoIdx]); promoDone = true; }
+        else { const src = pool[imgK++ % pool.length]; grid.insertAdjacentHTML('beforeend', '<a class="pimg" href="collection.html?c=' + encodeURIComponent(h) + '"><img loading="lazy" src="images/' + src + '" alt=""><span>LAYMR · 2026</span></a>'); }
+      }
     }
     grid.querySelectorAll('.pfill[data-acct]').forEach(el => el.onclick = () => { const b = $('#acctOpen'); if (b) b.click(); });
   };
