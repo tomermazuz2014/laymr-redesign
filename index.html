@@ -1070,11 +1070,15 @@ if (hv && heroEl){
   const stripTxt = Array(6).fill('<span>LAYMR SALE</span><i></i><span>69–99 ₪</span><i></i><span>ALL SITE</span><i></i>').join('');
   document.getElementById('hsaleStrip').innerHTML = '<div class="hsale-strip-in">' + stripTxt + stripTxt + '</div>';
   /* רצף: וידאו → SALE → קמפיין → וידאו */
+  /* "הפחתת תנועה" (iOS Reduce Motion): בלי וידאו — מתחילים תמיד מההירו של 50% (פוסטר), ורק אחרי HOLD_MS ממשיכים לסליידים */
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches, HOLD_MS = 8000;
   let seqT = 0;
   const showSale = () => { heroEl.classList.add('sale-on'); clearTimeout(seqT); seqT = setTimeout(showRep, SALE_MS); };
   const rv = document.getElementById('heroRepVideo');
-  const showRep = () => { heroEl.classList.add('rep-on'); if (rv){ rv.currentTime = 0; const q = rv.play(); if (q && q.catch) q.catch(() => {}); } setTimeout(() => heroEl.classList.remove('sale-on'), 1000); clearTimeout(seqT); seqT = setTimeout(backToVideo, REP_MS); };
-  const backToVideo = () => { heroEl.classList.remove('sale-on', 'rep-on'); if (rv) rv.pause(); hv.currentTime = 0; const p = hv.play(); if (p && p.catch) p.catch(() => {}); };
+  const showRep = () => { heroEl.classList.add('rep-on'); if (rv && !RM){ rv.currentTime = 0; const q = rv.play(); if (q && q.catch) q.catch(() => {}); } setTimeout(() => heroEl.classList.remove('sale-on'), 1000); clearTimeout(seqT); seqT = setTimeout(backToVideo, REP_MS); };
+  const backToVideo = () => { heroEl.classList.remove('sale-on', 'rep-on'); if (rv) rv.pause(); clearTimeout(seqT);
+    if (RM){ seqT = setTimeout(showSale, HOLD_MS); return; }
+    hv.currentTime = 0; const p = hv.play(); if (p && p.catch) p.catch(() => {}); };
   hv.addEventListener('ended', showSale);
   /* iOS / Low Power Mode: autoplay עלול להיחסם — מנסים שוב אחרי המגע הראשון, ואם הווידאו לא רץ ממשיכים למחזור הסליידים */
   const kickVideos = () => {
@@ -1082,10 +1086,14 @@ if (hv && heroEl){
     /* "פתיחת" וידאו הקמפיין בתוך מחוות המשתמש כדי ש-iOS יאפשר להפעיל אותו אחר כך מהטיימר */
     if (rv && rv.paused){ const q = rv.play(); if (q && q.then) q.then(() => { if (!heroEl.classList.contains('rep-on')){ rv.pause(); rv.currentTime = 0; } }).catch(() => {}); }
   };
-  ['touchstart','scroll','click','keydown'].forEach(ev => addEventListener(ev, kickVideos, {once:true, passive:true}));
-  const p0 = hv.play();
-  if (p0 && p0.catch) p0.catch(() => { setTimeout(() => { if (hv.paused && !heroEl.classList.contains('sale-on') && !heroEl.classList.contains('rep-on')) showSale(); }, 9000); });
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches){ heroEl.classList.add('rep-on'); }
+  if (RM){
+    /* בלי תנועה: פוסטר 50% → (8 שנ') SALE → קמפיין → פוסטר … */
+    seqT = setTimeout(showSale, HOLD_MS);
+  } else {
+    ['touchstart','scroll','click','keydown'].forEach(ev => addEventListener(ev, kickVideos, {once:true, passive:true}));
+    const p0 = hv.play();
+    if (p0 && p0.catch) p0.catch(() => { setTimeout(() => { if (hv.paused && !heroEl.classList.contains('sale-on') && !heroEl.classList.contains('rep-on')) showSale(); }, 9000); });
+  }
 }
 
 /* הדר שקוף מעל ההירו, רקע אחרי גלילה */
