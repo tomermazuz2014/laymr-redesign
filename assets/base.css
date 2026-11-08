@@ -55,7 +55,19 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 header{position:fixed;top:0;right:0;left:0;z-index:70;color:#fff;background:transparent;border-bottom:1px solid transparent;transition:color .35s,background .35s,border-color .35s}
 header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--warm) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--warm-line)}
 .header-row{display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);height:52px;gap:16px}
+.h-start{display:flex;align-items:center;gap:18px;min-width:0}
 .h-nav{display:flex;gap:clamp(12px,1.3vw,22px);white-space:nowrap}
+@media(min-width:1181px){
+.h-nav{max-width:0;overflow:hidden;opacity:0;transition:max-width .7s var(--ease),opacity .4s;pointer-events:none}
+.h-nav a{opacity:0;transform:translateX(14px);transition:opacity .45s var(--ease),transform .55s var(--ease)}
+header.nav-open .h-nav{max-width:900px;opacity:1;pointer-events:auto}
+header.nav-open .h-nav a{opacity:1;transform:none}
+header.nav-open .h-nav a:nth-child(1){transition-delay:.05s}header.nav-open .h-nav a:nth-child(2){transition-delay:.09s}header.nav-open .h-nav a:nth-child(3){transition-delay:.13s}header.nav-open .h-nav a:nth-child(4){transition-delay:.17s}header.nav-open .h-nav a:nth-child(5){transition-delay:.21s}header.nav-open .h-nav a:nth-child(6){transition-delay:.25s}header.nav-open .h-nav a:nth-child(7){transition-delay:.29s}header.nav-open .h-nav a:nth-child(8){transition-delay:.33s}header.nav-open .h-nav a:nth-child(9){transition-delay:.37s}header.nav-open .h-nav a:nth-child(10){transition-delay:.41s}
+}
+.menu-toggle svg path{transition:transform .4s var(--ease),opacity .3s;transform-origin:12px 12px}
+header.nav-open .menu-toggle .l1{transform:translateY(6px) rotate(45deg)}
+header.nav-open .menu-toggle .l2{opacity:0}
+header.nav-open .menu-toggle .l3{transform:translateY(-6px) rotate(-45deg)}
 .h-nav a{font-size:12.5px;letter-spacing:.05em;font-weight:500;position:relative;padding:4px 0}
 .h-nav a::after{content:'';position:absolute;bottom:0;right:0;height:1px;width:0;background:currentColor;transition:width .35s var(--ease)}
 .h-nav a:hover::after{width:100%}
@@ -69,10 +81,9 @@ header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--warm) 92%,tr
 header.scrolled .h-mark-text{opacity:0}
 header.scrolled .h-mark-logo{opacity:1}
 .h-util{display:flex;gap:18px;align-items:center}
-.menu-toggle{display:none}
+.menu-toggle{display:block;padding:6px;margin-right:-6px}
 @media(max-width:1180px){
   .h-nav{display:none}
-  .menu-toggle{display:block}
 }
 
 /* ============ וורדמארק ענק + Hero ============ */

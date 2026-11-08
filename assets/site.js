@@ -22,7 +22,7 @@ document.querySelectorAll('footer .fcol h3').forEach(h => h.addEventListener('cl
 const hdrEl = document.querySelector('header'); const onScr = () => hdrEl.classList.toggle('scrolled', scrollY > 8); onScr(); addEventListener('scroll', onScr, {passive:true});
 const scrim = $('#scrim'), menuOverlay = $('#menuOverlay'), cartDrawer = $('#cartDrawer');
 const closeAll = () => { scrim.classList.remove('open'); menuOverlay.classList.remove('open'); cartDrawer.classList.remove('open'); const ad = $('#acctDrawer'); if (ad) ad.classList.remove('open'); };
-$('#menuOpen').onclick = () => menuOverlay.classList.add('open');
+$('#menuOpen').onclick = () => { if (matchMedia('(min-width:1181px)').matches){ const h = document.querySelector('header'); const o = h.classList.toggle('nav-open'); $('#menuOpen').setAttribute('aria-expanded', o); } else menuOverlay.classList.add('open'); };
 $('#menuClose').onclick = closeAll; $('#cartClose').onclick = closeAll; scrim.onclick = closeAll;
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
 const nf = $('#newsForm'); if (nf) nf.addEventListener('submit', e => { e.preventDefault(); $('#newsOk').style.display = 'block'; });
