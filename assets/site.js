@@ -107,9 +107,9 @@ if (page === 'collection'){
   /* leftover cells at the end of the grid: ONE bold message tile + editorial image tiles */
   const ARROW = '<svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg>';
   const PROMOS = [
-    '<div class="pfill" data-acct><span class="pf-k"><i></i>LAYMR Club</span><div class="pf-mid"><span class="pf-big">10<small>%</small></span><span class="pf-sub">הנחה על ההזמנה הראשונה</span></div><div class="pf-bot"><span class="pf-code">WELCOME10</span><span class="pf-btn">להרשמה' + ARROW + '</span></div></div>',
-    '<a class="pfill" href="page.html?id=shipping-policy"><span class="pf-k"><i></i>Free Shipping</span><div class="pf-mid"><span class="pf-big">199<small>₪</small></span><span class="pf-sub">משלוח חינם מעל 199 ₪ · עד 5 ימי עסקים עד הבית</span></div><div class="pf-bot"><span class="pf-code">EXPRESS</span><span class="pf-btn">למדיניות' + ARROW + '</span></div></a>',
-    '<a class="pfill" href="https://www.instagram.com/laymr.official/" target="_blank" rel="noopener"><span class="pf-k"><i></i>Instagram</span><div class="pf-mid"><span class="pf-big pf-ig">@laymr</span><span class="pf-sub">הלוקים מהקמפיין, מאחורי הקלעים וההשקות — קודם באינסטגרם</span></div><div class="pf-bot"><span class="pf-code">.official</span><span class="pf-btn">לעקוב' + ARROW + '</span></div></a>'
+    '<div class="pfill" data-acct>' + '<video class="pf-vid" muted loop playsinline preload="metadata" poster="images/about-m-poster.jpg"><source src="media/about-m.mp4" type="video/mp4"></video><span class="pf-shade"></span>' + '<span class="pf-k"><i></i>LAYMR Club</span><div class="pf-mid"><span class="pf-big">10<small>%</small></span><span class="pf-sub">הנחה על ההזמנה הראשונה</span></div><div class="pf-bot"><span class="pf-code">WELCOME10</span><span class="pf-btn">להרשמה' + ARROW + '</span></div></div>',
+    '<a class="pfill" href="page.html?id=shipping-policy">' + '<video class="pf-vid" muted loop playsinline preload="metadata" poster="images/about-m-poster.jpg"><source src="media/about-m.mp4" type="video/mp4"></video><span class="pf-shade"></span>' + '<span class="pf-k"><i></i>Free Shipping</span><div class="pf-mid"><span class="pf-big">199<small>₪</small></span><span class="pf-sub">משלוח חינם מעל 199 ₪ · עד 5 ימי עסקים עד הבית</span></div><div class="pf-bot"><span class="pf-code">EXPRESS</span><span class="pf-btn">למדיניות' + ARROW + '</span></div></a>',
+    '<a class="pfill" href="https://www.instagram.com/laymr.official/" target="_blank" rel="noopener">' + '<video class="pf-vid" muted loop playsinline preload="metadata" poster="images/about-m-poster.jpg"><source src="media/about-m.mp4" type="video/mp4"></video><span class="pf-shade"></span>' + '<span class="pf-k"><i></i>Instagram</span><div class="pf-mid"><span class="pf-big pf-ig">@laymr</span><span class="pf-sub">הלוקים מהקמפיין, מאחורי הקלעים וההשקות — קודם באינסטגרם</span></div><div class="pf-bot"><span class="pf-code">.official</span><span class="pf-btn">לעקוב' + ARROW + '</span></div></a>'
   ];
   const promoIdx = Math.max(0, D.nav.findIndex(n => dec((n.u.split('c=')[1] || '')) === h)) % PROMOS.length;
   const fillGaps = () => {
@@ -130,6 +130,7 @@ if (page === 'collection'){
       }
     }
     grid.querySelectorAll('.pfill[data-acct]').forEach(el => el.onclick = () => { const b = $('#acctOpen'); if (b) b.click(); });
+    grid.querySelectorAll('.pf-vid').forEach(v => { v.addEventListener('playing', () => v.classList.add('on')); const q = v.play(); if (q && q.catch) q.catch(() => {}); });
   };
   fillGaps(); let rsT; addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(fillGaps, 150); });
   $('#sortOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.sort = b.dataset.v; $('#sortOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); draw(); };
