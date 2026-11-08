@@ -84,9 +84,6 @@ if (page === 'collection'){
   'best-sellers': ['EyalGolanbrand0890_1.jpg','LAYMR211978.jpg','GUYP1263.jpg','Snapinst.app_353623109_943617180224884_1525858055982929976_n_1080.jpg']
 };
   document.title = title + ' — LAYMR'; $('#colTitle').textContent = title;
-  const heroSet = (FEAT_SETS[h] || FEAT_SETS.all); const mainEl = document.querySelector('main.pg');
-  mainEl.insertAdjacentHTML('afterbegin', '<div class="col-hero"><img src="images/' + heroSet[0] + '" alt=""><div class="col-hero-txt"><span class="k"><i></i>LAYMR · Collection</span><h1>' + esc(title) + '<small id="heroCount"></small></h1></div></div>');
-  const tk = document.querySelector('.ticker'); if (tk) mainEl.querySelector('.col-hero').after(tk);
   const cats = [{t: 'הכל', u: 'collection.html?c=all'}].concat(D.nav);
   $('#colCats').innerHTML = cats.map(n => { const ch = dec((n.u.split('c=')[1] || '')); return '<a href="' + n.u + '" class="' + (ch === h ? 'on' : '') + '">' + n.t + '</a>'; }).join('');
   const onCat = $('#colCats a.on'); if (onCat) onCat.scrollIntoView({block: 'nearest', inline: 'center'});
@@ -101,7 +98,7 @@ if (page === 'collection'){
     if (state.sort === 'low') l.sort((a, b) => Number(cheapest(a).price) - Number(cheapest(b).price));
     if (state.sort === 'high') l.sort((a, b) => Number(cheapest(b).price) - Number(cheapest(a).price));
     if (state.sort === 'new') l.sort((a, b) => (b.published || '').localeCompare(a.published || ''));
-    cnt.textContent = l.length; const hc = $('#heroCount'); if (hc) hc.textContent = l.length + ' ITEMS';
+    cnt.textContent = l.length;
     let html = '', f = 0;
     l.forEach((p, i) => { if ((l.length >= 8 && i % 8 === 4) || (l.length >= 3 && l.length < 8 && i === 2)){ html += '<div class="feat' + (f % 2 ? ' l' : '') + '"><img loading="lazy" src="images/' + (FEAT_SETS[h] || FEAT_SETS.all)[f % (FEAT_SETS[h] || FEAT_SETS.all).length] + '" alt=""></div>'; f++; } html += card(p); });
     grid.innerHTML = l.length ? html : '<div class="empty">אין פריטים שמתאימים לסינון</div>'; };
