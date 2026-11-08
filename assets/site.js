@@ -157,7 +157,10 @@ if (page === 'product'){
   /* gallery: snap slider */
   const imgs = p.images.length ? p.images : [{src: 'images/logo-lm.png'}];
   const track = $('#galTrack'), dots = $('#galDots'), gal = document.querySelector('.pdp-gal'); let cur = 0;
-  track.innerHTML = imgs.map((im, i) => '<div class="pdp-slide"><img class="bg" aria-hidden="true" ' + (i ? 'loading="lazy" ' : '') + 'src="' + im.src + '" alt=""><img class="main" ' + (i ? 'loading="lazy" ' : '') + 'src="' + im.src + '" alt="' + esc(p.title) + '"></div>').join('');
+  track.innerHTML = imgs.map((im, i) => '<div class="pdp-slide"><img class="main" ' + (i ? 'loading="lazy" ' : '') + 'src="' + im.src + '" alt="' + esc(p.title) + '"></div>').join('');
+  /* extend each photo's own background colour into the side margins (sampled from the image edges) */
+  const edgeTone = img => { try { const c = document.createElement('canvas'); c.width = 24; c.height = 24; const x = c.getContext('2d'); x.drawImage(img, 0, 0, 24, 24); const d = x.getImageData(0, 0, 24, 24).data; let r = 0, g = 0, bl = 0, n = 0; for (let y = 0; y < 24; y++) for (const xx of [0, 1, 22, 23]) { const k = (y * 24 + xx) * 4; r += d[k]; g += d[k + 1]; bl += d[k + 2]; n++; } return 'rgb(' + Math.round(r / n) + ',' + Math.round(g / n) + ',' + Math.round(bl / n) + ')'; } catch (e) { return ''; } };
+  track.querySelectorAll('img.main').forEach(img => { const paint = () => { const c = edgeTone(img); if (c) img.parentElement.style.background = c; }; if (img.complete && img.naturalWidth) paint(); else img.addEventListener('load', paint, {once: true}); });
   dots.innerHTML = imgs.map((_, i) => '<i class="' + (i ? '' : 'on') + '"></i>').join('');
   if (imgs.length < 2) gal.classList.add('single');
   const goTo = i => { cur = (i + imgs.length) % imgs.length; track.scrollTo({left: cur * track.clientWidth, behavior: 'smooth'}); };
