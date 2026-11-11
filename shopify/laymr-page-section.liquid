@@ -904,8 +904,6 @@ document.getElementById('tickerA').innerHTML = tickerHTML;
 document.getElementById('tickerB').innerHTML = tickerHTML;
 const SERVICE_MSGS = ['משלוח והחלפה עד הבית','שירות לקוחות','מועדון לקוחות','תשלום מאובטח'];
 const serviceHTML = SERVICE_MSGS.concat(SERVICE_MSGS, SERVICE_MSGS).map(m => '<span dir="rtl">' + m + '</span>').join('');
-document.getElementById('tickerSA').innerHTML = serviceHTML;
-document.getElementById('tickerSB').innerHTML = serviceHTML;
 
 /* ניווט */
 document.getElementById('hnav').innerHTML = NAV.map(n => '<a href="' + n.u + '">' + n.t + '</a>').join('') + '<a href="#about" data-about>אודות</a>';
