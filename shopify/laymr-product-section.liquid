@@ -193,7 +193,7 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
   function closeAll(){ scrim.classList.remove('open'); menuOverlay.classList.remove('open'); cartDrawer.classList.remove('open'); acctDrawer.classList.remove('open'); aboutOverlay.classList.remove('open'); }
   $('#menuOpen').onclick = () => { menuOverlay.classList.add('open'); scrim.classList.add('open'); };
   $('#menuClose').onclick = closeAll;
-  $('#cartOpen').onclick = () => { scrim.classList.add('open'); cartDrawer.classList.add('open'); };
+  $('#cartOpen').onclick = () => { scrim.classList.add('open'); cartDrawer.classList.add('open'); loadCart(); };
   $('#cartClose').onclick = closeAll;
   const openAbout = () => { closeAll(); aboutOverlay.classList.add('open'); };
   document.querySelectorAll('[data-about]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openAbout(); }));
@@ -201,6 +201,24 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
   scrim.addEventListener('click', closeAll);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
   const hdrEl = document.querySelector('header'); const onS = () => hdrEl.classList.toggle('scrolled', scrollY > 8); onS(); addEventListener('scroll', onS, {passive: true});
+
+  /* Shopify cart drawer (cart.js API) */
+  const money = v => '₪' + (Number(v) / 100).toLocaleString('he-IL', {maximumFractionDigits: 2}).replace(/\.00$/, '');
+  const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const cartCall = async (url, body) => (await fetch(url, {method: body ? 'POST' : 'GET', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: body ? JSON.stringify(body) : undefined})).json();
+  function renderCart(c){
+    $('#cdCount').textContent = c.item_count;
+    const body = $('#cdBody'), foot = $('#cdFoot');
+    if (!c.items.length){ body.innerHTML = '<div class="cd-empty"><h4>העגלה שלך ריקה</h4><p>הפריטים שתוסיפו יופיעו כאן.</p><a class="btn-line" href="/collections/all">המשך בקנייה</a></div>'; foot.innerHTML = ''; return; }
+    body.innerHTML = c.items.map(it => '<div class="cd-item"><a href="' + esc(it.url) + '"><img src="' + esc(it.image) + '" alt=""></a><div><a class="cd-ttl" href="' + esc(it.url) + '">' + esc(it.product_title) + '</a>' + (it.variant_title && it.variant_title !== 'Default Title' ? '<div class="cd-var">' + esc(it.variant_title) + '</div>' : '') +
+      '<div class="cd-row"><div class="cd-qty"><button data-k="' + esc(it.key) + '" data-q="' + (it.quantity + 1) + '" aria-label="יותר">+</button><span>' + it.quantity + '</span><button data-k="' + esc(it.key) + '" data-q="' + (it.quantity - 1) + '" aria-label="פחות">−</button></div><span class="cd-pr">' + money(it.final_line_price) + '</span></div>' +
+      '<button class="cd-rm" data-k="' + esc(it.key) + '" data-q="0">הסרה</button></div></div>').join('');
+    foot.innerHTML = '<div class="cd-sub"><span>סה"כ</span><span>' + money(c.total_price) + '</span></div><a class="cd-go" href="/checkout"><span>לתשלום</span><span>' + money(c.total_price) + '</span></a><a class="cd-more" href="/collections/all">המשך בקנייה</a>';
+    body.querySelectorAll('button[data-k]').forEach(b => b.onclick = async () => renderCart(await cartCall('/cart/change.js', {id: b.dataset.k, quantity: Math.max(0, +b.dataset.q)})));
+  }
+  const loadCart = async () => { try { renderCart(await cartCall('/cart.js')); } catch (e) {} };
+  document.addEventListener('cart:updated', loadCart);
+  loadCart();
   const nf = $('#newsForm'); if (nf) nf.addEventListener('submit', e => { e.preventDefault(); $('#newsOk').style.display = 'block'; });
 })();
 </script>
@@ -272,7 +290,7 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
       const r = await fetch('/cart/add.js', {method: 'POST', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: JSON.stringify({items: [{id: v.id, quantity: 1}]})});
       if (!r.ok) throw new Error(await r.text());
       addBtn.textContent = 'נוסף לסל ✓';
-      document.dispatchEvent(new CustomEvent('cart:updated'));
+      document.dispatchEvent(new CustomEvent('cart:updated')); document.getElementById('cartOpen').click();
     } catch (e) { addBtn.textContent = 'שגיאה, נסה שוב'; }
     setTimeout(() => { addBtn.disabled = false; drawPrice(); }, 1400);
   };
