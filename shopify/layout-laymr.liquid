@@ -44,6 +44,7 @@
 .laymr-a11y-pnl button[aria-pressed="true"]{background:#121212;color:#f3f2ef}
 .laymr-a11y-pnl button.laymr-a11y-stm{border-color:transparent;text-decoration:underline;text-underline-offset:3px;padding-inline:4px}
 html.laymr-a11y-text{zoom:1.2}
+html.laymr-a11y-bottombar .laymr-a11y-btn{bottom:76px}html.laymr-a11y-bottombar .laymr-a11y-pnl{bottom:128px}
 html.laymr-a11y-links a{text-decoration:underline!important;text-underline-offset:3px;outline:1px dashed currentColor;outline-offset:2px}
 html.laymr-a11y-motion *,html.laymr-a11y-motion *::before,html.laymr-a11y-motion *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 </style>
@@ -91,6 +92,7 @@ html.laymr-a11y-motion *,html.laymr-a11y-motion *::before,html.laymr-a11y-motion
     if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
     else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
   });
+  if(document.getElementById('mFilterBtn')) root.classList.add('laymr-a11y-bottombar');
   apply(); sync();
 })();
 </script>
