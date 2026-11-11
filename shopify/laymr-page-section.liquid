@@ -617,10 +617,10 @@ footer{position:relative;overflow:hidden}
 .pg-404 a{display:inline-block;border:1px solid var(--warm-ink);padding:12px 26px;border-radius:999px;font-size:14px}
 
 /* ===== מדריך מידות (טבלאות מידה לחולצות ולמכנסיים) ===== */
-.sg-page header{color:var(--ink);background:var(--bg);border-bottom:1px solid var(--line)}
-.sg-page header.scrolled{background:var(--bg)}
-.sg-page .h-mark-text{opacity:0}
-.sg-page .h-mark-logo{opacity:1}
+body:has(.sg-page) header{color:var(--ink);background:var(--bg);border-bottom:1px solid var(--line)}
+body:has(.sg-page) header.scrolled{background:var(--bg)}
+body:has(.sg-page) .h-mark-text{opacity:0}
+body:has(.sg-page) .h-mark-logo{opacity:1}
 .sg{padding:clamp(28px,5vw,64px) var(--pad) clamp(50px,6vw,90px)}
 .sg-in{max-width:640px;margin:0 auto}
 .sg-h{font-family:var(--font-he);font-weight:600;font-size:clamp(30px,4vw,48px);line-height:1.1;margin:0 0 12px;color:var(--ink)}
