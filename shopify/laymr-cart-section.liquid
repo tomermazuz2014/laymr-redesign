@@ -937,6 +937,7 @@ body.sub .ticker{margin-top:52px}
 <style>
 </style>
 
+<style>.skip-link{position:absolute;right:12px;top:-200px;z-index:10000;background:#121212;color:#fff;padding:10px 16px;font-size:14px;text-decoration:none;border-radius:4px}.skip-link:focus{top:12px;outline:2px solid #fff;outline-offset:2px}</style><a class="skip-link" href="#main">דלג לתוכן הראשי</a>
 <header>
   <div class="header-row">
     <div class="h-start">
@@ -951,7 +952,7 @@ body.sub .ticker{margin-top:52px}
     </div>
   </div>
 </header>
-<main class="pg cart" dir="rtl">
+<main id="main" class="pg cart" dir="rtl">
 <div class="cart-page">
   <h1 class="cart-h">העגלה שלך</h1>
   {% if cart.item_count == 0 %}
