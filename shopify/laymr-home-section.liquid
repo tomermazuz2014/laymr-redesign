@@ -106,7 +106,7 @@ video.vfade.playing{opacity:1}
 .hero video{width:100%;height:100vh;height:100svh;object-fit:cover;object-position:68% 22%;display:block;background:#e7e5e0}
 .hero-campaign{position:absolute;bottom:calc(var(--pad) + 6px);left:var(--pad);z-index:3;color:#fff;direction:ltr;text-align:left}
 @media(max-width:700px){.hero-campaign{bottom:calc(var(--pad) + 86px)}}
-.hc-kick{display:block;text-shadow:0 1px 12px rgba(0,0,0,.5);font-family:var(--font-lat);font-size:clamp(10px,.95vw,14px);font-weight:500;letter-spacing:.48em;text-transform:uppercase;opacity:0;margin:0 0 clamp(10px,1.1vw,16px) 6px;animation:hcUp .9s var(--ease) .95s forwards}.hc-line{display:flex;align-items:flex-end;gap:.18em;font-family:var(--font-lat);font-stretch:66%;font-weight:800;font-size:clamp(84px,14vw,236px);line-height:.82;letter-spacing:-.005em}.hc-w{display:inline-flex}.hc-ch{display:inline-block;overflow:hidden;padding-bottom:.06em}.hc-ch > span{display:block;transform:translateY(112%);opacity:0;animation:hwUp .9s var(--ease) forwards;animation-delay:calc(.45s + var(--i) * .055s)}.hc-ch i{display:block;font-style:normal;animation:hcFloat 5s ease-in-out infinite;animation-delay:calc(var(--i) * -.55s)}@keyframes hcFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-.035em)}}.hc-w.hollow i{color:transparent;-webkit-text-stroke:clamp(1.4px,.18vw,2.8px) #fff;animation:hcFloat 5s ease-in-out infinite,hcFill 3.4s ease-in-out infinite;animation-delay:calc(var(--i) * -.55s),calc(1.6s + var(--i) * .06s)}@keyframes hcFill{0%,44%,100%{color:transparent}50%,94%{color:#fff}}.hc-w.solid i{color:#fff;-webkit-text-stroke:clamp(1.4px,.18vw,2.8px) #fff;animation:hcFloat 5s ease-in-out infinite,hcSwap 3.4s ease-in-out infinite;animation-delay:calc(var(--i) * -.55s),calc(1.6s + var(--i) * .06s)}@keyframes hcSwap{0%,44%,100%{color:#fff}50%,94%{color:transparent}}@keyframes hcUp{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+.hc-kick{display:block;text-shadow:0 1px 12px rgba(0,0,0,.5);font-family:var(--font-lat);font-size:clamp(10px,.95vw,14px);font-weight:500;letter-spacing:.48em;text-transform:uppercase;opacity:0;margin:0 0 clamp(10px,1.1vw,16px) 6px;animation:hcUp .9s var(--ease) .95s forwards}.hc-line{filter:drop-shadow(0 1px 10px rgba(0,0,0,.38));display:flex;align-items:flex-end;gap:.18em;font-family:var(--font-lat);font-stretch:66%;font-weight:800;font-size:clamp(84px,14vw,236px);line-height:.82;letter-spacing:-.005em}.hc-w{display:inline-flex}.hc-ch{display:inline-block;overflow:hidden;padding-bottom:.06em}.hc-ch > span{display:block;transform:translateY(112%);opacity:0;animation:hwUp .9s var(--ease) forwards;animation-delay:calc(.45s + var(--i) * .055s)}.hc-ch i{display:block;font-style:normal;animation:hcFloat 5s ease-in-out infinite;animation-delay:calc(var(--i) * -.55s)}@keyframes hcFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-.035em)}}.hc-w.hollow i{color:transparent;-webkit-text-stroke:clamp(1.4px,.18vw,2.8px) #fff;animation:hcFloat 5s ease-in-out infinite,hcFill 3.4s ease-in-out infinite;animation-delay:calc(var(--i) * -.55s),calc(1.6s + var(--i) * .06s)}@keyframes hcFill{0%,44%,100%{color:transparent}50%,94%{color:#fff}}.hc-w.solid i{color:#fff;-webkit-text-stroke:clamp(1.4px,.18vw,2.8px) #fff;animation:hcFloat 5s ease-in-out infinite,hcSwap 3.4s ease-in-out infinite;animation-delay:calc(var(--i) * -.55s),calc(1.6s + var(--i) * .06s)}@keyframes hcSwap{0%,44%,100%{color:#fff}50%,94%{color:transparent}}@keyframes hcUp{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
 .hc-sub{font-family:var(--font-lat);font-size:clamp(10px,1.2vw,15px);letter-spacing:.28em;margin-top:14px;font-weight:600}
 .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,.66),rgba(10,10,10,.32) 34%,transparent 62%);pointer-events:none}
 .hero::before{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,10,10,.55),transparent 18%);pointer-events:none;z-index:1}
@@ -639,7 +639,7 @@ footer{position:relative;overflow:hidden}
       <div class="hrep" id="heroRep" dir="rtl" aria-hidden="true">
         <div class="hrep-text">
           <span class="hrep-line"></span>
-          <h2 class="hrep-h"><span class="hl"><span>לא משאירים</span></span><span class="hl"><span>אף אחד</span></span><span class="hl hl-acc"><span>להילחם לבד.</span></span></h2>
+          <h1 class="hrep-h"><span class="hl"><span>לא משאירים</span></span><span class="hl"><span>אף אחד</span></span><span class="hl hl-acc"><span>להילחם לבד.</span></span></h1>
           <p class="hrep-sub"><span class="hl"><span>יחד מעלים מודעות</span></span><span class="hl"><span>לפוסט-טראומה בקרב לוחמים</span></span></p>
           <a class="hero-cta hrep-cta" href="/collections/all">לצפייה בקולקציה</a>
         </div>
@@ -663,7 +663,7 @@ footer{position:relative;overflow:hidden}
 </div>
 
 <main id="main">
-<h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">LAYMR, בגדים לגברים</h1>
+
   <!-- 01 חדש באתר -->
   <section class="section">
     <div class="tile-grid" id="tiles-new" data-reveal></div>
@@ -1018,7 +1018,7 @@ document.getElementById('acctOpen').onclick = e => { e.preventDefault(); locatio
 document.querySelectorAll('[data-acct]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); location.href = '/account'; }));
 document.getElementById('cartClose').onclick = closeAll;
 const aboutVid = document.querySelector('.about-video');
-const openAbout = () => { closeAll(); const ov = document.getElementById('aboutOverlay'); ov.classList.add('open'); ov.classList.remove('scrolled'); ov.querySelector('.about-body').scrollTop = 0; if (aboutVid){ if (!aboutVid.dataset.loaded){ aboutVid.dataset.loaded = 1; if (matchMedia('(max-width:860px)').matches){ const se = aboutVid.querySelector('source'); se.src = aboutVid.dataset.msrc; aboutVid.poster = aboutVid.dataset.mposter; const pi = aboutVid.parentNode.querySelector('.vposter'); if (pi) pi.src = aboutVid.poster; } aboutVid.preload = 'auto'; aboutVid.load(); } aboutVid.play().catch(() => {}); } };
+const openAbout = () => { closeAll(); const ov = document.getElementById('aboutOverlay'); ov.classList.add('open'); ov.classList.remove('scrolled'); ov.querySelector('.about-body').scrollTop = 0; if (aboutVid){ if (!aboutVid.dataset.loaded){ aboutVid.dataset.loaded = 1; if (matchMedia('(max-width:860px)').matches){ const se = aboutVid.querySelector('source'); se.src = aboutVid.dataset.msrc; aboutVid.poster = aboutVid.dataset.mposter; const pi = aboutVid.parentNode.querySelector('.vposter'); if (pi) pi.src = aboutVid.poster; } aboutVid.preload = 'auto'; aboutVid.load(); } aboutVid.play().catch(() => { aboutVid.controls = true; }); } };
 document.querySelectorAll('[data-about]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openAbout(); }));
 document.getElementById('aboutClose').onclick = closeAll;
 document.getElementById('aboutX').onclick = closeAll;
