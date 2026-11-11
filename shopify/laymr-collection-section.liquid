@@ -1289,7 +1289,7 @@ document.addEventListener('keydown', e => { if (e.key !== 'Tab') return; const o
   $('#fpClear').onclick = () => { state.sort = 'featured'; state.size = null; state.hideOut = false; $('#hideOut').checked = false; $('#sortOpts').querySelectorAll('button').forEach((x, i) => x.classList.toggle('on', i === 0)); $('#sizeOpts').querySelectorAll('button').forEach(x => x.classList.remove('on')); draw(); };
   const pop = $('#filterPop'), fbtn = $('#filterBtn');
   fbtn.onclick = () => { const o = pop.classList.toggle('open'); fbtn.setAttribute('aria-expanded', o); };
-  const mf = document.getElementById('mFilterBtn'); if (mf) mf.onclick = e => { e.stopPropagation(); const o = pop.classList.toggle('open'); fbtn.setAttribute('aria-expanded', o); };
+  const mf = document.getElementById('mFilterBtn'); if (mf) mf.onclick = e => { e.stopPropagation(); const o = pop.classList.toggle('open'); mf.setAttribute('aria-expanded', o); };
   document.addEventListener('click', e => { if (!e.target.closest('.col-filter')) pop.classList.remove('open'); });
   draw();
 })();
