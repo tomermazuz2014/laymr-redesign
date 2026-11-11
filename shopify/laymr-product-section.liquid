@@ -1214,6 +1214,9 @@ body.sub .ticker{margin-top:52px}
   const firstAvail = P.variants.find(v => v.avail) || P.variants[0];
   const sel = {};
   realOpts.forEach((o, i) => { sel[i] = firstAvail ? ([firstAvail.o1, firstAvail.o2, firstAvail.o3][i] || o.values[0]) : o.values[0]; });
+  /* קישור מהקרוסלה (?variant=ID) פותח את המוצר בצבע ובמידה של הווריאנט שנבחר */
+  const reqVariant = P.variants.find(v => String(v.id) === new URLSearchParams(location.search).get('variant'));
+  if (reqVariant) realOpts.forEach((o, i) => { sel[i] = [reqVariant.o1, reqVariant.o2, reqVariant.o3][i] || sel[i]; });
   const optsEl = $('#opts');
   const variantFor = () => P.variants.find(v => realOpts.every((o, i) => [v.o1, v.o2, v.o3][i] === sel[i])) || P.variants[0];
   const availFor = (i, val) => P.variants.some(v => [v.o1, v.o2, v.o3][i] === val && v.avail);
