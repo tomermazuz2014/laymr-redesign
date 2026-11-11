@@ -966,7 +966,8 @@ body.sub .ticker{margin-top:52px}
     <button class="pdp-save" id="saveBtn" aria-label="שמירה"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg></button>
   </div>
   <div class="pdp-info">
-    <nav class="pdp-crumbs" aria-label="פירורי לחם"><a href="/">בית</a><span>/</span><span id="crumb"></span></nav>
+    {% assign crumbCol = nil %}{% for c in product.collections %}{% unless c.handle == 'all' or c.handle == 'frontpage' or c.handle == 'best-sellers' %}{% assign crumbCol = c %}{% break %}{% endunless %}{% endfor %}
+    <nav class="pdp-crumbs" aria-label="פירורי לחם"><a href="/">בית</a><span>/</span>{% if crumbCol %}<a href="{{ crumbCol.url }}">{{ crumbCol.title | escape }}</a><span>/</span>{% endif %}<span id="crumb"></span></nav>
     <h1 class="pdp-title" id="ptitle"></h1>
     <div class="pdp-price" id="pprice"></div>
     <div id="opts"></div>
