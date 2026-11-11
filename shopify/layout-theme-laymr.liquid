@@ -77,9 +77,7 @@ All other page types keep the original Impact output.
   {%- if request.page_type == 'policy' -%}
     <body class="laymr-policy">
       <a href="#main" class="skip-to-content sr-only">{{ 'general.accessibility.skip_to_content' | t }}</a>
-      <main role="main" id="main" class="anchor">
-        {%- section 'laymr-page' -%}
-      </main>
+      {%- section 'laymr-page' -%}
     </body>
   {%- else -%}
   <body class="{% if settings.zoom_image_on_hover %}zoom-image--enabled{% endif %}">
