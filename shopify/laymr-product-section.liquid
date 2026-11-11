@@ -1148,6 +1148,7 @@ document.addEventListener('keydown', e => { if (e.key !== 'Tab') return; const o
   $('#menuOpen').onclick = () => { if (matchMedia('(min-width:1181px)').matches){ const h = document.querySelector('header'); const o = h.classList.toggle('nav-open'); $('#menuOpen').setAttribute('aria-expanded', o); } else { openPanel(menuOverlay, document.getElementById('menuOpen'), document.getElementById('menuClose')); scrim.classList.add('open'); $('#menuOpen').setAttribute('aria-expanded', 'true'); } };
   $('#menuClose').onclick = closeAll;
   $('#cartOpen').onclick = () => { scrim.classList.add('open'); openPanel(cartDrawer, document.getElementById('cartOpen'), document.getElementById('cartClose')); loadCart(); };
+  window.laymrSetCartOpener = el => panelOpeners.set(cartDrawer, el);
   $('#cartClose').onclick = closeAll;
   const goAccount = e => { if (e) e.preventDefault(); location.href = '/account'; };
   $('#acctOpen').onclick = goAccount;
@@ -1264,7 +1265,7 @@ document.addEventListener('keydown', e => { if (e.key !== 'Tab') return; const o
       const r = await fetch('/cart/add.js', {method: 'POST', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: JSON.stringify({items: [{id: v.id, quantity: 1}]})});
       if (!r.ok) throw new Error(await r.text());
       addBtn.textContent = 'נוסף לסל ✓';
-      document.dispatchEvent(new CustomEvent('cart:updated')); document.getElementById('cartOpen').click(); panelOpeners.set(cartDrawer, addBtn);
+      document.dispatchEvent(new CustomEvent('cart:updated')); document.getElementById('cartOpen').click(); if (window.laymrSetCartOpener) window.laymrSetCartOpener(addBtn);
     } catch (e) { addBtn.textContent = 'שגיאה, נסה שוב'; }
     setTimeout(() => { addBtn.disabled = false; drawPrice(); }, 1400);
   };
