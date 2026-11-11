@@ -984,6 +984,19 @@ carItems.forEach((el, n) => el.addEventListener('click', e => { if (n !== carIdx
 document.getElementById('pcarNext').onclick = () => carGo(carIdx + 1);
 document.getElementById('pcarPrev').onclick = () => carGo(carIdx - 1);
 addEventListener('resize', () => carPlace(carIdx, true), {passive:true});
+/* החלקה במגע (נייד): גרירה אופקית של לפחות 40px מזיזה פריט אחד; קליק קצר נשאר קישור למוצר */
+(() => {
+  const box = carTrack.parentElement;
+  let sx = 0, sy = 0, tracking = false;
+  box.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse') return; sx = e.clientX; sy = e.clientY; tracking = true; }, {passive:true});
+  box.addEventListener('pointerup', e => {
+    if (!tracking) return; tracking = false;
+    const dx = e.clientX - sx, dy = e.clientY - sy;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+    carGo(carIdx + (dx < 0 ? 1 : -1));
+  }, {passive:true});
+  box.addEventListener('pointercancel', () => { tracking = false; }, {passive:true});
+})();
 carPlace(carIdx, true);
 
 /* תפריט + עגלה */
