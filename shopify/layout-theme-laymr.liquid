@@ -77,6 +77,7 @@ All other page types keep the original Impact output.
   {%- if request.page_type == 'policy' -%}
     <body class="laymr-policy">
       <a href="#main" class="skip-to-content sr-only">{{ 'general.accessibility.skip_to_content' | t }}</a>
+      <style>.laymr-policy .ticker{margin-top:53px}.laymr-policy .pg-policy{padding-top:48px}</style>
       {%- section 'laymr-chrome-top' -%}
       <main role="main" id="main" class="anchor pg-policy">
         <div class="pg-in pg-body">{{ content_for_layout }}</div>
