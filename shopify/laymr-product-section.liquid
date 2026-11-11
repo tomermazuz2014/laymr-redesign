@@ -49,7 +49,7 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
     {% for p in pair_collection.products %}
       {% if p.handle != product.handle and p.available and p.featured_image and pn < 3 %}
         {% assign pn = pn | plus: 1 %}
-        <a href="{{ p.url }}"><div class="im"><img loading="lazy" src="{{ p.featured_image | image_url: width: 600 }}" alt="{{ p.title | escape }}"></div><span class="t">{{ p.title | escape }}</span><span class="pr">{{ p.price | money }}</span></a>
+        <a href="{{ p.url }}"><div class="im"><img loading="lazy" src="{{ p.featured_image | image_url: width: 600 }}" alt="{{ p.title | escape }}"></div><span class="t">{{ p.title | escape }}</span><span class="pr">{{ p.price | money_without_trailing_zeros }}</span></a>
       {% endif %}
     {% endfor %}
     </div></div>
