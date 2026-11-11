@@ -304,6 +304,15 @@ footer{border-top:1px solid var(--warm-line);background:var(--warm)}
 .cd-rm:hover{color:var(--ink)}
 .cd-foot{flex:none;padding:16px 24px 22px;border-top:1px solid var(--line);background:var(--bg)}
 .cart-drawer.empty .cd-foot{display:none}
+/* accessibility statement dialog */
+.a11y-modal{position:fixed;inset:0;z-index:120;background:rgba(18,18,18,.45);display:flex;align-items:center;justify-content:center;padding:20px}
+.a11y-modal[hidden]{display:none}
+.a11y-box{position:relative;background:var(--bg);max-width:620px;width:100%;max-height:85vh;overflow:auto;padding:36px 32px;box-shadow:0 30px 80px -30px rgba(0,0,0,.4)}
+.a11y-body h2{font-family:var(--font-he);font-weight:500;font-size:26px;margin:0 0 14px}
+.a11y-body h3{font-size:15px;margin:22px 0 8px}
+.a11y-body p,.a11y-body li{font-size:14px;line-height:1.7;color:#4a4238}
+.a11y-body ul{padding-inline-start:20px}
+.a11y-x{position:absolute;top:10px;left:12px;border:0;background:transparent;font-size:28px;line-height:1;cursor:pointer;color:var(--ink)}
 /* consent line added by the TNC app: match drawer styling */
 #cartDrawer > p:not([class]){margin:0;padding:12px 24px;border-top:1px solid var(--line);background:var(--bg);font-size:12px;line-height:1.55;color:#5a5248}
 #cartDrawer > p:not([class]) label{display:flex;gap:8px;align-items:flex-start;width:100%;cursor:pointer;direction:rtl;text-align:right}
@@ -1005,7 +1014,7 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
           <li><a href="/policies/refund-policy">החלפות והחזרות</a></li>
           <li><a href="/policies/shipping-policy">מדיניות משלוחים</a></li>
           <li><a href="/policies/terms-of-service">תקנון ותנאי שימוש</a></li>
-          <li><a href="/pages/accessibility-statement">הצהרת נגישות</a></li>
+          <li><a href="#" data-a11y>הצהרת נגישות</a></li>
           <li><a href="/policies/refund-policy">ביטול עסקה</a></li>
         </ul>
       </div>
@@ -1033,6 +1042,7 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
     <span>כל הזכויות שמורות</span>
   </div>
 </footer>
+<div class="a11y-modal" id="a11yModal" role="dialog" aria-modal="true" aria-labelledby="a11yTitle" hidden><div class="a11y-box" dir="rtl"><button class="a11y-x" type="button" data-a11y-close aria-label="סגירה">×</button><div class="a11y-body" id="a11yTitle"><h2>הצהרת נגישות</h2><p>LAYMR פועלת להתאים את האתר לשימוש של אנשים עם מוגבלות, ומשפרת את הנגישות באופן שוטף.</p><p>האתר נמצא בתהליך התאמה, וייתכן שחלקים ממנו טרם הונגשו במלואם. אנו לא מצהירים כאן על עמידה מלאה בדרישות הנגישות. מידע על ההתאמות שבוצעו יעודכן בהמשך, לאחר בדיקה.</p><h3>דרכי יצירת קשר בנושא נגישות</h3><ul><li>טלפון ווואטסאפ: 050-5506008</li><li>דואר אלקטרוני: laymr@eyal-golan.co.il</li><li>שעות מענה: ימים ב'-ה', 09:00-16:00</li></ul><p>בפנייה, נא לציין את הקושי שנתקלתם בו ואת העמוד בו נתקלתם בו, ונשתדל לספק את המידע או השירות בדרך אחרת.</p></div></div></div>
 
 <!-- תפריט מלא -->
 <div class="menu-overlay" id="menuOverlay" aria-label="תפריט">
@@ -1255,3 +1265,15 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
   "settings": []
 }
 {% endschema %}
+
+<script>
+(function(){
+  const m = document.getElementById('a11yModal');
+  if (!m) return;
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-a11y]')) { e.preventDefault(); m.hidden = false; m.querySelector('.a11y-x').focus(); return; }
+    if (e.target === m || e.target.closest('[data-a11y-close]')) m.hidden = true;
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') m.hidden = true; });
+})();
+</script>
