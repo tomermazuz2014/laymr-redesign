@@ -1018,7 +1018,7 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
           <li><a href="/policies/refund-policy">החלפות והחזרות</a></li>
           <li><a href="/policies/shipping-policy">מדיניות משלוחים</a></li>
           <li><a href="/policies/terms-of-service">תקנון ותנאי שימוש</a></li>
-          <li><a href="#" data-a11y>הצהרת נגישות</a></li>
+          <li><a href="#a11yModal" data-a11y>הצהרת נגישות</a></li>
           <li><a href="/policies/refund-policy">ביטול עסקה</a></li>
         </ul>
       </div>
@@ -1256,10 +1256,24 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
 (function(){
   const m = document.getElementById('a11yModal');
   if (!m) return;
+  const box = m.querySelector('.a11y-box');
+  let trigger = null;
+  const focusable = () => [...m.querySelectorAll('a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(el => el.offsetParent !== null);
+  const open = t => { trigger = t || null; m.hidden = false; (m.querySelector('.a11y-x') || box).focus(); };
+  const close = () => { if (m.hidden) return; m.hidden = true; if (trigger && trigger.focus) trigger.focus(); trigger = null; };
   document.addEventListener('click', e => {
-    if (e.target.closest('[data-a11y]')) { e.preventDefault(); m.hidden = false; m.querySelector('.a11y-x').focus(); return; }
-    if (e.target === m || e.target.closest('[data-a11y-close]')) m.hidden = true;
+    const t = e.target.closest('[data-a11y]');
+    if (t) { e.preventDefault(); open(t); return; }
+    if (e.target === m || e.target.closest('[data-a11y-close]')) close();
   });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') m.hidden = true; });
+  document.addEventListener('keydown', e => {
+    if (m.hidden) return;
+    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (e.key !== 'Tab') return;
+    const f = focusable(); if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && (document.activeElement === first || !m.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (document.activeElement === last || !m.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
+  });
 })();
 </script>
