@@ -1147,8 +1147,7 @@ document.addEventListener('keydown', e => { if (e.key !== 'Tab') return; const o
   function closeAll(restore){ const opened = laymrPanels.filter(p => p.classList.contains('open')); const wasMenu = menuOverlay.classList.contains('open'); const opener = opened.length ? panelOpeners.get(opened[opened.length - 1]) : null; scrim.classList.remove('open'); opened.forEach(p => { p.classList.remove('open'); p.inert = true; panelOpeners.delete(p); inertOthers(p, false); }); if (wasMenu) document.getElementById('menuOpen').setAttribute('aria-expanded', 'false'); const av = document.querySelector('.about-video'); if (av && !av.paused) av.pause(); if (restore !== false && opener && opener.isConnected) opener.focus(); }
   $('#menuOpen').onclick = () => { if (matchMedia('(min-width:1181px)').matches){ const h = document.querySelector('header'); const o = h.classList.toggle('nav-open'); $('#menuOpen').setAttribute('aria-expanded', o); } else { openPanel(menuOverlay, document.getElementById('menuOpen'), document.getElementById('menuClose')); scrim.classList.add('open'); $('#menuOpen').setAttribute('aria-expanded', 'true'); } };
   $('#menuClose').onclick = closeAll;
-  let cartOpenerOverride = null;
-  $('#cartOpen').onclick = () => { scrim.classList.add('open'); openPanel(cartDrawer, cartOpenerOverride || document.getElementById('cartOpen'), document.getElementById('cartClose')); loadCart(); };
+  $('#cartOpen').onclick = () => { scrim.classList.add('open'); openPanel(cartDrawer, document.getElementById('cartOpen'), document.getElementById('cartClose')); loadCart(); };
   $('#cartClose').onclick = closeAll;
   const goAccount = e => { if (e) e.preventDefault(); location.href = '/account'; };
   $('#acctOpen').onclick = goAccount;
@@ -1265,7 +1264,7 @@ document.addEventListener('keydown', e => { if (e.key !== 'Tab') return; const o
       const r = await fetch('/cart/add.js', {method: 'POST', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: JSON.stringify({items: [{id: v.id, quantity: 1}]})});
       if (!r.ok) throw new Error(await r.text());
       addBtn.textContent = 'נוסף לסל ✓';
-      document.dispatchEvent(new CustomEvent('cart:updated')); cartOpenerOverride = addBtn; document.getElementById('cartOpen').click(); cartOpenerOverride = null;
+      document.dispatchEvent(new CustomEvent('cart:updated')); document.getElementById('cartOpen').click(); panelOpeners.set(cartDrawer, addBtn);
     } catch (e) { addBtn.textContent = 'שגיאה, נסה שוב'; }
     setTimeout(() => { addBtn.disabled = false; drawPrice(); }, 1400);
   };
