@@ -1101,13 +1101,14 @@ if (hv && heroEl){
   document.getElementById('hsaleStrip').innerHTML = '<div class="hsale-strip-in">' + stripTxt + stripTxt + '</div>';
   /* רצף: וידאו → SALE → קמפיין → וידאו */
   /* "הפחתת תנועה" (iOS Reduce Motion): בלי וידאו — מתחילים תמיד מההירו של 50% (פוסטר), ורק אחרי HOLD_MS ממשיכים לסליידים */
-  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches, HOLD_MS = 8000;
+  const reduceNow = () => document.documentElement.classList.contains('laymr-a11y-motion') || matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const HOLD_MS = 8000;
   let seqT = 0;
-  const showSale = () => { heroEl.classList.add('sale-on'); clearTimeout(seqT); seqT = setTimeout(showRep, SALE_MS); };
+  const showSale = () => { if (reduceNow()){ clearTimeout(seqT); return; } heroEl.classList.add('sale-on'); clearTimeout(seqT); seqT = setTimeout(showRep, SALE_MS); };
   const rv = document.getElementById('heroRepVideo');
-  const showRep = () => { heroEl.classList.add('rep-on'); if (rv && !RM){ rv.currentTime = 0; const q = rv.play(); if (q && q.catch) q.catch(() => {}); } setTimeout(() => heroEl.classList.remove('sale-on'), 1000); clearTimeout(seqT); seqT = setTimeout(backToVideo, REP_MS); };
+  const showRep = () => { heroEl.classList.add('rep-on'); if (rv && !reduceNow()){ rv.currentTime = 0; const q = rv.play(); if (q && q.catch) q.catch(() => {}); } setTimeout(() => heroEl.classList.remove('sale-on'), 1000); clearTimeout(seqT); seqT = setTimeout(backToVideo, REP_MS); };
   const backToVideo = () => { heroEl.classList.remove('sale-on', 'rep-on'); if (rv) rv.pause(); clearTimeout(seqT);
-    if (RM){ seqT = setTimeout(showSale, HOLD_MS); return; }
+    if (reduceNow()){ return; }
     hv.currentTime = 0; const p = hv.play(); if (p && p.catch) p.catch(() => {}); };
   hv.addEventListener('ended', showSale);
   /* iOS / Low Power Mode: autoplay עלול להיחסם — מנסים שוב אחרי המגע הראשון, ואם הווידאו לא רץ ממשיכים למחזור הסליידים */
@@ -1116,9 +1117,11 @@ if (hv && heroEl){
     /* "פתיחת" וידאו הקמפיין בתוך מחוות המשתמש כדי ש-iOS יאפשר להפעיל אותו אחר כך מהטיימר */
     if (rv && rv.paused){ const q = rv.play(); if (q && q.then) q.then(() => { if (!heroEl.classList.contains('rep-on')){ rv.pause(); rv.currentTime = 0; } }).catch(() => {}); }
   };
-  if (RM){
-    /* בלי תנועה: פוסטר 50% → (8 שנ') SALE → קמפיין → פוסטר … */
-    seqT = setTimeout(showSale, HOLD_MS);
+  /* הפחתת תנועה (מהכפתור הצף או מההגדרות): עוצרים את הרצף ונשארים על פוסטר 50% בלבד */
+  document.addEventListener('laymr-motion-change', () => { if (reduceNow()){ clearTimeout(seqT); hv.pause(); if (rv) rv.pause(); } else { backToVideo(); } });
+  matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', () => document.dispatchEvent(new Event('laymr-motion-change')));
+  if (reduceNow()){
+    hv.pause();
   } else {
     ['touchstart','scroll','click','keydown'].forEach(ev => addEventListener(ev, kickVideos, {once:true, passive:true}));
     const p0 = hv.play();
