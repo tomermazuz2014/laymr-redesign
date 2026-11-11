@@ -22,16 +22,33 @@
     el.querySelectorAll('button').forEach(function(b){ var r=b.getBoundingClientRect(); if(r.width&&r.height) t=Math.min(t,r.top); });
     return t===Infinity?fallback:t;
   }
-  /* keep our controls after the banner in the DOM so they stack above it when they overlap */
+  function hasFocus(n){ return n===document.activeElement||n.contains(document.activeElement); }
+  /* the banner can sit in the browser's top layer, where z-index cannot beat it;
+     while it is open our button and panel join the top layer too (manual popovers, no light dismiss) */
+  var canTop=typeof btn.showPopover==='function';
+  function toTop(n, again){
+    if(!canTop) return;
+    if(!n.hasAttribute('popover')) n.setAttribute('popover','manual');
+    try{
+      if(n.matches(':popover-open')){ if(!again||hasFocus(n)) return; n.hidePopover(); }
+      n.showPopover();
+    }catch(e){}
+  }
+  function fromTop(n){
+    if(!n.hasAttribute('popover')) return;
+    try{ if(n.matches(':popover-open')) n.hidePopover(); }catch(e){}
+    n.removeAttribute('popover');
+  }
+  /* fallback for browsers without popovers: come after the banner in the DOM so equal z-index stacks above it */
   function raise(host){
+    if(canTop) return;
     [btn,pnl].forEach(function(n){
-      if(n===document.activeElement||n.contains(document.activeElement)) return;
+      if(hasFocus(n)) return;
       if(host.compareDocumentPosition(n)&Node.DOCUMENT_POSITION_PRECEDING) document.body.appendChild(n);
     });
   }
-  function reset(){
-    ['bottom','top','left','width','maxHeight','overflowY','zIndex'].forEach(function(p){ btn.style[p]=''; pnl.style[p]=''; });
-  }
+  var PROPS=['top','right','bottom','left','margin','width','maxHeight','overflowY','zIndex'];
+  function reset(){ PROPS.forEach(function(p){ btn.style[p]=''; pnl.style[p]=''; }); }
   function place(){
     raf=0;
     var host=document.querySelector('csm-cookie-consent');
@@ -43,15 +60,17 @@
     }
     var el=host&&host.shadowRoot?banner(host):null;
     if(!el){
-      reset();
+      fromTop(btn); fromTop(pnl); reset();
       if(ro){ ro.disconnect(); ro=null; }
       watched=null;
       return;
     }
+    var fresh=watched!==el;
     reset();
     raise(host);
-    var H=innerHeight, W=innerWidth, top=el.getBoundingClientRect().top, ctl=controlsTop(el, top), BH=44, M=8;
-    btn.style.zIndex=TOPZ; pnl.style.zIndex=TOPZ; pnl.style.overflowY='auto';
+    var H=innerHeight, top=el.getBoundingClientRect().top, ctl=controlsTop(el, top), BH=44, M=8;
+    [btn,pnl].forEach(function(n){ n.style.zIndex=TOPZ; n.style.top='auto'; n.style.right='auto'; n.style.margin='0'; });
+    pnl.style.overflowY='auto';
     /* button: just above the banner when there is room, otherwise just above the banner's buttons */
     var btnBottom=(top>=BH+12+M)?(H-top+12):(H-ctl+M);
     btn.style.bottom=Math.round(btnBottom)+'px';
@@ -68,7 +87,8 @@
       pnl.style.bottom=Math.round(H-ctl+M)+'px';
       pnl.style.maxHeight=Math.max(120,Math.round(ctl-M-M-M))+'px';
     }
-    if(watched!==el){ if(ro) ro.disconnect(); ro=new ResizeObserver(schedule); ro.observe(el); watched=el; }
+    toTop(btn, fresh); toTop(pnl, fresh);
+    if(fresh){ if(ro) ro.disconnect(); ro=new ResizeObserver(schedule); ro.observe(el); watched=el; }
   }
   function schedule(){ if(!raf) raf=requestAnimationFrame(place); }
   new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});
