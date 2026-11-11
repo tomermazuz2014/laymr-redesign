@@ -1000,11 +1000,17 @@ body.sub .ticker{margin-top:52px}
       <span class="ft-kick"><i></i>Newsletter</span>
       <h3 class="ft-h">הצטרפו למועדון <em>LAYMR</em></h3>
       <p class="fnote">הטבות, השקות ועדכונים — ראשונים אצלכם במייל</p>
-      <form class="nform ft-form" id="newsForm">
-        <input type="email" placeholder="כתובת אימייל" required aria-label="כתובת אימייל">
-        <button type="submit" aria-label="הרשמה"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg></button>
-      </form>
-      <p class="nok" id="newsOk">תודה — נרשמת בהצלחה (דמו)</p>
+      {%- form 'customer', id: 'newsForm', class: 'nform ft-form' -%}
+        <style>.nform .nok{flex-basis:100%;margin:0 0 8px;font-size:13px;line-height:1.5}.nform .nok-err{color:#b3261e}</style>
+        {%- if form.posted_successfully? -%}
+          <p class="nok" role="status" style="display:block">תודה, ההרשמה התקבלה.</p>
+        {%- else -%}
+          {%- if form.errors -%}<p class="nok nok-err" role="alert" style="display:block">לא הצלחנו לשמור את ההרשמה כרגע. נא לבדוק את הכתובת ולנסות שוב.</p>{%- endif -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <input type="email" name="contact[email]" placeholder="כתובת אימייל" required aria-label="כתובת אימייל">
+          <button type="submit" aria-label="הרשמה"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg></button>
+        {%- endif -%}
+      {%- endform -%}
     </div>
     <div class="ft-cols">
       <div class="fcol">
@@ -1176,7 +1182,6 @@ body.sub .ticker{margin-top:52px}
   const loadCart = async () => { try { renderCart(await cartCall('/cart.js')); } catch (e) {} };
   document.addEventListener('cart:updated', loadCart);
   loadCart();
-  const nf = $('#newsForm'); if (nf) nf.addEventListener('submit', e => { e.preventDefault(); $('#newsOk').style.display = 'block'; });
 })();
 </script>
 
