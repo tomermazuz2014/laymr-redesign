@@ -83,6 +83,30 @@ All other page types keep the original Impact output.
         <div class="pg-in pg-body">{{ content_for_layout }}</div>
       </main>
       {%- section 'laymr-chrome-bottom' -%}
+    {%- comment -%}
+    Checkout consent gate (shared by the LAYMR cart page, the cart drawer and every LAYMR page).
+    When the terms checkbox added by the TnC app is unchecked, the checkout link does not navigate;
+    a clear message asks the customer to approve the terms first. Once the box is checked, checkout works.
+    The app itself is not changed.
+    {%- endcomment -%}
+    <script>
+    (function(){
+      var MSG = 'יש לאשר את מדיניות הפרטיות והתקנון לפני התשלום';
+      document.addEventListener('click', function(e){
+        var a = e.target && e.target.closest ? e.target.closest('a.cd-go, a[href="/checkout"], a[href$="/checkout"]') : null;
+        if (!a) return;
+        var scope = a.closest('#cartDrawer, .cart-drawer, main') || document;
+        var cb = scope.querySelector('input[type="checkbox"]');
+        if (!cb || cb.checked) return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        var m = document.getElementById('laymrConsentMsg');
+        if (!m) { m = document.createElement('p'); m.id = 'laymrConsentMsg'; m.setAttribute('role', 'alert'); m.style.cssText = 'color:#b3261e;font-size:13px;margin:10px 0 0;line-height:1.5'; cb.closest('p, label, div') && cb.closest('p, label, div').parentNode ? cb.closest('p, label, div').parentNode.insertBefore(m, cb.closest('p, label, div').nextSibling) : document.body.appendChild(m); }
+        m.textContent = MSG;
+        cb.focus();
+      }, true);
+    })();
+    </script>
     </body>
   {%- else -%}
   <body class="{% if settings.zoom_image_on_hover %}zoom-image--enabled{% endif %}">
