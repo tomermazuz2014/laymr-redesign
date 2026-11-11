@@ -897,19 +897,7 @@ const TILES = [
   lead:'EyalGolanbrand0093.jpg?v=1743068610',
   imgs:['IMG_4301_copy.jpg?v=1743258635','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/cut-best-0501.png?v=1794400615','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/cut-best-0870.png?v=1794400615']}
 ];
-TILES.forEach(t => {
-  const lead = '<a class="tile tile-lead" href="' + t.url + '">' +
-    '<video autoplay muted loop playsinline poster="' + CDN(t.lead) + '"><source src="' + t.video + '" type="video/mp4"></video>' +
-    '<span class="tile-title"><span class="tt-kick"><i></i>' + t.kick + '</span>' +
-    '<span class="tt-main"><span class="tt-solid">' + t.t1 + '</span><span class="tt-hollow">' + t.t2 + '</span></span></span></a>';
-  const imgs = t.imgs.map(f => { const loc = /^https?:/.test(f) || f.startsWith('images/');
-    return '<a class="tile' + (loc ? ' tile-cut' : '') + '" href="' + t.url + '"><img loading="lazy" src="' + (loc ? (/^https?:/.test(f) ? f : BASE + f) : CDN(f)) + '" alt=""></a>'; }).join('');
-  document.getElementById(t.el).innerHTML = t.leadEnd ? (imgs + lead) : (lead + imgs);
-});
-if (matchMedia('(prefers-reduced-motion: reduce)').matches){
-  document.querySelectorAll('.tile video').forEach(v => { v.removeAttribute('autoplay'); v.pause(); });
-}
-
+/* עמוד תוכן: בלוקי הבית (TILES) לא נטענים כאן */
 /* טיקר */
 const tickerHTML = TICKER_MSGS.concat(TICKER_MSGS).map(m => '<span dir="rtl">' + m + '</span>').join('');
 document.getElementById('tickerA').innerHTML = tickerHTML;
