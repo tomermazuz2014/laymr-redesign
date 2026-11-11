@@ -315,6 +315,7 @@ footer{border-top:1px solid var(--warm-line);background:var(--warm)}
 .a11y-x{position:absolute;top:10px;left:12px;border:0;background:transparent;font-size:28px;line-height:1;cursor:pointer;color:var(--ink)}
 .search-count{font-size:13px;color:#6f6252;margin:0 0 18px}
 .search-pages{display:flex;justify-content:center;gap:8px;margin:28px 0}
+#searchResults{transition:opacity .2s}#searchResults.is-loading{opacity:.45}
 .search-pages a,.search-pages span{padding:8px 12px;font-size:13px;border:1px solid var(--line)}
 .search-pages .current{background:var(--ink);color:#fff}
 /* consent line added by the TNC app: match drawer styling */
@@ -962,10 +963,12 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
 <div class="col-bar">
   <h1 class="col-name">חיפוש</h1>
   <form class="search-form" action="/search" method="get" role="search">
-    <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="חיפוש מוצרים" aria-label="חיפוש">
+    <input type="hidden" name="type" value="product">
+    <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="מה תרצו למצוא?" aria-label="חיפוש" autocomplete="off">
     <button type="submit">חיפוש</button>
   </form>
 </div>
+<div id="searchResults" aria-live="polite">
 {% if search.performed %}
   {% if search.results_count == 0 %}<p class="empty">לא נמצאו תוצאות עבור "{{ search.terms | escape }}"</p>{% else %}<p class="search-count">{{ search.results_count }} תוצאות עבור "{{ search.terms | escape }}"</p>{% endif %}
   {% paginate search.results by 24 %}
@@ -982,6 +985,7 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
   {% if paginate.pages > 1 %}<nav class="search-pages" aria-label="עמודי תוצאות">{{ paginate | default_pagination }}</nav>{% endif %}
   {% endpaginate %}
 {% endif %}
+</div>
 </main>
 <footer>
   <div class="ft-top" data-reveal>
@@ -1173,6 +1177,68 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
   document.addEventListener('cart:updated', loadCart);
   loadCart();
   const nf = $('#newsForm'); if (nf) nf.addEventListener('submit', e => { e.preventDefault(); $('#newsOk').style.display = 'block'; });
+})();
+</script>
+
+<script>
+(function(){
+  var form = document.querySelector('main.search .search-form');
+  var box = document.getElementById('searchResults');
+  if (!form || !box) return;
+  var input = form.querySelector('input[name=q]');
+  var timer = null, ctrl = null;
+
+  function current(){ return input.value.trim(); }
+
+  function load(q, page, push){
+    if (ctrl) ctrl.abort();
+    if (!q){
+      box.innerHTML = '';
+      box.classList.remove('is-loading');
+      if (push) history.replaceState(null, '', '/search');
+      return;
+    }
+    ctrl = new AbortController();
+    box.classList.add('is-loading');
+    var url = '/search?type=product&q=' + encodeURIComponent(q) + (page > 1 ? '&page=' + page : '');
+    fetch(url, { signal: ctrl.signal, headers: { 'Accept': 'text/html' } })
+      .then(function(r){ if (!r.ok) throw new Error(r.status); return r.text(); })
+      .then(function(html){
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var src = doc.getElementById('searchResults');
+        box.innerHTML = src ? src.innerHTML : '';
+        box.classList.remove('is-loading');
+        if (push) history.replaceState(null, '', url);
+      })
+      .catch(function(err){
+        if (err.name === 'AbortError') return;
+        box.classList.remove('is-loading');
+        box.innerHTML = '<p class="empty">חיפוש לא זמין כרגע, נסו שוב.</p>';
+      });
+  }
+
+  input.addEventListener('input', function(){
+    clearTimeout(timer);
+    timer = setTimeout(function(){ load(current(), 1, true); }, 250);
+  });
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    clearTimeout(timer);
+    load(current(), 1, true);
+  });
+  box.addEventListener('click', function(e){
+    var a = e.target.closest('.search-pages a');
+    if (!a) return;
+    e.preventDefault();
+    var page = new URL(a.href, location.origin).searchParams.get('page') || 1;
+    load(current(), parseInt(page, 10), true);
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  window.addEventListener('popstate', function(){
+    var p = new URLSearchParams(location.search);
+    input.value = p.get('q') || '';
+    load(current(), parseInt(p.get('page') || '1', 10), false);
+  });
 })();
 </script>
 
