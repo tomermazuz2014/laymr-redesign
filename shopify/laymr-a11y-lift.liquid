@@ -68,6 +68,7 @@
       pnl.style.bottom=Math.round(H-ctl+M)+'px';
       pnl.style.maxHeight=Math.max(120,Math.round(ctl-M-M-M))+'px';
     }
+    (function(t){var d=document.getElementById('lmdbg')||document.body.appendChild(Object.assign(document.createElement('div'),{id:'lmdbg'}));d.style.cssText='position:fixed;top:0;right:0;z-index:2147483647;background:#ff0;color:#000;font:11px monospace;padding:2px;direction:ltr;max-width:300px';d.textContent=t;})('DBG H'+H+' W'+W+' top'+Math.round(top)+' ctl'+Math.round(ctl)+' bb'+Math.round(btnBottom)+' hi'+[].indexOf.call(document.body.children,host)+' bi'+[].indexOf.call(document.body.children,btn)+' el'+el.id+' bz'+getComputedStyle(el).zIndex+' btnRect'+Math.round(btn.getBoundingClientRect().top)+' pos'+getComputedStyle(btn).position);
     if(watched!==el){ if(ro) ro.disconnect(); ro=new ResizeObserver(schedule); ro.observe(el); watched=el; }
   }
   function schedule(){ if(!raf) raf=requestAnimationFrame(place); }
