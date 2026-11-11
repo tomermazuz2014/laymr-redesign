@@ -1237,7 +1237,8 @@ body.sub header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--war
     if (!grid.querySelector('.pc[style=""], .pc:not([style])')) return;
     const heroSet = FEAT_SETS[h] || FEAT_SETS.all;
     const usedFeats = grid.querySelectorAll('.feat').length;
-    const pool = heroSet.slice(usedFeats).concat(FEAT_SETS.all.filter(x => !heroSet.includes(x)));
+    const pool0 = heroSet.slice(usedFeats).concat(FEAT_SETS.all.filter(x => !heroSet.includes(x)));
+    const pool = pool0.length ? pool0 : (FEAT_SETS.all.length ? FEAT_SETS.all : heroSet);
     let promoDone = false, imgK = 0;
     for (let round = 0; round < 6; round++){
       const cs = getComputedStyle(grid); const cols = cs.gridTemplateColumns.split(' ').length; const gap = parseFloat(cs.columnGap) || 0;
