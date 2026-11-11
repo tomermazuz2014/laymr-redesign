@@ -663,16 +663,19 @@ footer{position:relative;overflow:hidden}
   <!-- 01 חדש באתר -->
   <section class="section">
     <div class="tile-grid" id="tiles-new" data-reveal></div>
+    <div class="pgrid" id="rail-new" hidden></div>
   </section>
 
   <!-- 02 קיץ SALE -->
   <section class="section">
     <div class="tile-grid" id="tiles-sale" data-reveal></div>
+    <div class="pgrid" id="rail-sale" hidden></div>
   </section>
 
   <!-- 03 BEST SELLERS -->
   <section class="section">
     <div class="tile-grid" id="tiles-best" data-reveal></div>
+    <div class="pgrid" id="rail-best" hidden></div>
   </section>
 
   <!-- פס שירות נע -->
@@ -880,6 +883,7 @@ const LOOK = {
 const fmt = n => n + ' ₪';
 const pct = p => Math.round((1 - p.sale/p.reg) * 100);
 
+const H = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function card(p){
   const tag = p.soldout ? '' : (p.reg ? '<span class="ptag">SALE −' + pct(p) + '%</span>' : '');
   const alt = p.hov ? '<img class="alt" loading="lazy" src="' + CDN(p.hov) + '" alt="">' : '';
@@ -889,8 +893,8 @@ function card(p){
     : '<span class="was">' + fmt(p.reg) + '</span><span class="now">' + fmt(p.sale) + '</span>';
   const colors = p.colors ? '<span class="pcolors">' + p.colors + '</span>' : '';
   return '<a class="pcard' + (p.soldout ? ' soldout' : '') + '" href="' + (p.url || '#') + '">' +
-    '<div class="pmedia"><img class="main" loading="lazy" src="' + CDN(p.img) + '" alt="' + p.title + '">' + alt + tag + sold + '</div>' +
-    '<div class="pinfo"><div><div class="pname">' + p.title + '</div>' + colors + '</div>' +
+    '<div class="pmedia"><img class="main" loading="lazy" src="' + CDN(p.img) + '" alt="' + H(p.title) + '">' + alt + tag + sold + '</div>' +
+    '<div class="pinfo"><div><div class="pname">' + H(p.title) + '</div>' + colors + '</div>' +
     '<div class="pprice">' + price + '</div></div></a>';
 }
 const TILES = [
@@ -913,6 +917,11 @@ TILES.forEach(t => {
     return '<a class="tile' + (loc ? ' tile-cut' : '') + '" href="' + t.url + '"><img loading="lazy" src="' + (loc ? (/^https?:/.test(f) ? f : BASE + f) : CDN(f)) + '" alt=""></a>'; }).join('');
   document.getElementById(t.el).innerHTML = t.leadEnd ? (imgs + lead) : (lead + imgs);
 });
+/* מוצרים אמיתיים מהקולקציות: אם הקולקציה ריקה (למשל טיוטות) השורה נשארת מוסתרת */
+const rail = (id, list) => { const el = document.getElementById(id); if (!el || !list.length) return; el.innerHTML = list.map(card).join(''); el.hidden = false; };
+rail('rail-new', NEW_PRODUCTS);
+rail('rail-sale', SALE_PRODUCTS);
+rail('rail-best', BEST_PRODUCTS);
 if (matchMedia('(prefers-reduced-motion: reduce)').matches){
   document.querySelectorAll('.tile video').forEach(v => { v.removeAttribute('autoplay'); v.pause(); });
 }
