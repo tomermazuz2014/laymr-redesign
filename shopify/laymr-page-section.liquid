@@ -635,41 +635,7 @@ footer{position:relative;overflow:hidden}
 
 <!-- וורדמארק ענק + Hero -->
 <div class="masthead">
-  <div class="hero">
-    <video autoplay muted loop playsinline poster="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/hero-poster.jpg?v=1794400614" data-msrc="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/hero-m.mp4?v=1794400625" data-mposter="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/hero-m-poster.jpg?v=1794400614" aria-label="LAYMR — קולקציית 2026">
-      <source src="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/hero.mp4?v=1794400620" type="video/mp4">
-    </video>
-      <div class="hsale" id="heroSale" dir="ltr" aria-hidden="true">
-        <div class="hsale-bg" aria-hidden="true"><span>SALE</span></div>
-        <div class="hsale-word" id="hsaleWord" aria-label="LAYMR SALE"></div>
-        <div class="hsale-card" dir="rtl">
-          <div class="hsale-price">כל האתר <b>69–99</b><span class="ils">₪</span></div>
-          <div class="hsale-note">*לא כולל הקולקציה החדשה</div>
-        </div>
-        <a class="hero-cta hsale-cta" href="/collections/%D7%A7%D7%95%D7%9C%D7%A7%D7%A6%D7%99%D7%99%D7%AA-%D7%A7%D7%99%D7%A5" dir="rtl">לצפייה ב-SALE</a>
-        <div class="hsale-strip" id="hsaleStrip" aria-hidden="true"></div>
-      </div>
-      <div class="hrep" id="heroRep" dir="rtl" aria-hidden="true">
-        <div class="hrep-text">
-          <span class="hrep-line"></span>
-          <h2 class="hrep-h"><span class="hl"><span>לא משאירים</span></span><span class="hl"><span>אף אחד</span></span><span class="hl hl-acc"><span>להילחם לבד.</span></span></h2>
-          <p class="hrep-sub"><span class="hl"><span>יחד מעלים מודעות</span></span><span class="hl"><span>לפוסט-טראומה בקרב לוחמים</span></span></p>
-          <a class="hero-cta hrep-cta" href="/collections/all">לצפייה בקולקציה</a>
-        </div>
-        <div class="hrep-photo"><video id="heroRepVideo" muted playsinline preload="auto" poster="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/hero-rep.jpg?v=1794400615" data-msrc="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/hero-rep-m.mp4?v=1794400625" data-mposter="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/hero-rep-m.jpg?v=1794400614"><source src="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/hero-rep.mp4?v=1794400626" type="video/mp4"></video></div>
-      </div>
-      <script>(function(){if(!matchMedia("(max-width:700px)").matches)return;document.querySelectorAll("video[data-msrc]").forEach(function(v){var s=v.querySelector("source");if(!s)return;s.src=v.dataset.msrc;if(v.dataset.mposter)v.poster=v.dataset.mposter;v.load();});})();</script>
-      <div class="hero-campaign" data-reveal>
-        <span class="hc-kick">End of Season</span>
-        <div class="hc-line" id="hcLine" aria-label="50% OFF"></div>
-      </div>
-
-    <div class="hero-meta">
-      <a class="hero-cta" href="/collections/%D7%A7%D7%99%D7%A5-new">לצפייה בקולקציה</a>
-    </div>
-  </div>
-</div>
-
+<!-- עמוד תוכן: ללא הירו של הבית -->
 <div class="ticker" dir="ltr" aria-label="הודעות משלוח">
   <div class="ticker__inner" id="tickerA"></div>
   <div class="ticker__inner" aria-hidden="true" id="tickerB"></div>
@@ -1072,7 +1038,7 @@ if (hv && heroEl){
     const max = heroEl.clientWidth * 0.92; while (hsw.scrollWidth > max && fs > 36){ fs -= 4; hsw.style.fontSize = fs + 'px'; } };
   fitSale(); addEventListener('resize', fitSale, {passive:true}); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitSale);
   const stripTxt = Array(6).fill('<span>LAYMR SALE</span><i></i><span>69–99 ₪</span><i></i><span>ALL SITE</span><i></i>').join('');
-  document.getElementById('hsaleStrip').innerHTML = '<div class="hsale-strip-in">' + stripTxt + stripTxt + '</div>';
+  if (document.getElementById('hsaleStrip')) document.getElementById('hsaleStrip').innerHTML = '<div class="hsale-strip-in">' + stripTxt + stripTxt + '</div>';
   /* רצף: וידאו → SALE → קמפיין → וידאו */
   /* "הפחתת תנועה" (iOS Reduce Motion): בלי וידאו — מתחילים תמיד מההירו של 50% (פוסטר), ורק אחרי HOLD_MS ממשיכים לסליידים */
   const RM = matchMedia('(prefers-reduced-motion: reduce)').matches, HOLD_MS = 8000;
