@@ -41,6 +41,19 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
       <details><summary>משלוחים<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></summary><div class="pdp-acc-body"><p>משלוח חינם בקנייה מעל 199 ₪. עד 199 ₪ — משלוח ב-29 ₪ בלבד. משלוח מהיר עד 5 ימי עסקים עם שליח עד הבית.</p><p><a href="/policies/shipping-policy">למדיניות המשלוחים המלאה</a></p></div></details>
       <details><summary>החלפות והחזרות<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></summary><div class="pdp-acc-body"><p>ניתן להחליף או להחזיר פריט בהתאם למדיניות החנות.</p><p><a href="/policies/refund-policy">למדיניות ההחלפות וההחזרות</a></p></div></details>
     </div>
+
+    {% assign pair_collection = product.collections.first %}
+    {% if pair_collection %}
+    <div class="pdp-pair"><h3>משלימים את הלוק</h3><div class="pdp-pair-grid">
+    {% assign pn = 0 %}
+    {% for p in pair_collection.products %}
+      {% if p.handle != product.handle and p.available and p.featured_image and pn < 3 %}
+        {% assign pn = pn | plus: 1 %}
+        <a href="{{ p.url }}"><div class="im"><img loading="lazy" src="{{ p.featured_image | image_url: width: 600 }}" alt="{{ p.title | escape }}"></div><span class="t">{{ p.title | escape }}</span><span class="pr">{{ p.price | money }}</span></a>
+      {% endif %}
+    {% endfor %}
+    </div></div>
+    {% endif %}
   </div>
 </div>
 </main>
