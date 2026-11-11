@@ -1072,7 +1072,14 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); 
   /* Shopify cart drawer (cart.js API) */
   const money = v => '₪' + (Number(v) / 100).toLocaleString('he-IL', {maximumFractionDigits: 2}).replace(/\.00$/, '');
   const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const cartCall = async (url, body) => (await fetch(url, {method: body ? 'POST' : 'GET', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: body ? JSON.stringify(body) : undefined})).json();
+  const cartCall = async (url, body) => {
+    const r = await fetch(url, {method: body ? 'POST' : 'GET', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: body ? JSON.stringify(body) : undefined});
+    const t = await r.text(); let data = null; try { data = JSON.parse(t); } catch (e) {}
+    if (!r.ok || !data || !Array.isArray(data.items)) throw new Error('cart ' + r.status);
+    return data;
+  };
+  function cartError(){ const drawer = $('#cartDrawer'); let e = $('#cdErr'); if (!e){ e = document.createElement('p'); e.id = 'cdErr'; e.setAttribute('role', 'alert'); e.style.cssText = 'margin:0;padding:10px 24px;color:#b3261e;font-size:13px;line-height:1.5;direction:rtl;text-align:right'; drawer.insertBefore(e, $('#cdBody')); } e.textContent = 'לא הצלחנו לעדכן את העגלה כרגע. נסו שוב בעוד רגע.'; e.hidden = false; }
+  function clearCartError(){ const e = $('#cdErr'); if (e){ e.textContent = ''; e.hidden = true; } }
   const FREE = 19900;
   function renderCart(c){
     $('#cdCount').textContent = c.item_count;
@@ -1091,10 +1098,14 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); 
       '<div class="cd-sub"><span>עלות כולל משלוח</span><span>' + money(grand) + '</span></div><p class="cd-note">המס כלול. <a href="/policies/shipping-policy">דמי משלוח</a> יחושבו סופית בעת התשלום.</p>' +
       '<details class="cd-memo"' + (c.note ? ' open' : '') + '><summary>הוספת הערה להזמנה</summary><textarea id="cdNote" aria-label="הערה להזמנה" rows="3" placeholder="לדוגמה: להשאיר אצל השכן, מידה חלופית אם אזל…">' + esc(c.note) + '</textarea></details>' +
       '<a class="cd-go" href="/checkout"><span>לתשלום</span><span>' + money(grand) + '</span></a><a class="cd-more" href="/collections/all">המשך בקנייה</a>';
-    const ta = $('#cdNote'); if (ta) ta.onchange = async () => { await cartCall('/cart/update.js', {note: ta.value}); };
-    body.querySelectorAll('button[data-k]').forEach(b => b.onclick = async () => renderCart(await cartCall('/cart/change.js', {id: b.dataset.k, quantity: Math.max(0, +b.dataset.q)})));
+    const ta = $('#cdNote'); if (ta) ta.onchange = async () => { try { await cartCall('/cart/update.js', {note: ta.value}); clearCartError(); } catch (e) { cartError(); } };
+    body.querySelectorAll('button[data-k]').forEach(b => b.onclick = async () => {
+      const btns = [...body.querySelectorAll('button[data-k]')]; btns.forEach(x => x.disabled = true); b.setAttribute('aria-busy', 'true');
+      try { const c = await cartCall('/cart/change.js', {id: b.dataset.k, quantity: Math.max(0, +b.dataset.q)}); clearCartError(); renderCart(c); }
+      catch (e) { btns.forEach(x => x.disabled = false); b.removeAttribute('aria-busy'); cartError(); }
+    });
   }
-  const loadCart = async () => { try { renderCart(await cartCall('/cart.js')); } catch (e) {} };
+  const loadCart = async () => { try { renderCart(await cartCall('/cart.js')); clearCartError(); } catch (e) { cartError(); } };
   document.addEventListener('cart:updated', loadCart);
   loadCart();
 
