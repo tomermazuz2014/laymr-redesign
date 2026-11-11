@@ -1024,14 +1024,25 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); 
   const money = v => '₪' + (Number(v) / 100).toLocaleString('he-IL', {maximumFractionDigits: 2}).replace(/\.00$/, '');
   const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const cartCall = async (url, body) => (await fetch(url, {method: body ? 'POST' : 'GET', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: body ? JSON.stringify(body) : undefined})).json();
+  const FREE = 19900;
   function renderCart(c){
     $('#cdCount').textContent = c.item_count;
-    const body = $('#cdBody'), foot = $('#cdFoot');
-    if (!c.items.length){ body.innerHTML = '<div class="cd-empty"><h4>העגלה שלך ריקה</h4><p>הפריטים שתוסיפו יופיעו כאן.</p><a class="btn-line" href="/collections/all">המשך בקנייה</a></div>'; foot.innerHTML = ''; return; }
+    const drawer = $('#cartDrawer'), body = $('#cdBody'), foot = $('#cdFoot'), ship = $('#cdShip');
+    drawer.classList.toggle('empty', !c.items.length);
+    if (!c.items.length){ body.innerHTML = '<div class="cd-empty"><h4>העגלה שלך ריקה</h4><p>הפריטים שתוסיפו יופיעו כאן. משלוח חינם בקנייה מעל ₪199.</p><a class="btn-line" href="/collections/all">המשך בקנייה</a></div>'; foot.innerHTML = ''; return; }
+    const total = c.total_price, left = Math.max(0, FREE - total);
+    ship.classList.toggle('done', left === 0);
+    ship.querySelector('p').innerHTML = left > 0 ? 'עוד <b>' + money(left) + '</b> למשלוח חינם' : 'הרווחתם משלוח חינם ✓';
+    requestAnimationFrame(() => { ship.querySelector('.cd-bar i').style.width = Math.min(100, total / FREE * 100) + '%'; });
     body.innerHTML = c.items.map(it => '<div class="cd-item"><a href="' + esc(it.url) + '"><img src="' + esc(it.image) + '" alt=""></a><div><a class="cd-ttl" href="' + esc(it.url) + '">' + esc(it.product_title) + '</a>' + (it.variant_title && it.variant_title !== 'Default Title' ? '<div class="cd-var">' + esc(it.variant_title) + '</div>' : '') +
       '<div class="cd-row"><div class="cd-qty"><button data-k="' + esc(it.key) + '" data-q="' + (it.quantity + 1) + '" aria-label="יותר">+</button><span>' + it.quantity + '</span><button data-k="' + esc(it.key) + '" data-q="' + (it.quantity - 1) + '" aria-label="פחות">−</button></div><span class="cd-pr">' + money(it.final_line_price) + '</span></div>' +
       '<button class="cd-rm" data-k="' + esc(it.key) + '" data-q="0">הסרה</button></div></div>').join('');
-    foot.innerHTML = '<div class="cd-sub"><span>סה"כ</span><span>' + money(c.total_price) + '</span></div><a class="cd-go" href="/checkout"><span>לתשלום</span><span>' + money(c.total_price) + '</span></a><a class="cd-more" href="/collections/all">המשך בקנייה</a>';
+    const shipFee = left > 0 ? 2900 : 0, grand = total + shipFee;
+    foot.innerHTML = '<div class="cd-lines"><div class="cd-line"><span>סה"כ מוצרים</span><span>' + money(total) + '</span></div><div class="cd-line"><span>משלוח</span><span>' + (shipFee ? money(shipFee) : 'חינם') + '</span></div></div>' +
+      '<div class="cd-sub"><span>עלות כולל משלוח</span><span>' + money(grand) + '</span></div><p class="cd-note">המס כלול. <a href="/policies/shipping-policy">דמי משלוח</a> יחושבו סופית בעת התשלום.</p>' +
+      '<details class="cd-memo"' + (c.note ? ' open' : '') + '><summary>הוספת הערה להזמנה</summary><textarea id="cdNote" rows="3" placeholder="לדוגמה: להשאיר אצל השכן, מידה חלופית אם אזל…">' + esc(c.note) + '</textarea></details>' +
+      '<a class="cd-go" href="/checkout"><span>לתשלום</span><span>' + money(grand) + '</span></a><a class="cd-more" href="/collections/all">המשך בקנייה</a>';
+    const ta = $('#cdNote'); if (ta) ta.onchange = async () => { await cartCall('/cart/update.js', {note: ta.value}); };
     body.querySelectorAll('button[data-k]').forEach(b => b.onclick = async () => renderCart(await cartCall('/cart/change.js', {id: b.dataset.k, quantity: Math.max(0, +b.dataset.q)})));
   }
   const loadCart = async () => { try { renderCart(await cartCall('/cart.js')); } catch (e) {} };
