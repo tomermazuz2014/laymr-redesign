@@ -304,6 +304,11 @@ footer{border-top:1px solid var(--warm-line);background:var(--warm)}
 .cd-rm:hover{color:var(--ink)}
 .cd-foot{flex:none;padding:16px 24px 22px;border-top:1px solid var(--line);background:var(--bg)}
 .cart-drawer.empty .cd-foot{display:none}
+/* consent line added by the TNC app: match drawer styling */
+#cartDrawer > p:not([class]){margin:0;padding:12px 24px;border-top:1px solid var(--line);background:var(--bg);font-size:12px;line-height:1.55;color:#5a5248}
+#cartDrawer > p:not([class]) label{display:flex;gap:8px;align-items:flex-start;width:100%;cursor:pointer;direction:rtl;text-align:right}
+#cartDrawer > p:not([class]) input[type=checkbox]{margin:3px 0 0;flex:none;accent-color:var(--ink)}
+#cartDrawer > p:not([class]) a{text-decoration:underline;text-underline-offset:3px;color:var(--ink)}
 .cd-sub{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:500}
 .cd-sub span:last-child{font-family:var(--font-lat);font-size:16px;direction:ltr}
 .cd-lines{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
