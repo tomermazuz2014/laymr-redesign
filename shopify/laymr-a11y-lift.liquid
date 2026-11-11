@@ -3,6 +3,7 @@
   var btn=document.getElementById('laymrA11yBtn'), pnl=document.getElementById('laymrA11yPnl');
   if(!btn||!pnl) return;
   var ro=null, watched=null, raf=0, observedRoot=null, ob=null;
+  var TOPZ='2147483647';
   function banner(host){
     var best=null;
     (function walk(root){
@@ -10,10 +11,26 @@
         if(e.shadowRoot) walk(e.shadowRoot);
         if(getComputedStyle(e).position!=='fixed') return;
         var r=e.getBoundingClientRect();
-        if(r.height>60&&r.height<innerHeight*0.6&&r.width>200&&r.top>0&&r.bottom<=innerHeight+1&&r.bottom>innerHeight*0.5&&(best===null||r.top<best.getBoundingClientRect().top)) best=e;
+        if(r.height>60&&r.height<innerHeight&&r.width>200&&r.top>0&&r.bottom<=innerHeight+1&&r.bottom>innerHeight*0.5&&(best===null||r.top<best.getBoundingClientRect().top)) best=e;
       });
     })(host.shadowRoot);
     return best;
+  }
+  /* top edge of the banner's own buttons, so nothing of ours ever covers them */
+  function controlsTop(el, fallback){
+    var t=Infinity;
+    el.querySelectorAll('button').forEach(function(b){ var r=b.getBoundingClientRect(); if(r.width&&r.height) t=Math.min(t,r.top); });
+    return t===Infinity?fallback:t;
+  }
+  /* keep our controls after the banner in the DOM so they stack above it when they overlap */
+  function raise(host){
+    [btn,pnl].forEach(function(n){
+      if(n===document.activeElement||n.contains(document.activeElement)) return;
+      if(host.compareDocumentPosition(n)&Node.DOCUMENT_POSITION_PRECEDING) document.body.appendChild(n);
+    });
+  }
+  function reset(){
+    ['bottom','top','left','width','maxHeight','overflowY','zIndex'].forEach(function(p){ btn.style[p]=''; pnl.style[p]=''; });
   }
   function place(){
     raf=0;
@@ -25,16 +42,33 @@
       ob.observe(observedRoot,{childList:true,subtree:true,attributes:true});
     }
     var el=host&&host.shadowRoot?banner(host):null;
-    if(el){
-      var top=el.getBoundingClientRect().top;
-      btn.style.bottom=Math.round(innerHeight-top+12)+'px';
-      pnl.style.bottom=Math.round(innerHeight-top+64)+'px';
-      if(watched!==el){ if(ro) ro.disconnect(); ro=new ResizeObserver(schedule); ro.observe(el); watched=el; }
-    } else {
-      btn.style.bottom=''; pnl.style.bottom='';
+    if(!el){
+      reset();
       if(ro){ ro.disconnect(); ro=null; }
       watched=null;
+      return;
     }
+    reset();
+    raise(host);
+    var H=innerHeight, W=innerWidth, top=el.getBoundingClientRect().top, ctl=controlsTop(el, top), BH=44, M=8;
+    btn.style.zIndex=TOPZ; pnl.style.zIndex=TOPZ; pnl.style.overflowY='auto';
+    /* button: just above the banner when there is room, otherwise just above the banner's buttons */
+    var btnBottom=(top>=BH+12+M)?(H-top+12):(H-ctl+M);
+    btn.style.bottom=Math.round(btnBottom)+'px';
+    var btnTop=H-btnBottom-BH;
+    if(btnTop-M-M>=200){
+      /* enough height above the button: open upwards, scroll inside if needed */
+      pnl.style.bottom=Math.round(btnBottom+BH+M)+'px';
+      pnl.style.maxHeight=Math.round(btnTop-M-M)+'px';
+    } else {
+      /* short screen: open beside the button, between the top edge and the banner's buttons */
+      pnl.style.left=(16+BH+M)+'px';
+      pnl.style.width='min(300px, calc(100vw - '+(16+BH+M+16)+'px))';
+      pnl.style.top=M+'px';
+      pnl.style.bottom=Math.round(H-ctl+M)+'px';
+      pnl.style.maxHeight=Math.max(120,Math.round(ctl-M-M-M))+'px';
+    }
+    if(watched!==el){ if(ro) ro.disconnect(); ro=new ResizeObserver(schedule); ro.observe(el); watched=el; }
   }
   function schedule(){ if(!raf) raf=requestAnimationFrame(place); }
   new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});
