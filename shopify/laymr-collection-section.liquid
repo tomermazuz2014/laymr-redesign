@@ -976,6 +976,7 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
   </div>
 </div>
 <div class="plist" id="grid">
+{% paginate collection.products by 250 %}
 {% for p in collection.products %}
   <a class="pc" href="{{ p.url }}" data-avail="{{ p.available }}" data-price="{{ p.price }}" data-new="{{ p.published_at }}" data-opts="{% for v in p.variants %}{% if v.available %}{% for o in v.options %}|{{ o }}{% endfor %}|{% endif %}{% endfor %}|">
     <div class="pc-img">{% if p.featured_image %}<img loading="lazy" src="{{ p.featured_image | image_url: width: 700 }}" alt="{{ p.title | escape }}">{% endif %}</div>
@@ -986,6 +987,7 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
     </div>
   </a>
 {% endfor %}
+{% endpaginate %}
 </div>
 <div class="empty" id="empty" hidden>אין פריטים שמתאימים לסינון</div>
 </main>
