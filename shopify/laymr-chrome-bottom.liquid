@@ -328,13 +328,13 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); 
     ship.classList.toggle('done', left === 0);
     ship.querySelector('p').innerHTML = left > 0 ? 'עוד <b>' + money(left) + '</b> למשלוח חינם' : 'הרווחתם משלוח חינם ✓';
     requestAnimationFrame(() => { ship.querySelector('.cd-bar i').style.width = Math.min(100, total / FREE * 100) + '%'; });
-    body.innerHTML = c.items.map(it => '<div class="cd-item"><a href="' + esc(it.url) + '"><img src="' + esc(it.image) + '" alt=""></a><div><a class="cd-ttl" href="' + esc(it.url) + '">' + esc(it.product_title) + '</a>' + (it.variant_title && it.variant_title !== 'Default Title' ? '<div class="cd-var">' + esc(it.variant_title) + '</div>' : '') +
+    body.innerHTML = c.items.map(it => '<div class="cd-item"><a href="' + esc(it.url) + '" tabindex="-1" aria-hidden="true"><img src="' + esc(it.image) + '" alt=""></a><div><a class="cd-ttl" href="' + esc(it.url) + '">' + esc(it.product_title) + '</a>' + (it.variant_title && it.variant_title !== 'Default Title' ? '<div class="cd-var">' + esc(it.variant_title) + '</div>' : '') +
       '<div class="cd-row"><div class="cd-qty"><button data-k="' + esc(it.key) + '" data-q="' + (it.quantity + 1) + '" aria-label="יותר">+</button><span>' + it.quantity + '</span><button data-k="' + esc(it.key) + '" data-q="' + (it.quantity - 1) + '" aria-label="פחות">−</button></div><span class="cd-pr">' + money(it.final_line_price) + '</span></div>' +
       '<button class="cd-rm" data-k="' + esc(it.key) + '" data-q="0">הסרה</button></div></div>').join('');
     const shipFee = left > 0 ? 2900 : 0, grand = total + shipFee;
     foot.innerHTML = '<div class="cd-lines"><div class="cd-line"><span>סה"כ מוצרים</span><span>' + money(total) + '</span></div><div class="cd-line"><span>משלוח</span><span>' + (shipFee ? money(shipFee) : 'חינם') + '</span></div></div>' +
       '<div class="cd-sub"><span>עלות כולל משלוח</span><span>' + money(grand) + '</span></div><p class="cd-note">המס כלול. <a href="/policies/shipping-policy">דמי משלוח</a> יחושבו סופית בעת התשלום.</p>' +
-      '<details class="cd-memo"' + (c.note ? ' open' : '') + '><summary>הוספת הערה להזמנה</summary><textarea id="cdNote" rows="3" placeholder="לדוגמה: להשאיר אצל השכן, מידה חלופית אם אזל…">' + esc(c.note) + '</textarea></details>' +
+      '<details class="cd-memo"' + (c.note ? ' open' : '') + '><summary>הוספת הערה להזמנה</summary><textarea id="cdNote" aria-label="הערה להזמנה" rows="3" placeholder="לדוגמה: להשאיר אצל השכן, מידה חלופית אם אזל…">' + esc(c.note) + '</textarea></details>' +
       '<a class="cd-go" href="/checkout"><span>לתשלום</span><span>' + money(grand) + '</span></a><a class="cd-more" href="/collections/all">המשך בקנייה</a>';
     const ta = $('#cdNote'); if (ta) ta.onchange = async () => { await cartCall('/cart/update.js', {note: ta.value}); };
     body.querySelectorAll('button[data-k]').forEach(b => b.onclick = async () => renderCart(await cartCall('/cart/change.js', {id: b.dataset.k, quantity: Math.max(0, +b.dataset.q)})));
