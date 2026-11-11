@@ -172,15 +172,10 @@ html.laymr-a11y-motion *,html.laymr-a11y-motion *::before,html.laymr-a11y-motion
     else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
   });
   if(document.getElementById('mFilterBtn')) root.classList.add('laymr-a11y-bottombar');
-  function lift(){ var top=null;
-    function consider(e){ if(e.closest&&(e.closest('.laymr-a11y-pnl')||e.closest('.laymr-a11y-btn'))) return; if(getComputedStyle(e).position!=='fixed') return; var r=e.getBoundingClientRect(); if(r.height>60&&r.height<innerHeight*0.6&&r.width>200&&r.top>0&&r.bottom<=innerHeight+1&&r.bottom>innerHeight*0.5&&(top===null||r.top<top)) top=r.top; }
-    function walk(root){ root.querySelectorAll('*').forEach(function(e){ consider(e); if(e.shadowRoot) walk(e.shadowRoot); }); }
-    walk(document);
-    if(top!==null){ btn.style.bottom=Math.round(innerHeight-top+12)+'px'; pnl.style.bottom=Math.round(innerHeight-top+64)+'px'; } else { btn.style.bottom=''; pnl.style.bottom=''; } }
-  lift(); setInterval(lift,800); window.addEventListener('resize',lift);
   apply(); sync();
 })();
 </script>
+{% render 'laymr-a11y-lift' %}
 </body>
   {%- else -%}
   <body class="{% if settings.zoom_image_on_hover %}zoom-image--enabled{% endif %}">
@@ -274,15 +269,10 @@ html.laymr-a11y-motion *,html.laymr-a11y-motion *::before,html.laymr-a11y-motion
     else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
   });
   if(document.getElementById('mFilterBtn')) root.classList.add('laymr-a11y-bottombar');
-  function lift(){ var top=null;
-    function consider(e){ if(e.closest&&(e.closest('.laymr-a11y-pnl')||e.closest('.laymr-a11y-btn'))) return; if(getComputedStyle(e).position!=='fixed') return; var r=e.getBoundingClientRect(); if(r.height>60&&r.height<innerHeight*0.6&&r.width>200&&r.top>0&&r.bottom<=innerHeight+1&&r.bottom>innerHeight*0.5&&(top===null||r.top<top)) top=r.top; }
-    function walk(root){ root.querySelectorAll('*').forEach(function(e){ consider(e); if(e.shadowRoot) walk(e.shadowRoot); }); }
-    walk(document);
-    if(top!==null){ btn.style.bottom=Math.round(innerHeight-top+12)+'px'; pnl.style.bottom=Math.round(innerHeight-top+64)+'px'; } else { btn.style.bottom=''; pnl.style.bottom=''; } }
-  lift(); setInterval(lift,800); window.addEventListener('resize',lift);
   apply(); sync();
 })();
 </script>
+{% render 'laymr-a11y-lift' %}
 </body>
   {%- endif -%}
 

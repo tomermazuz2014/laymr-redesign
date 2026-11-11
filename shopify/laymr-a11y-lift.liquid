@@ -1,0 +1,44 @@
+<script>
+(function(){
+  var btn=document.getElementById('laymrA11yBtn'), pnl=document.getElementById('laymrA11yPnl');
+  if(!btn||!pnl) return;
+  var ro=null, watched=null, raf=0, observedRoot=null, ob=null;
+  function banner(host){
+    var best=null;
+    (function walk(root){
+      root.querySelectorAll('*').forEach(function(e){
+        if(e.shadowRoot) walk(e.shadowRoot);
+        if(getComputedStyle(e).position!=='fixed') return;
+        var r=e.getBoundingClientRect();
+        if(r.height>60&&r.height<innerHeight*0.6&&r.width>200&&r.top>0&&r.bottom<=innerHeight+1&&r.bottom>innerHeight*0.5&&(best===null||r.top<best.getBoundingClientRect().top)) best=e;
+      });
+    })(host.shadowRoot);
+    return best;
+  }
+  function place(){
+    raf=0;
+    var host=document.querySelector('csm-cookie-consent');
+    if(host&&host.shadowRoot&&observedRoot!==host.shadowRoot){
+      observedRoot=host.shadowRoot;
+      if(ob) ob.disconnect();
+      ob=new MutationObserver(schedule);
+      ob.observe(observedRoot,{childList:true,subtree:true,attributes:true});
+    }
+    var el=host&&host.shadowRoot?banner(host):null;
+    if(el){
+      var top=el.getBoundingClientRect().top;
+      btn.style.bottom=Math.round(innerHeight-top+12)+'px';
+      pnl.style.bottom=Math.round(innerHeight-top+64)+'px';
+      if(watched!==el){ if(ro) ro.disconnect(); ro=new ResizeObserver(schedule); ro.observe(el); watched=el; }
+    } else {
+      btn.style.bottom=''; pnl.style.bottom='';
+      if(ro){ ro.disconnect(); ro=null; }
+      watched=null;
+    }
+  }
+  function schedule(){ if(!raf) raf=requestAnimationFrame(place); }
+  new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});
+  addEventListener('resize',schedule,{passive:true});
+  place();
+})();
+</script>
