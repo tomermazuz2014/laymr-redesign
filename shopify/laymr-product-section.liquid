@@ -1,0 +1,115 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://tomermazuz2014.github.io/laymr-redesign/assets/base.css">
+<link rel="stylesheet" href="https://tomermazuz2014.github.io/laymr-redesign/assets/pages.css">
+<style>
+body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-family:'Ploni',sans-serif !important}
+</style>
+
+<main class="pg product" dir="rtl">
+<div class="pdp">
+  <div class="pdp-gal">
+    <div class="pdp-track" id="galTrack"></div>
+    <button class="pdp-arr pdp-prev" id="galPrev" aria-label="הקודם"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>
+    <button class="pdp-arr pdp-next" id="galNext" aria-label="הבא"><svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
+    <div class="pdp-dots" id="galDots"></div>
+    <button class="pdp-save" id="saveBtn" aria-label="שמירה"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg></button>
+  </div>
+  <div class="pdp-info">
+    <nav class="pdp-crumbs" aria-label="פירורי לחם"><a href="/">בית</a><span>/</span><span id="crumb"></span></nav>
+    <h1 class="pdp-title" id="ptitle"></h1>
+    <div class="pdp-price" id="pprice"></div>
+    <div id="opts"></div>
+    <button class="pdp-add" id="addBtn">הוספה לסל</button>
+    <div class="pdp-acc">
+      <details><summary>פרטי המוצר<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></summary><div class="pdp-acc-body" id="pdesc"></div></details>
+      <details><summary>משלוחים<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></summary><div class="pdp-acc-body"><p>משלוח חינם בקנייה מעל 199 ₪. עד 199 ₪ — משלוח ב-29 ₪ בלבד. משלוח מהיר עד 5 ימי עסקים עם שליח עד הבית.</p><p><a href="/policies/shipping-policy">למדיניות המשלוחים המלאה</a></p></div></details>
+      <details><summary>החלפות והחזרות<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></summary><div class="pdp-acc-body"><p>ניתן להחליף או להחזיר פריט בהתאם למדיניות החנות.</p><p><a href="/policies/refund-policy">למדיניות ההחלפות וההחזרות</a></p></div></details>
+    </div>
+  </div>
+</div>
+</main>
+
+<script>
+(function(){
+  const P = {
+    title: {{ product.title | json }},
+    handle: {{ product.handle | json }},
+    body: {{ product.description | json }},
+    options: {{ product.options_with_values | json }},
+    images: [{% for img in product.images %}{id: {{ img.id }}, src: {{ img | image_url: width: 1000 | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}],
+    variants: [{% for v in product.variants %}{id: {{ v.id }}, title: {{ v.title | json }}, o1: {{ v.option1 | json }}, o2: {{ v.option2 | json }}, o3: {{ v.option3 | json }}, price: {{ v.price | divided_by: 100.0 }}, cmp: {{ v.compare_at_price | default: 0 | divided_by: 100.0 }}, avail: {{ v.available }}, img: {% if v.image %}{{ v.image.id }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}{% endfor %}]
+  };
+  const $ = s => document.querySelector(s);
+  const price = v => '₪' + Number(v).toLocaleString('he-IL', {maximumFractionDigits: 2}).replace(/\.00$/, '');
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const COLORS = {'שחור':'#141414','לבן':'#ffffff','אפור':'#9a9a9a','אבן':'#cfc6b8','ג׳ינס':'#5b7aa6'};
+  const isColor = o => /צבע|color/i.test(o.name), isSize = o => /מידה|size/i.test(o.name);
+  document.title = P.title + ' — LAYMR';
+  $('#crumb').textContent = P.title; $('#ptitle').textContent = P.title;
+
+  /* gallery */
+  const imgs = P.images.length ? P.images : [{id: 0, src: ''}];
+  const track = $('#galTrack'), dots = $('#galDots'), gal = document.querySelector('.pdp-gal'); let cur = 0;
+  track.innerHTML = imgs.map((im, i) => '<div class="pdp-slide"><img class="main" ' + (i ? 'loading="lazy" ' : '') + 'src="' + im.src + '" alt="' + esc(P.title) + '"></div>').join('');
+  dots.innerHTML = imgs.map((_, i) => '<i class="' + (i ? '' : 'on') + '"></i>').join('');
+  if (imgs.length < 2) gal.classList.add('single');
+  const goTo = i => { cur = (i + imgs.length) % imgs.length; track.scrollTo({left: cur * track.clientWidth, behavior: 'smooth'}); };
+  track.addEventListener('scroll', () => { const i = Math.round(track.scrollLeft / track.clientWidth); if (i !== cur){ cur = i; dots.querySelectorAll('i').forEach((d, n) => d.classList.toggle('on', n === i)); } }, {passive: true});
+  $('#galNext').onclick = () => goTo(cur + 1); $('#galPrev').onclick = () => goTo(cur - 1);
+  dots.querySelectorAll('i').forEach((d, i) => d.onclick = () => goTo(i));
+  $('#saveBtn').onclick = e => e.currentTarget.classList.toggle('on');
+
+  /* options */
+  const realOpts = P.options.filter(o => !(o.values.length === 1 && o.values[0] === 'Default Title'));
+  const firstAvail = P.variants.find(v => v.avail) || P.variants[0];
+  const sel = {};
+  realOpts.forEach((o, i) => { sel[i] = firstAvail ? ([firstAvail.o1, firstAvail.o2, firstAvail.o3][i] || o.values[0]) : o.values[0]; });
+  const optsEl = $('#opts');
+  const variantFor = () => P.variants.find(v => realOpts.every((o, i) => [v.o1, v.o2, v.o3][i] === sel[i])) || P.variants[0];
+  const availFor = (i, val) => P.variants.some(v => [v.o1, v.o2, v.o3][i] === val && v.avail);
+  const dot = c => '<i style="background:' + (COLORS[String(c).trim()] || '#bdb5aa') + '"></i>';
+  const drawOpts = () => {
+    optsEl.innerHTML = realOpts.map((o, i) => {
+      if (isColor(o)) return '<div class="pdp-row" data-i="' + i + '"><span class="lbl">בחירת צבע</span><button class="pdp-cur" type="button">' + dot(sel[i]) + esc(sel[i]) + '<svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button><div class="pdp-list">' +
+        o.values.map(v => '<button type="button" data-i="' + i + '" data-v="' + esc(v) + '" class="' + (sel[i] === v ? 'on' : '') + (availFor(i, v) ? '' : ' off') + '">' + dot(v) + esc(v) + '</button>').join('') + '</div></div>';
+      return '<div class="pdp-size"><span class="lbl">' + (isSize(o) ? 'בחירת מידה:' : esc(o.name) + ':') + '</span><div class="pdp-chips">' +
+        o.values.map(v => '<button type="button" data-i="' + i + '" data-v="' + esc(v) + '" class="' + (sel[i] === v ? 'on' : '') + (availFor(i, v) ? '' : ' off') + '">' + esc(v) + '</button>').join('') + '</div></div>';
+    }).join('');
+    optsEl.querySelectorAll('.pdp-cur').forEach(b => b.onclick = () => b.parentElement.classList.toggle('open'));
+    optsEl.querySelectorAll('button[data-v]').forEach(b => b.onclick = () => { sel[+b.dataset.i] = b.dataset.v; drawOpts(); drawPrice(); });
+  };
+
+  /* price + gallery sync by variant image */
+  const priceEl = $('#pprice'), addBtn = $('#addBtn');
+  const drawPrice = () => { const v = variantFor(); const sale = v.cmp && Number(v.cmp) > Number(v.price);
+    priceEl.className = 'pdp-price' + (sale ? ' sale' : '');
+    priceEl.innerHTML = (sale ? '<span class="pct">-' + Math.round((1 - Number(v.price) / Number(v.cmp)) * 100) + '%</span><s>' + price(v.cmp) + '</s>' : '') + '<span class="now">' + price(v.price) + '</span>';
+    addBtn.disabled = !v.avail; addBtn.textContent = v.avail ? 'הוספה לסל' : 'אזל מהמלאי';
+    if (v.img){ const k = imgs.findIndex(im => im.id === v.img); if (k >= 0 && k !== cur) goTo(k); } };
+  drawOpts(); drawPrice();
+
+  /* add to cart (Shopify Cart AJAX API) */
+  addBtn.onclick = async () => {
+    const v = variantFor(); if (!v.avail) return;
+    addBtn.disabled = true; addBtn.textContent = 'מוסיף...';
+    try {
+      const r = await fetch('/cart/add.js', {method: 'POST', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: JSON.stringify({items: [{id: v.id, quantity: 1}]})});
+      if (!r.ok) throw new Error(await r.text());
+      addBtn.textContent = 'נוסף לסל ✓';
+      document.dispatchEvent(new CustomEvent('cart:updated'));
+    } catch (e) { addBtn.textContent = 'שגיאה, נסה שוב'; }
+    setTimeout(() => { addBtn.disabled = false; drawPrice(); }, 1400);
+  };
+
+  $('#pdesc').innerHTML = P.body || '<p>פריט מקולקציית LAYMR.</p>';
+})();
+</script>
+
+{% schema %}
+{
+  "name": "LAYMR Product",
+  "settings": []
+}
+{% endschema %}
