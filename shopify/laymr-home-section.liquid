@@ -159,7 +159,8 @@ video.vfade.playing{opacity:1}
 .pcar-wrap{margin-top:clamp(40px,6vw,80px);padding-bottom:clamp(64px,7vw,110px)}
 .pcar{overflow:hidden;padding:clamp(76px,9.2vw,140px) 0}
 .pcar-track{display:flex;gap:clamp(14px,2vw,26px);transition:transform .65s var(--ease);align-items:center}
-.pcar-item{position:relative;flex:0 0 min(26%,320px);aspect-ratio:3/4;background:var(--bg);transform:scale(.56);transition:transform .7s var(--ease);cursor:pointer}
+.pcar-item{position:relative;flex:0 0 min(26%,320px);aspect-ratio:3/4;background:transparent;transform:scale(.56);transition:transform .7s var(--ease);cursor:pointer}
+@media (prefers-reduced-motion: reduce){.pcar-track,.pcar-track .pcar-item{transition:none !important}}
 @media(max-width:720px){.pcar-item{flex:0 0 56%}}
 .pcar-item.is-center{transform:scale(1.5);z-index:2}.pcar-track.noanim,.pcar-track.noanim .pcar-item{transition:none}
 .pcar-item img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
@@ -850,7 +851,7 @@ const TICKER_MSGS = [
 ];
 
 const NEW_PRODUCTS = [
-{% assign recent = collections.all.products | where: 'available', true | reject: 'title', 'דמי משלוח עד הבית' | sort: 'created_at' | reverse %}{% for p in recent limit: 8 %}{title:{{ p.title | json }},url:{{ p.url | json }},img:{{ p.featured_image | image_url: width: 900 | json }},hov:{% if p.images.size > 1 %}{{ p.images[1] | image_url: width: 900 | json }}{% else %}null{% endif %},sale:{{ p.price | divided_by: 100.0 }},reg:{% if p.compare_at_price > p.price %}{{ p.compare_at_price | divided_by: 100.0 }}{% else %}null{% endif %},plain:{% if p.compare_at_price > p.price %}null{% else %}{{ p.price | divided_by: 100.0 }}{% endif %},soldout:{% unless p.available %}true{% else %}false{% endunless %}}{% unless forloop.last %},{% endunless %}{% endfor %}
+{% assign recent = collections.all.products | where: 'available', true | reject: 'title', 'דמי משלוח עד הבית' | sort: 'created_at' | reverse %}{% for p in recent limit: 8 %}{handle:{{ p.handle | json }},title:{{ p.title | json }},url:{{ p.url | json }},img:{{ p.featured_image | image_url: width: 900 | json }},hov:{% if p.images.size > 1 %}{{ p.images[1] | image_url: width: 900 | json }}{% else %}null{% endif %},sale:{{ p.price | divided_by: 100.0 }},reg:{% if p.compare_at_price > p.price %}{{ p.compare_at_price | divided_by: 100.0 }}{% else %}null{% endif %},plain:{% if p.compare_at_price > p.price %}null{% else %}{{ p.price | divided_by: 100.0 }}{% endif %},soldout:{% unless p.available %}true{% else %}false{% endunless %}}{% unless forloop.last %},{% endunless %}{% endfor %}
 ];
 
 const SALE_PRODUCTS = [
@@ -946,7 +947,9 @@ const CAR_ITEMS = (() => {
 /* פריטים נקיים בלבד: פאקשוטים שנוצרו + פאקשוטים אמיתיים */
 const GEN = ['https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-tee10.png?v=1794400614','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-wash.png?v=1794400615','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-pants.png?v=1794400614','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-chloe.png?v=1794400614','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-lirom.png?v=1794400614','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-jacket.png?v=1794400614'];
 const PACK = ['https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-cap.png?v=1794400615','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-gold.png?v=1794400614','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-figure.png?v=1794400614','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-album.png?v=1794400614'];
-const CAR_BASE = NEW_PRODUCTS.length ? NEW_PRODUCTS.map(p => ({src: CDN(p.img), url: p.url, alt: p.title})) : GEN.concat(PACK).map(src => ({src, url: '/collections/all?sort_by=created-descending', alt: ''}));
+/* תמונות מבודדות (שקופות) לשני מוצרים; שאר המוצרים נשארים עם תמונת המוצר המקורית */
+const CUT = {'חולצה-10': 'https://raw.githubusercontent.com/tomermazuz2014/laymr-redesign/7971068363957948ab4852182a81ecc7ce5f5511/shopify/assets/carousel/carousel-tee-black-washed.png', 'מכנס-בד-מתרחב': 'https://raw.githubusercontent.com/tomermazuz2014/laymr-redesign/7971068363957948ab4852182a81ecc7ce5f5511/shopify/assets/carousel/carousel-pants-wide-brown.png'};
+const CAR_BASE = NEW_PRODUCTS.length ? NEW_PRODUCTS.map(p => ({src: CUT[p.handle] || CDN(p.img), url: p.url, alt: p.title})) : GEN.concat(PACK).map(src => ({src, url: '/collections/all?sort_by=created-descending', alt: ''}));
 const CAR_N = CAR_BASE.length;
 const CAR_LIST = CAR_BASE.concat(CAR_BASE, CAR_BASE); /* x3 - קרוסלה אינסופית */
 document.getElementById('pcarTrack').innerHTML = CAR_LIST.map(it =>
