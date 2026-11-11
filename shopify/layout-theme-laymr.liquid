@@ -161,7 +161,7 @@ html.laymr-a11y-motion *,html.laymr-a11y-motion *::before,html.laymr-a11y-motion
     var b=e.target.closest('[data-opt]'); if(!b) return;
     var k=b.getAttribute('data-opt');
     if(k==='reset'){ state={text:false,links:false,motion:false}; save(); apply(); sync(); return; }
-    if(k==='statement'){ close(false); var t=document.querySelector('[data-a11y]'); if(t) t.click(); return; }
+    if(k==='statement'){ close(false); var m=document.getElementById('a11yModal'); if(m){ var mo=new MutationObserver(function(){ if(m.hidden){ mo.disconnect(); setTimeout(function(){ if(!document.activeElement||document.activeElement===document.body){ btn.focus(); } },0); } }); mo.observe(m,{attributes:true,attributeFilter:['hidden']}); } var t=document.querySelector('[data-a11y]'); if(t) t.click(); return; }
     state[k]=!state[k]; save(); apply(); sync();
   });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape' && !pnl.hidden){ e.preventDefault(); close(true); } });
@@ -256,7 +256,7 @@ html.laymr-a11y-motion *,html.laymr-a11y-motion *::before,html.laymr-a11y-motion
     var b=e.target.closest('[data-opt]'); if(!b) return;
     var k=b.getAttribute('data-opt');
     if(k==='reset'){ state={text:false,links:false,motion:false}; save(); apply(); sync(); return; }
-    if(k==='statement'){ close(false); var t=document.querySelector('[data-a11y]'); if(t) t.click(); return; }
+    if(k==='statement'){ close(false); var m=document.getElementById('a11yModal'); if(m){ var mo=new MutationObserver(function(){ if(m.hidden){ mo.disconnect(); setTimeout(function(){ if(!document.activeElement||document.activeElement===document.body){ btn.focus(); } },0); } }); mo.observe(m,{attributes:true,attributeFilter:['hidden']}); } var t=document.querySelector('[data-a11y]'); if(t) t.click(); return; }
     state[k]=!state[k]; save(); apply(); sync();
   });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape' && !pnl.hidden){ e.preventDefault(); close(true); } });
