@@ -669,7 +669,7 @@ body.sub .ticker{margin-top:52px}
   .col-filter .filter-btn{display:none}
   .mfilter{position:fixed;left:0;right:0;bottom:0;z-index:30;height:40px;display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(244,241,236,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);font:inherit;font-size:14px;color:var(--ink);padding:0}
   .mfilter svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round}
-  .col-bar .filter-pop{position:fixed;left:0;right:0;bottom:40px;top:auto;width:auto;max-height:70vh;overflow:auto;background:#fff;border:0;border-top:1px solid var(--line);border-radius:18px 18px 0 0;padding:22px 20px 24px;box-shadow:0 -20px 50px -30px rgba(0,0,0,.3);z-index:31}
+  .col-bar .filter-pop{position:fixed;left:0;right:0;bottom:40px;top:auto;width:auto;max-height:70vh;overflow:auto;background:#fff;border:0;border-top:1px solid var(--line);border-radius:18px 18px 0 0;padding:22px 20px 24px;box-shadow:0 -20px 50px -30px rgba(0,0,0,.3);z-index:70}
 }
 .empty{padding:60px 0;text-align:center;color:#6f6252}
 .pg.collection{padding-top:0;padding-bottom:0}
@@ -687,7 +687,7 @@ body.sub header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--war
 .col-filter{position:relative}
 .filter-btn{display:inline-flex;align-items:center;gap:8px;background:transparent;border:0;font:inherit;font-size:13.5px;cursor:pointer;padding:6px 0;color:var(--ink)}
 .filter-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round}
-.filter-pop{position:absolute;top:calc(100% + 12px);left:0;width:300px;background:#fff;border:1px solid var(--line);padding:18px 18px 16px;z-index:20;display:none;box-shadow:0 20px 50px -24px rgba(0,0,0,.25)}
+.filter-pop{position:absolute;top:calc(100% + 12px);left:0;width:300px;max-width:calc(100vw - 2*var(--pad));background:#fff;border:1px solid var(--line);padding:18px 18px 16px;z-index:70;display:none;box-shadow:0 20px 50px -24px rgba(0,0,0,.25)}
 .filter-pop.open{display:block}
 .fp-group{margin-bottom:16px}
 .fp-label{display:block;font-family:var(--font-lat);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#8a7e6f;margin-bottom:10px;font-weight:600}
@@ -698,7 +698,7 @@ body.sub header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--war
 .fp-check{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
 .fp-check input{accent-color:var(--ink)}
 .fp-clear{background:transparent;border:0;font:inherit;font-size:12px;color:#8a7e6f;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0}
-@media(max-width:900px){.col-bar{flex-wrap:wrap;height:auto;padding:12px var(--pad) 0;gap:10px}.col-cats{order:3;width:100%;margin:0 calc(-1*var(--pad));padding:8px var(--pad) 12px;border-top:1px solid var(--line)}.filter-pop{left:auto;right:0;width:min(300px,86vw)}}
+@media(max-width:900px){.col-bar{flex-wrap:wrap;height:auto;padding:12px var(--pad) 0;gap:10px}.col-cats{order:3;width:100%;margin:0 calc(-1*var(--pad));padding:8px var(--pad) 12px;border-top:1px solid var(--line)}.filter-pop{left:0;right:auto;width:min(300px,calc(100vw - 2*var(--pad)))}}
 @media(max-width:700px){.col-bar{padding:0;border-bottom:0;margin-bottom:3px}.col-name{display:none}.col-cats{order:0;border-top:0;padding:14px var(--pad) 12px;gap:22px;scroll-padding-inline:var(--pad)}.col-cats a{font-size:14px;padding:6px 0;border-bottom-width:1.5px}}
 /* product */
 .pg.product{padding:0;min-height:0}
@@ -1294,14 +1294,19 @@ document.addEventListener('keydown', e => { if (e.key !== 'Tab') return; const o
     $('#empty').hidden = l.length > 0;
     fillGaps();
   };
-  $('#sortOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.sort = b.dataset.v; $('#sortOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); draw(); };
-  $('#sizeOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.size = state.size === b.dataset.v ? null : b.dataset.v; $('#sizeOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.v === state.size)); draw(); };
+  $('#sortOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.sort = b.dataset.v; $('#sortOpts').querySelectorAll('button').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', x === b); }); draw(); };
+  $('#sizeOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.size = state.size === b.dataset.v ? null : b.dataset.v; $('#sizeOpts').querySelectorAll('button').forEach(x => { x.classList.toggle('on', x.dataset.v === state.size); x.setAttribute('aria-pressed', x.dataset.v === state.size); }); draw(); };
   $('#hideOut').onchange = e => { state.hideOut = e.target.checked; draw(); };
-  $('#fpClear').onclick = () => { state.sort = 'featured'; state.size = null; state.hideOut = false; $('#hideOut').checked = false; $('#sortOpts').querySelectorAll('button').forEach((x, i) => x.classList.toggle('on', i === 0)); $('#sizeOpts').querySelectorAll('button').forEach(x => x.classList.remove('on')); draw(); };
+  $('#fpClear').onclick = () => { state.sort = 'featured'; state.size = null; state.hideOut = false; $('#hideOut').checked = false; $('#sortOpts').querySelectorAll('button').forEach((x, i) => { x.classList.toggle('on', i === 0); x.setAttribute('aria-pressed', i === 0); }); $('#sizeOpts').querySelectorAll('button').forEach(x => { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); }); draw(); };
   const pop = $('#filterPop'), fbtn = $('#filterBtn');
-  fbtn.onclick = () => { const o = pop.classList.toggle('open'); fbtn.setAttribute('aria-expanded', o); };
-  const mf = document.getElementById('mFilterBtn'); if (mf) mf.onclick = e => { e.stopPropagation(); const o = pop.classList.toggle('open'); mf.setAttribute('aria-expanded', o); };
-  document.addEventListener('click', e => { if (!e.target.closest('.col-filter')) pop.classList.remove('open'); });
+  const mf = document.getElementById('mFilterBtn');
+  let popOpener = null;
+  const setPop = (open, opener) => { pop.classList.toggle('open', open); [fbtn, mf].forEach(b => b && b.setAttribute('aria-expanded', open && b === opener ? 'true' : 'false')); popOpener = open ? opener : null; };
+  fbtn.setAttribute('aria-controls', 'filterPop'); if (mf) mf.setAttribute('aria-controls', 'filterPop');
+  fbtn.onclick = () => setPop(!pop.classList.contains('open'), fbtn);
+  if (mf) mf.onclick = e => { e.stopPropagation(); setPop(!pop.classList.contains('open'), mf); };
+  document.addEventListener('click', e => { if (pop.classList.contains('open') && !e.target.closest('.col-filter') && e.target !== mf && !(mf && mf.contains(e.target))) setPop(false); });
+  document.addEventListener('keydown', e => { if (e.key !== 'Escape' || !pop.classList.contains('open')) return; const back = popOpener; setPop(false); if (back) back.focus(); });
   draw();
 })();
 </script>
