@@ -208,6 +208,9 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
   $('#menuClose').onclick = closeAll;
   $('#cartOpen').onclick = () => { scrim.classList.add('open'); cartDrawer.classList.add('open'); loadCart(); };
   $('#cartClose').onclick = closeAll;
+  const goAccount = e => { if (e) e.preventDefault(); location.href = '/account'; };
+  $('#acctOpen').onclick = goAccount;
+  document.querySelectorAll('[data-acct]').forEach(a => a.addEventListener('click', goAccount));
   const openAbout = () => { closeAll(); aboutOverlay.classList.add('open'); };
   document.querySelectorAll('[data-about]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openAbout(); }));
   $('#aboutClose').onclick = closeAll; $('#aboutX').onclick = closeAll;

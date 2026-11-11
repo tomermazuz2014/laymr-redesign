@@ -1004,6 +1004,8 @@ function closeAll(){ scrim.classList.remove('open'); menuOverlay.classList.remov
 document.getElementById('menuOpen').onclick = () => { if (matchMedia('(min-width:1181px)').matches){ const h = document.querySelector('header'); const o = h.classList.toggle('nav-open'); document.getElementById('menuOpen').setAttribute('aria-expanded', o); } else menuOverlay.classList.add('open'); };
 document.getElementById('menuClose').onclick = closeAll;
 document.getElementById('cartOpen').onclick = () => { scrim.classList.add('open'); cartDrawer.classList.add('open'); loadCart(); };
+document.getElementById('acctOpen').onclick = e => { e.preventDefault(); location.href = '/account'; };
+document.querySelectorAll('[data-acct]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); location.href = '/account'; }));
 document.getElementById('cartClose').onclick = closeAll;
 const aboutVid = document.querySelector('.about-video');
 const openAbout = () => { closeAll(); const ov = document.getElementById('aboutOverlay'); ov.classList.add('open'); ov.classList.remove('scrolled'); ov.querySelector('.about-body').scrollTop = 0; if (aboutVid){ if (!aboutVid.dataset.loaded){ aboutVid.dataset.loaded = 1; if (matchMedia('(max-width:860px)').matches){ const se = aboutVid.querySelector('source'); se.src = aboutVid.dataset.msrc; aboutVid.poster = aboutVid.dataset.mposter; const pi = aboutVid.parentNode.querySelector('.vposter'); if (pi) pi.src = aboutVid.poster; } aboutVid.preload = 'auto'; aboutVid.load(); } aboutVid.play().catch(() => {}); } };
@@ -1112,7 +1114,6 @@ onScr(); addEventListener('scroll', onScr, {passive:true});
 
 
 
-<script src="https://tomermazuz2014.github.io/laymr-redesign/assets/account.js"></script>
 
 {% schema %}
 {
