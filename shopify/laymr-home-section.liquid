@@ -950,7 +950,7 @@ const CAR_BASE = NEW_PRODUCTS.length ? NEW_PRODUCTS.map(p => ({src: CDN(p.img), 
 const CAR_N = CAR_BASE.length;
 const CAR_LIST = CAR_BASE.concat(CAR_BASE, CAR_BASE); /* x3 - קרוסלה אינסופית */
 document.getElementById('pcarTrack').innerHTML = CAR_LIST.map(it =>
-  '<a class="pcar-item" href="' + H(it.url) + '"><img loading="lazy" src="' + it.src + '" alt="' + H(it.alt) + '"></a>').join('');
+  '<a class="pcar-item" href="' + H(it.url) + '"><img src="' + it.src + '" alt="' + H(it.alt) + '"></a>').join('');
 const carTrack = document.getElementById('pcarTrack');
 const carItems = [...carTrack.children];
 let carIdx = CAR_N; /* הפריט הראשון בעותק האמצעי - האחרון נראה משמאלו */
