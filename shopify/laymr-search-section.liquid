@@ -304,6 +304,10 @@ footer{border-top:1px solid var(--warm-line);background:var(--warm)}
 .cd-rm:hover{color:var(--ink)}
 .cd-foot{flex:none;padding:16px 24px 22px;border-top:1px solid var(--line);background:var(--bg)}
 .cart-drawer.empty .cd-foot{display:none}
+.search-count{font-size:13px;color:#6f6252;margin:0 0 18px}
+.search-pages{display:flex;justify-content:center;gap:8px;margin:28px 0}
+.search-pages a,.search-pages span{padding:8px 12px;font-size:13px;border:1px solid var(--line)}
+.search-pages .current{background:var(--ink);color:#fff}
 /* consent line added by the TNC app: match drawer styling */
 #cartDrawer > p:not([class]){margin:0;padding:12px 24px;border-top:1px solid var(--line);background:var(--bg);font-size:12px;line-height:1.55;color:#5a5248}
 #cartDrawer > p:not([class]) label{display:flex;gap:8px;align-items:flex-start;width:100%;cursor:pointer;direction:rtl;text-align:right}
@@ -954,7 +958,8 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
   </form>
 </div>
 {% if search.performed %}
-  {% if search.results_count == 0 %}<p class="empty">לא נמצאו תוצאות עבור "{{ search.terms | escape }}"</p>{% endif %}
+  {% if search.results_count == 0 %}<p class="empty">לא נמצאו תוצאות עבור "{{ search.terms | escape }}"</p>{% else %}<p class="search-count">{{ search.results_count }} תוצאות עבור "{{ search.terms | escape }}"</p>{% endif %}
+  {% paginate search.results by 24 %}
   <div class="plist">
   {% for item in search.results %}
     {% if item.object_type == 'product' and item.featured_image %}
@@ -965,6 +970,8 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
     {% endif %}
   {% endfor %}
   </div>
+  {% if paginate.pages > 1 %}<nav class="search-pages" aria-label="עמודי תוצאות">{{ paginate | default_pagination }}</nav>{% endif %}
+  {% endpaginate %}
 {% endif %}
 </main>
 <footer>
