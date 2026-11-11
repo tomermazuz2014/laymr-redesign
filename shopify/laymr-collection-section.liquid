@@ -1,0 +1,292 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://tomermazuz2014.github.io/laymr-redesign/assets/base.css">
+<link rel="stylesheet" href="https://tomermazuz2014.github.io/laymr-redesign/assets/pages.css">
+<style>
+body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-family:'Ploni',sans-serif !important}
+</style>
+
+<header>
+  <div class="header-row">
+    <div class="h-start">
+      <button class="menu-toggle" id="menuOpen" aria-label="תפריט" aria-expanded="false"><svg viewBox="0 0 24 24"><path class="l1" d="M3 6h18"/><path class="l2" d="M3 12h18"/><path class="l3" d="M3 18h18"/></svg></button>
+      <nav class="h-nav" id="hnav" aria-label="ניווט ראשי"></nav>
+    </div>
+    <a class="h-mark" href="#"><span class="h-mark-text">LAYMR</span><img class="h-mark-logo" src="https://tomermazuz2014.github.io/laymr-redesign/images/logo-lm.png" alt="LAYMR"></a>
+    <div class="h-util">
+      <a class="hic" href="/search" aria-label="חיפוש"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></a>
+      <button class="hic" id="acctOpen" aria-label="חשבון"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg><span class="hic-dot"></span></button>
+      <button class="hic" id="cartOpen" aria-label="עגלה"><svg viewBox="0 0 24 24"><path d="M6 8h12l1 13H5L6 8Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg></button>
+    </div>
+  </div>
+</header>
+<header>
+  <div class="header-row">
+    <div class="h-start">
+      <button class="menu-toggle" id="menuOpen" aria-label="תפריט" aria-expanded="false"><svg viewBox="0 0 24 24"><path class="l1" d="M3 6h18"/><path class="l2" d="M3 12h18"/><path class="l3" d="M3 18h18"/></svg></button>
+      <nav class="h-nav" id="hnav" aria-label="ניווט ראשי"></nav>
+    </div>
+    <a class="h-mark" href="#"><span class="h-mark-text">LAYMR</span><img class="h-mark-logo" src="https://tomermazuz2014.github.io/laymr-redesign/images/logo-lm.png" alt="LAYMR"></a>
+    <div class="h-util">
+      <a class="hic" href="/search" aria-label="חיפוש"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></a>
+      <button class="hic" id="acctOpen" aria-label="חשבון"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg><span class="hic-dot"></span></button>
+      <button class="hic" id="cartOpen" aria-label="עגלה"><svg viewBox="0 0 24 24"><path d="M6 8h12l1 13H5L6 8Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg></button>
+    </div>
+  </div>
+</header>
+<main class="pg collection" dir="rtl">
+<div class="col-bar">
+  <h1 class="col-name"><span id="colTitle">{{ collection.title | escape }}</span><small id="count"></small></h1>
+  <nav class="col-cats" id="colCats" aria-label="קטגוריות"></nav>
+  <div class="col-filter">
+    <button class="filter-btn" id="filterBtn" aria-expanded="false">סינון<svg viewBox="0 0 24 24"><path d="M4 7h16M7 12h10M10 17h4"/></svg></button>
+    <div class="filter-pop" id="filterPop">
+      <div class="fp-group"><span class="fp-label">מיון</span>
+        <div class="fp-opts" id="sortOpts"><button data-v="featured" class="on">מומלצים</button><button data-v="new">חדש ביותר</button><button data-v="low">מחיר: נמוך לגבוה</button><button data-v="high">מחיר: גבוה לנמוך</button></div></div>
+      <div class="fp-group"><span class="fp-label">מידה</span><div class="fp-opts fp-sizes" id="sizeOpts"></div></div>
+      <div class="fp-group"><label class="fp-check"><input type="checkbox" id="hideOut"> הסתר פריטים שאזלו</label></div>
+      <button class="fp-clear" id="fpClear">ניקוי</button>
+    </div>
+  </div>
+</div>
+<div class="plist" id="grid">
+{% for p in collection.products %}
+  <a class="pc" href="{{ p.url }}" data-avail="{{ p.available }}" data-price="{{ p.price }}" data-new="{{ p.published_at }}" data-opts="{% for v in p.variants %}{% if v.available %}{% for o in v.options %}|{{ o }}{% endfor %}|{% endif %}{% endfor %}|">
+    <div class="pc-img">{% if p.featured_image %}<img loading="lazy" src="{{ p.featured_image | image_url: width: 700 }}" alt="{{ p.title | escape }}">{% endif %}</div>
+    <div class="pc-panel">
+      <span class="pc-title">{{ p.title | escape }}</span>
+      <span class="pc-price">{% if p.compare_at_price > p.price %}<s>₪{{ p.compare_at_price | divided_by: 100 }}</s> {% endif %}₪{{ p.price | divided_by: 100 }}</span>
+      {% unless p.available %}<span class="pc-out">אזל מהמלאי</span>{% endunless %}
+    </div>
+  </a>
+{% endfor %}
+</div>
+<div class="empty" id="empty" hidden>אין פריטים שמתאימים לסינון</div>
+</main>
+<footer>
+  <div class="ft-top" data-reveal>
+    <div class="ft-cta">
+      <img class="ft-cta-mark" src="https://tomermazuz2014.github.io/laymr-redesign/images/logo-lm.png" alt="LAYMR">
+      <span class="ft-kick"><i></i>Newsletter</span>
+      <h3 class="ft-h">הצטרפו למועדון <em>LAYMR</em></h3>
+      <p class="fnote">הטבות, השקות ועדכונים — ראשונים אצלכם במייל</p>
+      <form class="nform ft-form" id="newsForm">
+        <input type="email" placeholder="כתובת אימייל" required aria-label="כתובת אימייל">
+        <button type="submit" aria-label="הרשמה"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg></button>
+      </form>
+      <p class="nok" id="newsOk">תודה — נרשמת בהצלחה (דמו)</p>
+    </div>
+    <div class="ft-cols">
+      <div class="fcol">
+        <h3>Shop</h3>
+        <ul id="fshop"></ul>
+      </div>
+      <div class="fcol">
+        <h3>Info</h3>
+        <ul>
+          <li><a href="/policies/privacy-policy">מדיניות פרטיות</a></li>
+          <li><a href="/policies/refund-policy">החלפות והחזרות</a></li>
+          <li><a href="/policies/shipping-policy">מדיניות משלוחים</a></li>
+          <li><a href="/policies/terms-of-service">תקנון ותנאי שימוש</a></li>
+          <li><a href="#">הצהרת נגישות</a></li>
+          <li><a href="#">ביטול עסקה</a></li>
+        </ul>
+      </div>
+      <div class="fcol">
+        <h3>Service</h3>
+        <ul>
+          <li>מענה טלפוני: ב'-ה', 09:00-16:00</li>
+          <li><a href="https://wa.me/972505506008">וואטסאפ: 0505506008</a></li>
+          <li><a href="mailto:laymr@eyal-golan.co.il">laymr@eyal-golan.co.il</a></li>
+        </ul>
+        <div class="ft-giant" aria-hidden="true">LAYMR</div>
+      </div>
+    </div>
+  </div>
+  <div class="ft-mid">
+    <div class="ft-social">
+      <a class="ft-soc" href="https://www.instagram.com/laymr.official/" target="_blank" rel="noopener" aria-label="Instagram"><img src="https://tomermazuz2014.github.io/laymr-redesign/images/icons/icon-instagram.svg" alt="" width="18" height="18"></a>
+      <a class="ft-soc" href="https://wa.me/972505506008" target="_blank" rel="noopener" aria-label="WhatsApp"><img src="https://tomermazuz2014.github.io/laymr-redesign/images/icons/icon-whatsapp.svg" alt="" width="18" height="18"></a>
+      <a class="ft-soc" href="mailto:laymr@eyal-golan.co.il" aria-label="אימייל"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
+    </div>
+    <a class="ft-up" href="#"><span>חזרה למעלה</span><svg viewBox="0 0 24 24"><path d="M12 19V5"/><path d="m6 11 6-6 6 6"/></svg></a>
+  </div>
+  <div class="fbottom">
+    <span>© 2026 LAYMR</span>
+    <span>כל הזכויות שמורות</span>
+  </div>
+</footer>
+
+<!-- תפריט מלא -->
+<div class="menu-overlay" id="menuOverlay" aria-label="תפריט">
+  <div class="mo-head">
+    <a class="mo-logo" href="/" aria-label="LAYMR"><img src="https://tomermazuz2014.github.io/laymr-redesign/images/logo-lm.png" alt="LAYMR"></a>
+    <button id="menuClose" class="mo-x" aria-label="סגירה"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="mo-body" id="moLinks"></div>
+  <div class="mo-foot">
+    <div class="mo-foot-row">
+      <span class="mo-region">ישראל | ILS ₪</span>
+      <div class="mo-links"><a href="/search">חיפוש</a><a href="#" data-acct>חשבון</a></div>
+    </div>
+    <div class="mo-social">
+      <a href="https://www.instagram.com/laymr.official/" target="_blank" rel="noopener" aria-label="Instagram"><img src="https://tomermazuz2014.github.io/laymr-redesign/images/icons/icon-instagram.svg" alt=""></a>
+      <a href="https://wa.me/972505506008" target="_blank" rel="noopener" aria-label="WhatsApp"><img src="https://tomermazuz2014.github.io/laymr-redesign/images/icons/icon-whatsapp.svg" alt=""></a>
+      <a href="mailto:laymr@eyal-golan.co.il" aria-label="אימייל"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
+    </div>
+  </div>
+</div>
+
+<!-- עגלה -->
+<!-- אודות -->
+<div class="about-overlay" id="aboutOverlay" aria-label="אודות">
+  <div class="mo-head">
+    <span class="micro-he">אודות</span>
+    <button id="aboutClose" class="micro-he">סגירה</button>
+  </div>
+  <button class="ab-x" id="aboutX" aria-label="סגירה"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <div class="about-body">
+    <div class="about-text">
+      <span class="ab-kick"><i></i>About — LAYMR by Eyal Golan</span>
+      <h2 class="ab-title">אופנה<br>עם <em>זהות.</em></h2>
+      <p class="ab-lead">LAYMR הוא מותג האופנה של אייל גולן — פריטים ואקססוריז שמביאים סגנון אישי וייחודי לכל אחד, עם איכות גבוהה ומחירים נגישים.</p>
+      <p class="ab-p">המותג מציע מגוון פריטים המשלבים עיצוב מודרני עם אלמנטים המייצגים את זהותו האישית של אייל — גזרות נוחות, בדים נעימים ופרטים קטנים שעושים את ההבדל.</p>
+      <p class="ab-p">אנחנו שואפים לייצר חווית קנייה ייחודית, שמחברת בין עולם האופנה לאנשים שלובשים אותו — פריטים מותאמים לכל גיל ולכל סגנון, מהבמה ועד הרחוב.</p>
+      <ul class="ab-vals">
+        <li><b>01</b><span>עיצוב ישראלי</span></li>
+        <li><b>02</b><span>איכות ללא פשרות</span></li>
+        <li><b>03</b><span>מחיר נגיש לכולם</span></li>
+        <li><b>04</b><span>שירות אישי</span></li>
+      </ul>
+      <div class="ab-ctas">
+        <a class="ab-btn" href="/collections/%D7%A7%D7%99%D7%A5-new">לקולקציה החדשה<svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></svg></a>
+        <a class="ab-link" href="https://www.instagram.com/laymr.official/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+      <div class="ab-sign" aria-hidden="true">LAYMR</div>
+    </div>
+    <div class="about-media">
+      <video class="about-video" muted loop playsinline preload="none" poster="https://tomermazuz2014.github.io/laymr-redesign/images/about-poster.jpg" data-msrc="https://tomermazuz2014.github.io/laymr-redesign/media/about-m.mp4" data-mposter="https://tomermazuz2014.github.io/laymr-redesign/images/about-m-poster.jpg" aria-label="LAYMR — אייל גולן"><source src="https://tomermazuz2014.github.io/laymr-redesign/media/about.mp4" type="video/mp4"></video>
+      <span class="ab-tag">LAYMR · 2026</span>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="cart-drawer" id="cartDrawer" aria-label="עגלת קניות">
+  <div class="cd-head">
+    <h3 class="cd-title">העגלה שלך <span class="cd-count" id="cdCount">0</span></h3>
+    <button id="cartClose" class="cd-x" aria-label="סגירה"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="cd-ship" id="cdShip"><p></p><div class="cd-bar"><i></i></div></div>
+  <div class="cd-body" id="cdBody"></div>
+  <div class="cd-foot" id="cdFoot"></div>
+</aside>
+
+<aside class="acct-drawer" id="acctDrawer" aria-label="חשבון">
+  <div class="cd-head">
+    <h3 class="cd-title" id="acctTitle">החשבון שלי</h3>
+    <button id="acctClose" class="cd-x" aria-label="סגירה"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="ac-body" id="acctBody"></div>
+</aside>
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const NAV = [
+  {t:'חדש', u:'/collections/%D7%A7%D7%99%D7%A5-new'},
+  {t:'מכופתרות', u:'/collections/%D7%A7%D7%95%D7%9C%D7%A7%D7%A6%D7%99%D7%99%D7%AA-%D7%97%D7%92'},
+  {t:'מכנסיים', u:'/collections/%D7%A7%D7%A4%D7%95%D7%A6%D7%95%D7%A0%D7%99%D7%9D'},
+  {t:'חולצות', u:'/collections/%D7%97%D7%95%D7%9C%D7%A6%D7%95%D7%AA'},
+  {t:'אקססוריז', u:'/collections/%D7%92%D7%95%D7%A4%D7%99%D7%95%D7%AA'},
+  {t:'חליפות', u:'/collections/%D7%97%D7%9C%D7%99%D7%A4%D7%95%D7%AA'},
+  {t:'ספורט', u:'/collections/%D7%A1%D7%A4%D7%95%D7%A8%D7%98'},
+  {t:'Outlet', u:'/collections/%D7%A7%D7%95%D7%9C%D7%A7%D7%A6%D7%99%D7%99%D7%AA-%D7%A7%D7%99%D7%A5'},
+  {t:'בגדי ים', u:'/collections/%D7%91%D7%92%D7%93%D7%99-%D7%99%D7%9D'}
+];
+  $('#hnav').innerHTML = NAV.map(n => '<a href="' + n.u + '">' + n.t + '</a>').join('') + '<a href="#about" data-about>אודות</a>';
+  const moChev = '<svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg>';
+  $('#moLinks').innerHTML = NAV.map((n,i) => '<a href="' + n.u + '" style="transition-delay:' + (0.06 + i*0.04) + 's"><span>' + n.t + '</span>' + moChev + '</a>').join('') + '<a href="#about" data-about style="transition-delay:.46s"><span>אודות</span>' + moChev + '</a>';
+  $('#fshop').innerHTML = NAV.map(n => '<li><a href="' + n.u + '">' + n.t + '</a></li>').join('');
+  const scrim = $('#scrim'), menuOverlay = $('#menuOverlay'), cartDrawer = $('#cartDrawer'), acctDrawer = $('#acctDrawer'), aboutOverlay = $('#aboutOverlay');
+  function closeAll(){ scrim.classList.remove('open'); menuOverlay.classList.remove('open'); cartDrawer.classList.remove('open'); acctDrawer.classList.remove('open'); aboutOverlay.classList.remove('open'); }
+  $('#menuOpen').onclick = () => { menuOverlay.classList.add('open'); scrim.classList.add('open'); };
+  $('#menuClose').onclick = closeAll;
+  $('#cartOpen').onclick = () => { scrim.classList.add('open'); cartDrawer.classList.add('open'); loadCart(); };
+  $('#cartClose').onclick = closeAll;
+  const openAbout = () => { closeAll(); aboutOverlay.classList.add('open'); };
+  document.querySelectorAll('[data-about]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openAbout(); }));
+  $('#aboutClose').onclick = closeAll; $('#aboutX').onclick = closeAll;
+  scrim.addEventListener('click', closeAll);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+  const hdrEl = document.querySelector('header'); const onS = () => hdrEl.classList.toggle('scrolled', scrollY > 8); onS(); addEventListener('scroll', onS, {passive: true});
+
+  /* Shopify cart drawer (cart.js API) */
+  const money = v => '₪' + (Number(v) / 100).toLocaleString('he-IL', {maximumFractionDigits: 2}).replace(/\.00$/, '');
+  const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const cartCall = async (url, body) => (await fetch(url, {method: body ? 'POST' : 'GET', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: body ? JSON.stringify(body) : undefined})).json();
+  function renderCart(c){
+    $('#cdCount').textContent = c.item_count;
+    const body = $('#cdBody'), foot = $('#cdFoot');
+    if (!c.items.length){ body.innerHTML = '<div class="cd-empty"><h4>העגלה שלך ריקה</h4><p>הפריטים שתוסיפו יופיעו כאן.</p><a class="btn-line" href="/collections/all">המשך בקנייה</a></div>'; foot.innerHTML = ''; return; }
+    body.innerHTML = c.items.map(it => '<div class="cd-item"><a href="' + esc(it.url) + '"><img src="' + esc(it.image) + '" alt=""></a><div><a class="cd-ttl" href="' + esc(it.url) + '">' + esc(it.product_title) + '</a>' + (it.variant_title && it.variant_title !== 'Default Title' ? '<div class="cd-var">' + esc(it.variant_title) + '</div>' : '') +
+      '<div class="cd-row"><div class="cd-qty"><button data-k="' + esc(it.key) + '" data-q="' + (it.quantity + 1) + '" aria-label="יותר">+</button><span>' + it.quantity + '</span><button data-k="' + esc(it.key) + '" data-q="' + (it.quantity - 1) + '" aria-label="פחות">−</button></div><span class="cd-pr">' + money(it.final_line_price) + '</span></div>' +
+      '<button class="cd-rm" data-k="' + esc(it.key) + '" data-q="0">הסרה</button></div></div>').join('');
+    foot.innerHTML = '<div class="cd-sub"><span>סה"כ</span><span>' + money(c.total_price) + '</span></div><a class="cd-go" href="/checkout"><span>לתשלום</span><span>' + money(c.total_price) + '</span></a><a class="cd-more" href="/collections/all">המשך בקנייה</a>';
+    body.querySelectorAll('button[data-k]').forEach(b => b.onclick = async () => renderCart(await cartCall('/cart/change.js', {id: b.dataset.k, quantity: Math.max(0, +b.dataset.q)})));
+  }
+  const loadCart = async () => { try { renderCart(await cartCall('/cart.js')); } catch (e) {} };
+  document.addEventListener('cart:updated', loadCart);
+  loadCart();
+  const nf = $('#newsForm'); if (nf) nf.addEventListener('submit', e => { e.preventDefault(); $('#newsOk').style.display = 'block'; });
+})();
+</script>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const NAV = [
+  {t:'חדש', u:'/collections/%D7%A7%D7%99%D7%A5-new'},
+  {t:'מכופתרות', u:'/collections/%D7%A7%D7%95%D7%9C%D7%A7%D7%A6%D7%99%D7%99%D7%AA-%D7%97%D7%92'},
+  {t:'מכנסיים', u:'/collections/%D7%A7%D7%A4%D7%95%D7%A6%D7%95%D7%A0%D7%99%D7%9D'},
+  {t:'חולצות', u:'/collections/%D7%97%D7%95%D7%9C%D7%A6%D7%95%D7%AA'},
+  {t:'אקססוריז', u:'/collections/%D7%92%D7%95%D7%A4%D7%99%D7%95%D7%AA'},
+  {t:'חליפות', u:'/collections/%D7%97%D7%9C%D7%99%D7%A4%D7%95%D7%AA'},
+  {t:'ספורט', u:'/collections/%D7%A1%D7%A4%D7%95%D7%A8%D7%98'},
+  {t:'Outlet', u:'/collections/%D7%A7%D7%95%D7%9C%D7%A7%D7%A6%D7%99%D7%99%D7%AA-%D7%A7%D7%99%D7%A5'},
+  {t:'בגדי ים', u:'/collections/%D7%91%D7%92%D7%93%D7%99-%D7%99%D7%9D'}
+];
+  const h = {{ collection.handle | json }};
+  const grid = $('#grid'), cards = [...grid.querySelectorAll('.pc')];
+  const cats = [{t: 'הכל', u: '/collections/all'}].concat(NAV);
+  $('#colCats').innerHTML = cats.map(n => { const ch = decodeURIComponent((n.u.split('/collections/')[1] || '')); return '<a href="' + n.u + '" class="' + (ch === h ? 'on' : '') + '">' + n.t + '</a>'; }).join('');
+  const sizes = new Set(); cards.forEach(c => c.dataset.opts.split('|').forEach(o => { if (o && o.trim() && /^(XS|S|M|L|XL|XXL|XXXL|2XL|3XL|4XL|\d+)$/.test(o.trim())) sizes.add(o.trim()); }));
+  const order = ['XS','S','M','L','XL','XXL','XXXL','2XL','3XL','4XL'];
+  $('#sizeOpts').innerHTML = [...sizes].sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99) || a.localeCompare(b)).map(v => '<button data-v="' + v + '">' + v + '</button>').join('');
+  const state = {sort: 'featured', size: null, hideOut: false};
+  const draw = () => {
+    let l = cards.slice();
+    if (state.size) l = l.filter(c => ('|' + c.dataset.opts).includes('|' + state.size + '|'));
+    if (state.hideOut) l = l.filter(c => c.dataset.avail === 'true');
+    if (state.sort === 'low') l.sort((a, b) => +a.dataset.price - +b.dataset.price);
+    if (state.sort === 'high') l.sort((a, b) => +b.dataset.price - +a.dataset.price);
+    if (state.sort === 'new') l.sort((a, b) => (b.dataset.new || '').localeCompare(a.dataset.new || ''));
+    cards.forEach(c => c.style.display = 'none');
+    l.forEach(c => { c.style.display = ''; grid.appendChild(c); });
+    $('#count').textContent = l.length;
+    $('#empty').hidden = l.length > 0;
+  };
+  $('#sortOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.sort = b.dataset.v; $('#sortOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); draw(); };
+  $('#sizeOpts').onclick = e => { const b = e.target.closest('button'); if (!b) return; state.size = state.size === b.dataset.v ? null : b.dataset.v; $('#sizeOpts').querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.v === state.size)); draw(); };
+  $('#hideOut').onchange = e => { state.hideOut = e.target.checked; draw(); };
+  $('#fpClear').onclick = () => { state.sort = 'featured'; state.size = null; state.hideOut = false; $('#hideOut').checked = false; $('#sortOpts').querySelectorAll('button').forEach((x, i) => x.classList.toggle('on', i === 0)); $('#sizeOpts').querySelectorAll('button').forEach(x => x.classList.remove('on')); draw(); };
+  const pop = $('#filterPop'), fbtn = $('#filterBtn');
+  fbtn.onclick = () => { const o = pop.classList.toggle('open'); fbtn.setAttribute('aria-expanded', o); };
+  document.addEventListener('click', e => { if (!e.target.closest('.col-filter')) pop.classList.remove('open'); });
+  draw();
+})();
+</script>
+
+{% schema %}
+{"name": "LAYMR Collection", "settings": []}
+{% endschema %}
