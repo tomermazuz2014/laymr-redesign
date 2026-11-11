@@ -711,10 +711,10 @@ footer{position:relative;overflow:hidden}
       <div class="fcol">
         <h3>Info</h3>
         <ul>
-          <li><a href="page.html?id=privacy-policy">מדיניות פרטיות</a></li>
-          <li><a href="page.html?id=refund-policy">החלפות והחזרות</a></li>
-          <li><a href="page.html?id=shipping-policy">מדיניות משלוחים</a></li>
-          <li><a href="page.html?id=terms-of-service">תקנון ותנאי שימוש</a></li>
+          <li><a href="/policies/privacy-policy">מדיניות פרטיות</a></li>
+          <li><a href="/policies/refund-policy">החלפות והחזרות</a></li>
+          <li><a href="/policies/shipping-policy">מדיניות משלוחים</a></li>
+          <li><a href="/policies/terms-of-service">תקנון ותנאי שימוש</a></li>
           <li><a href="#">הצהרת נגישות</a></li>
           <li><a href="#">ביטול עסקה</a></li>
         </ul>
@@ -820,7 +820,8 @@ footer{position:relative;overflow:hidden}
 
 <script>
 /* ========= נתונים (מהאתר החי) ========= */
-const CDN = (f,w=900)=>'images/'+f.split('?')[0];
+const BASE='https://tomermazuz2014.github.io/laymr-redesign/';
+const CDN = (f,w=900)=>BASE+'images/'+f.split('?')[0];
 
 const NAV = [
   {t:'חדש', u:'/collections/%D7%A7%D7%99%D7%A5-new'},
@@ -908,23 +909,23 @@ function card(p){
     '<div class="pprice">' + price + '</div></div></a>';
 }
 const TILES = [
- {el:'tiles-new', leadEnd:true, title:'NEW IN', t1:'NEW', t2:'IN', kick:'01 — Just landed', url:'/collections/%D7%A7%D7%99%D7%A5-new', video:'media/new-in.mp4',
+ {el:'tiles-new', leadEnd:true, title:'NEW IN', t1:'NEW', t2:'IN', kick:'01 — Just landed', url:'/collections/%D7%A7%D7%99%D7%A5-new', video:BASE+'media/new-in.mp4',
   lead:'10_80b5f7da-2dde-4932-a1ac-6947a0f2c787.png?v=1788861528',
-  imgs:['images/cut/new-1978.png','LAYMR212100.jpg?v=1785693846','images/cut/new-2116.png']},
- {el:'tiles-sale', title:'SUMMER SALE', t1:'SUMMER', t2:'SALE', kick:'02 — Up to 50% off', url:'/collections/%D7%A7%D7%95%D7%9C%D7%A7%D7%A6%D7%99%D7%99%D7%AA-%D7%A7%D7%99%D7%A5', video:'media/summer-sale.mp4',
+  imgs:[BASE+'images/cut/new-1978.png','LAYMR212100.jpg?v=1785693846',BASE+'images/cut/new-2116.png']},
+ {el:'tiles-sale', title:'SUMMER SALE', t1:'SUMMER', t2:'SALE', kick:'02 — Up to 50% off', url:'/collections/%D7%A7%D7%95%D7%9C%D7%A7%D7%A6%D7%99%D7%99%D7%AA-%D7%A7%D7%99%D7%A5', video:BASE+'media/summer-sale.mp4',
   lead:'GUYP1327.jpg?v=1747915951',
-  imgs:['images/cut/sale-0460.png','GUYP1226.jpg?v=1747914921','images/cut/sale-0644.png']},
- {el:'tiles-best', leadEnd:true, title:'BEST SELLERS', t1:'BEST', t2:'SELLERS', kick:'03 — Most wanted', url:'/collections/best-sellers', video:'media/best-sellers.mp4',
+  imgs:[BASE+'images/cut/sale-0460.png','GUYP1226.jpg?v=1747914921',BASE+'images/cut/sale-0644.png']},
+ {el:'tiles-best', leadEnd:true, title:'BEST SELLERS', t1:'BEST', t2:'SELLERS', kick:'03 — Most wanted', url:'/collections/best-sellers', video:BASE+'media/best-sellers.mp4',
   lead:'EyalGolanbrand0093.jpg?v=1743068610',
-  imgs:['IMG_4301_copy.jpg?v=1743258635','images/cut/best-0501.png','images/cut/best-0870.png']}
+  imgs:['IMG_4301_copy.jpg?v=1743258635',BASE+'images/cut/best-0501.png',BASE+'images/cut/best-0870.png']}
 ];
 TILES.forEach(t => {
   const lead = '<a class="tile tile-lead" href="' + t.url + '">' +
     '<video autoplay muted loop playsinline poster="' + CDN(t.lead) + '"><source src="' + t.video + '" type="video/mp4"></video>' +
     '<span class="tile-title"><span class="tt-kick"><i></i>' + t.kick + '</span>' +
     '<span class="tt-main"><span class="tt-solid">' + t.t1 + '</span><span class="tt-hollow">' + t.t2 + '</span></span></span></a>';
-  const imgs = t.imgs.map(f => { const loc = f.startsWith('images/');
-    return '<a class="tile' + (loc ? ' tile-cut' : '') + '" href="' + t.url + '"><img loading="lazy" src="' + (loc ? f : CDN(f)) + '" alt=""></a>'; }).join('');
+  const imgs = t.imgs.map(f => { const loc = /^https?:/.test(f) || f.startsWith('images/');
+    return '<a class="tile' + (loc ? ' tile-cut' : '') + '" href="' + t.url + '"><img loading="lazy" src="' + (loc ? (/^https?:/.test(f) ? f : BASE + f) : CDN(f)) + '" alt=""></a>'; }).join('');
   document.getElementById(t.el).innerHTML = t.leadEnd ? (imgs + lead) : (lead + imgs);
 });
 if (matchMedia('(prefers-reduced-motion: reduce)').matches){
@@ -957,8 +958,8 @@ const CAR_ITEMS = (() => {
 })();
 /* צילומי פריט נקיים קודם, אחריהם שאר הפריטים */
 /* פריטים נקיים בלבד: פאקשוטים שנוצרו + פאקשוטים אמיתיים */
-const GEN = ['images/car/tee10.png','images/car/wash.png','images/car/pants.png','images/car/chloe.png','images/car/lirom.png','images/car/jacket.png'];
-const PACK = ['images/car/cap.png','images/car/gold.png','images/car/figure.png','images/car/album.png'];
+const GEN = [BASE+'images/car/tee10.png',BASE+'images/car/wash.png',BASE+'images/car/pants.png',BASE+'images/car/chloe.png',BASE+'images/car/lirom.png',BASE+'images/car/jacket.png'];
+const PACK = [BASE+'images/car/cap.png',BASE+'images/car/gold.png',BASE+'images/car/figure.png',BASE+'images/car/album.png'];
 const CAR_BASE = GEN.concat(PACK);
 const CAR_N = CAR_BASE.length;
 const CAR_LIST = CAR_BASE.concat(CAR_BASE, CAR_BASE); /* x3 - קרוסלה אינסופית */
