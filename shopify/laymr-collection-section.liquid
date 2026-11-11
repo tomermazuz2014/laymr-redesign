@@ -979,7 +979,8 @@ body.sub header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--war
 {% for p in collection.products %}
   {%- if p.id == 15537348313459 or p.id == 15050137174387 -%}{%- continue -%}{%- endif -%}
   <a class="pc" href="{{ p.url }}" data-avail="{{ p.available }}" data-price="{{ p.price }}" data-new="{{ p.published_at }}" data-opts="{% for v in p.variants %}{% if v.available %}{% for o in v.options %}|{{ o }}{% endfor %}|{% endif %}{% endfor %}|">
-    <div class="pc-img">{% if p.featured_image %}<img loading="lazy" src="{{ p.featured_image | image_url: width: 700 }}" alt="{{ p.title | escape }}">{% endif %}</div>
+    {%- assign cvid = '' -%}{%- if p.handle == 'בגד-ים-אייל' -%}{%- assign cvid = 'pc-swim-hat.mp4' | asset_url -%}{%- elsif p.handle == 'בגד-ים-אייל-כחול' -%}{%- assign cvid = 'pc-swim-pool.mp4' | asset_url -%}{%- endif -%}
+    <div class="pc-img">{% if cvid != '' %}<video class="pc-vid" autoplay muted loop playsinline preload="metadata" poster="{% if p.featured_image %}{{ p.featured_image | image_url: width: 700 }}{% endif %}" aria-hidden="true"><source src="{{ cvid }}" type="video/mp4"></video>{% elsif p.featured_image %}<img loading="lazy" src="{{ p.featured_image | image_url: width: 700 }}" alt="{{ p.title | escape }}">{% endif %}</div>
     <div class="pc-panel">
       <span class="pc-title">{{ p.title | escape }}</span>
       <span class="pc-price">{% if p.compare_at_price > p.price %}<s>₪{{ p.compare_at_price | divided_by: 100 }}</s> {% endif %}₪{{ p.price | divided_by: 100 }}</span>
@@ -1135,7 +1136,7 @@ body.sub header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--war
   $('#moLinks').innerHTML = NAV.map((n,i) => '<a href="' + n.u + '" style="transition-delay:' + (0.06 + i*0.04) + 's"><span>' + n.t + '</span>' + moChev + '</a>').join('') + '<a href="#about" data-about style="transition-delay:.46s"><span>אודות</span>' + moChev + '</a>';
   $('#fshop').innerHTML = NAV.map(n => '<li><a href="' + n.u + '">' + n.t + '</a></li>').join('');
   const scrim = $('#scrim'), menuOverlay = $('#menuOverlay'), cartDrawer = $('#cartDrawer'), aboutOverlay = $('#aboutOverlay');
-  function closeAll(){ scrim.classList.remove('open'); menuOverlay.classList.remove('open'); cartDrawer.classList.remove('open'); aboutOverlay.classList.remove('open'); }
+  function closeAll(){ scrim.classList.remove('open'); menuOverlay.classList.remove('open'); cartDrawer.classList.remove('open'); aboutOverlay.classList.remove('open'); const av = document.querySelector('.about-video'); if (av && !av.paused) av.pause(); }
   $('#menuOpen').onclick = () => { if (matchMedia('(min-width:1181px)').matches){ const h = document.querySelector('header'); const o = h.classList.toggle('nav-open'); $('#menuOpen').setAttribute('aria-expanded', o); } else { menuOverlay.classList.add('open'); scrim.classList.add('open'); } };
   $('#menuClose').onclick = closeAll;
   $('#cartOpen').onclick = () => { scrim.classList.add('open'); cartDrawer.classList.add('open'); loadCart(); };
@@ -1143,7 +1144,9 @@ body.sub header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--war
   const goAccount = e => { if (e) e.preventDefault(); location.href = '/account'; };
   $('#acctOpen').onclick = goAccount;
   document.querySelectorAll('[data-acct]').forEach(a => a.addEventListener('click', goAccount));
-  const openAbout = () => { closeAll(); aboutOverlay.classList.add('open'); };
+  const aboutVid = document.querySelector('.about-video');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelectorAll('.pc-vid').forEach(v => { v.removeAttribute('autoplay'); v.pause(); });
+  const openAbout = () => { closeAll(); aboutOverlay.classList.add('open'); aboutOverlay.querySelector('.about-body').scrollTop = 0; if (aboutVid){ if (!aboutVid.dataset.loaded){ aboutVid.dataset.loaded = 1; if (matchMedia('(max-width:860px)').matches){ const se = aboutVid.querySelector('source'); se.src = aboutVid.dataset.msrc; if (aboutVid.dataset.mposter){ aboutVid.poster = aboutVid.dataset.mposter; } const pi = aboutVid.parentNode.querySelector('.vposter'); if (pi && aboutVid.poster) pi.src = aboutVid.poster; } aboutVid.preload = 'auto'; aboutVid.load(); } aboutVid.play().catch(() => {}); } };
   document.querySelectorAll('[data-about]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openAbout(); }));
   $('#aboutClose').onclick = closeAll; $('#aboutX').onclick = closeAll;
   scrim.addEventListener('click', closeAll);
