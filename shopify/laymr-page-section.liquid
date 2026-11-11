@@ -52,6 +52,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .ticker:hover .ticker__inner{animation-play-state:paused}
 .ticker span{display:inline-block;padding:10px 2.6rem 10px 0;font-size:14px;letter-spacing:.1em;white-space:nowrap;color:#fff;font-weight:500}
 .ticker span::after{content:'·';margin-right:2.6rem;color:rgba(255,255,255,.6)}
+/* the header is fixed; keep the ticker below it on content pages */
+.ticker{margin-top:53px}
 @keyframes marquee{to{transform:translateX(-100%)}}
 
 /* ============ Header ============ */
