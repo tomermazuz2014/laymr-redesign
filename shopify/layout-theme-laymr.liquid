@@ -74,7 +74,11 @@ All other page types keep the original Impact output.
     {{- 'custom-dev.css' | asset_url | stylesheet_tag: preload: true -}}
   </head>
 
-  {%- if request.page_type == 'policy' -%}
+  {%- comment -%} LAYMR chrome for policy pages and all standard pages (page.<suffix> templates keep their own sections and content). {%- endcomment -%}
+  {%- assign laymr_chrome = false -%}
+  {%- if request.page_type == 'policy' -%}{%- assign laymr_chrome = true -%}{%- endif -%}
+  {%- if request.page_type == 'page' -%}{%- assign laymr_chrome = true -%}{%- endif -%}
+  {%- if laymr_chrome -%}
     <body class="laymr-policy">
       <a href="#main" class="skip-to-content sr-only">{{ 'general.accessibility.skip_to_content' | t }}</a>
       <style>.laymr-policy .ticker{margin-top:53px}.laymr-policy .pg-policy{padding-top:48px}</style>
