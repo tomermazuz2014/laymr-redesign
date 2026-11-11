@@ -723,15 +723,23 @@ body:has(.sg-page) .h-mark-logo{opacity:1}
     <div class="pg-in">
       <h1 class="pg-h">{{ page.title | escape }}</h1>
       <div class="pg-body">{{ page.content }}</div>
+      {%- if page.content contains 'consentmo' -%}
+      <noscript>
+        <style>.pg-body form:not([action]):has(input[type="email"]){display:none}</style>
+        <p class="pg-noscript">כדי לשלוח בקשה לפרטיות, יש להפעיל JavaScript בדפדפן, או לפנות אלינו בדוא״ל לכתובת המופיעה בעמוד זה.</p>
+      </noscript>
       <script>
-        /* Privacy/cookie request forms are handled by the Consentmo script in the page content.
-           Forms without an action would fall back to a GET submit and put the email into the URL,
-           so any such form is stopped at submit time. The Consentmo click handlers are unchanged. */
+        /* Consentmo request forms have no action; their submit is handled by the Consentmo click handler.
+           Only those forms are marked: the native submit is stopped so the email never goes into the URL.
+           The Consentmo handler still runs on the button click, so the request is sent as before. */
         document.querySelectorAll('.pg-body form:not([action])').forEach(function (f) {
+          if (!f.querySelector('input[type="email"]') || !f.querySelector('input[id$="-submit"], input[id$="request-submit"]')) return;
+          f.setAttribute('data-csm-form', '');
           f.setAttribute('method', 'post');
           f.setAttribute('onsubmit', 'return false;');
         });
       </script>
+      {%- endif -%}
     </div>
   </section>
   {%- endif -%}
