@@ -663,19 +663,16 @@ footer{position:relative;overflow:hidden}
   <!-- 01 חדש באתר -->
   <section class="section">
     <div class="tile-grid" id="tiles-new" data-reveal></div>
-    <div class="pgrid" id="rail-new" hidden></div>
   </section>
 
   <!-- 02 קיץ SALE -->
   <section class="section">
     <div class="tile-grid" id="tiles-sale" data-reveal></div>
-    <div class="pgrid" id="rail-sale" hidden></div>
   </section>
 
   <!-- 03 BEST SELLERS -->
   <section class="section">
     <div class="tile-grid" id="tiles-best" data-reveal></div>
-    <div class="pgrid" id="rail-best" hidden></div>
   </section>
 
   <!-- פס שירות נע -->
@@ -696,7 +693,7 @@ footer{position:relative;overflow:hidden}
           <span class="pcar-count" id="pcarCount"></span>
           <button id="pcarNext" aria-label="הבא">→</button>
         </div>
-        <a class="pcar-all" href="/collections/all">הצגת הכל</a>
+        <a class="pcar-all" href="/collections/all?sort_by=created-descending">הצגת הכל</a>
       </div>
     </div>
   </section>
@@ -834,7 +831,7 @@ const IMG = {"10_78f335ef-829e-47a2-b195-afca1506cd2a.png": "https://cdn.shopify
 const CDN = (f,w=900)=>{ if(/^(https?:)?\/\//.test(f)) return f.startsWith('//') ? 'https:' + f : f; const n = f.split('?')[0]; return IMG[n] || BASE+'images/'+n; };
 
 const NAV = [
-  {t:'חדש', u:'/collections/%D7%A7%D7%99%D7%A5-new'},
+  {t:'חדש', u:'/collections/all?sort_by=created-descending'},
   {t:'מכופתרות', u:'/collections/%D7%A7%D7%95%D7%9C%D7%A7%D7%A6%D7%99%D7%99%D7%AA-%D7%97%D7%92'},
   {t:'מכנסיים', u:'/collections/%D7%A7%D7%A4%D7%95%D7%A6%D7%95%D7%A0%D7%99%D7%9D'},
   {t:'חולצות', u:'/collections/%D7%97%D7%95%D7%9C%D7%A6%D7%95%D7%AA'},
@@ -853,7 +850,7 @@ const TICKER_MSGS = [
 ];
 
 const NEW_PRODUCTS = [
-{% for p in collections['קיץ-new'].products limit: 8 %}{title:{{ p.title | json }},url:{{ p.url | json }},img:{{ p.featured_image | image_url: width: 900 | json }},hov:{% if p.images.size > 1 %}{{ p.images[1] | image_url: width: 900 | json }}{% else %}null{% endif %},sale:{{ p.price | divided_by: 100.0 }},reg:{% if p.compare_at_price > p.price %}{{ p.compare_at_price | divided_by: 100.0 }}{% else %}null{% endif %},plain:{% if p.compare_at_price > p.price %}null{% else %}{{ p.price | divided_by: 100.0 }}{% endif %},soldout:{% unless p.available %}true{% else %}false{% endunless %}}{% unless forloop.last %},{% endunless %}{% endfor %}
+{% assign recent = collections.all.products | where: 'available', true | reject: 'title', 'דמי משלוח עד הבית' | sort: 'created_at' | reverse %}{% for p in recent limit: 8 %}{title:{{ p.title | json }},url:{{ p.url | json }},img:{{ p.featured_image | image_url: width: 900 | json }},hov:{% if p.images.size > 1 %}{{ p.images[1] | image_url: width: 900 | json }}{% else %}null{% endif %},sale:{{ p.price | divided_by: 100.0 }},reg:{% if p.compare_at_price > p.price %}{{ p.compare_at_price | divided_by: 100.0 }}{% else %}null{% endif %},plain:{% if p.compare_at_price > p.price %}null{% else %}{{ p.price | divided_by: 100.0 }}{% endif %},soldout:{% unless p.available %}true{% else %}false{% endunless %}}{% unless forloop.last %},{% endunless %}{% endfor %}
 ];
 
 const SALE_PRODUCTS = [
@@ -898,7 +895,7 @@ function card(p){
     '<div class="pprice">' + price + '</div></div></a>';
 }
 const TILES = [
- {el:'tiles-new', leadEnd:true, title:'NEW IN', t1:'NEW', t2:'IN', kick:'01 — Just landed', url:'/collections/%D7%A7%D7%99%D7%A5-new', video:'https://cdn.shopify.com/s/files/1/0906/9717/1315/files/new-in.mp4?v=1794400625',
+ {el:'tiles-new', leadEnd:true, title:'NEW IN', t1:'NEW', t2:'IN', kick:'01 — Just landed', url:'/collections/all?sort_by=created-descending', video:'https://cdn.shopify.com/s/files/1/0906/9717/1315/files/new-in.mp4?v=1794400625',
   lead:'10_80b5f7da-2dde-4932-a1ac-6947a0f2c787.png?v=1788861528',
   imgs:['https://cdn.shopify.com/s/files/1/0906/9717/1315/files/cut-new-1978.png?v=1794400615','LAYMR212100.jpg?v=1785693846','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/cut-new-2116.png?v=1794400615']},
  {el:'tiles-sale', title:'SUMMER SALE', t1:'SUMMER', t2:'SALE', kick:'02 — Up to 50% off', url:'/collections/%D7%A7%D7%95%D7%9C%D7%A7%D7%A6%D7%99%D7%99%D7%AA-%D7%A7%D7%99%D7%A5', video:'https://cdn.shopify.com/s/files/1/0906/9717/1315/files/summer-sale.mp4?v=1794400625',
@@ -917,11 +914,6 @@ TILES.forEach(t => {
     return '<a class="tile' + (loc ? ' tile-cut' : '') + '" href="' + t.url + '"><img loading="lazy" src="' + (loc ? (/^https?:/.test(f) ? f : BASE + f) : CDN(f)) + '" alt=""></a>'; }).join('');
   document.getElementById(t.el).innerHTML = t.leadEnd ? (imgs + lead) : (lead + imgs);
 });
-/* מוצרים אמיתיים מהקולקציות: אם הקולקציה ריקה (למשל טיוטות) השורה נשארת מוסתרת */
-const rail = (id, list) => { const el = document.getElementById(id); if (!el || !list.length) return; el.innerHTML = list.map(card).join(''); el.hidden = false; };
-rail('rail-new', NEW_PRODUCTS);
-rail('rail-sale', SALE_PRODUCTS);
-rail('rail-best', BEST_PRODUCTS);
 if (matchMedia('(prefers-reduced-motion: reduce)').matches){
   document.querySelectorAll('.tile video').forEach(v => { v.removeAttribute('autoplay'); v.pause(); });
 }
@@ -954,11 +946,11 @@ const CAR_ITEMS = (() => {
 /* פריטים נקיים בלבד: פאקשוטים שנוצרו + פאקשוטים אמיתיים */
 const GEN = ['https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-tee10.png?v=1794400614','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-wash.png?v=1794400615','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-pants.png?v=1794400614','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-chloe.png?v=1794400614','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-lirom.png?v=1794400614','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-jacket.png?v=1794400614'];
 const PACK = ['https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-cap.png?v=1794400615','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-gold.png?v=1794400614','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-figure.png?v=1794400614','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-album.png?v=1794400614'];
-const CAR_BASE = GEN.concat(PACK);
+const CAR_BASE = NEW_PRODUCTS.length ? NEW_PRODUCTS.map(p => ({src: CDN(p.img), url: p.url, alt: p.title})) : GEN.concat(PACK).map(src => ({src, url: '/collections/all?sort_by=created-descending', alt: ''}));
 const CAR_N = CAR_BASE.length;
 const CAR_LIST = CAR_BASE.concat(CAR_BASE, CAR_BASE); /* x3 - קרוסלה אינסופית */
-document.getElementById('pcarTrack').innerHTML = CAR_LIST.map(src =>
-  '<a class="pcar-item" href="/collections/all"><img loading="lazy" src="' + src + '" alt=""></a>').join('');
+document.getElementById('pcarTrack').innerHTML = CAR_LIST.map(it =>
+  '<a class="pcar-item" href="' + H(it.url) + '"><img loading="lazy" src="' + it.src + '" alt="' + H(it.alt) + '"></a>').join('');
 const carTrack = document.getElementById('pcarTrack');
 const carItems = [...carTrack.children];
 let carIdx = CAR_N; /* הפריט הראשון בעותק האמצעי - האחרון נראה משמאלו */
