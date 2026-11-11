@@ -1229,7 +1229,9 @@ body.sub .ticker{margin-top:52px}
         o.values.map(v => '<button type="button" data-i="' + i + '" data-v="' + esc(v) + '" class="' + (sel[i] === v ? 'on' : '') + (availFor(i, v) ? '' : ' off') + '">' + esc(v) + '</button>').join('') + '</div></div>';
     }).join('');
     optsEl.querySelectorAll('.pdp-cur').forEach(b => b.onclick = () => b.parentElement.classList.toggle('open'));
-    optsEl.querySelectorAll('button[data-v]').forEach(b => b.onclick = () => { sel[+b.dataset.i] = b.dataset.v; drawOpts(); drawPrice(); });
+    /* עדכון ?variant= בכתובת לפי הבחירה, בלי רענון העמוד, כדי שקישור שנפתח מחדש ישחזר את הבחירה */
+    const syncUrl = () => { const v = variantFor(); const u = new URL(location.href); if (u.searchParams.get('variant') !== String(v.id)) { u.searchParams.set('variant', v.id); history.replaceState(history.state, '', u.pathname + u.search + u.hash); } };
+    optsEl.querySelectorAll('button[data-v]').forEach(b => b.onclick = () => { sel[+b.dataset.i] = b.dataset.v; drawOpts(); drawPrice(); syncUrl(); });
   };
 
   /* price + gallery sync by variant image */
