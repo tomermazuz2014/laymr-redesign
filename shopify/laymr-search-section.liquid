@@ -982,7 +982,13 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
     {% endif %}
   {% endfor %}
   </div>
-  {% if paginate.pages > 1 %}<nav class="search-pages" aria-label="עמודי תוצאות">{{ paginate | default_pagination }}</nav>{% endif %}
+  {% if paginate.pages > 1 %}
+  <nav class="search-pages" aria-label="עמודי תוצאות">
+    {% if paginate.previous %}<a href="{{ paginate.previous.url }}" rel="prev">הקודם</a>{% endif %}
+    {% for part in paginate.parts %}{% if part.is_link %}<a href="{{ part.url }}">{{ part.title }}</a>{% elsif part.title == '…' %}<span>…</span>{% else %}<span class="current" aria-current="page">{{ part.title }}</span>{% endif %}{% endfor %}
+    {% if paginate.next %}<a href="{{ paginate.next.url }}" rel="next">הבא</a>{% endif %}
+  </nav>
+  {% endif %}
   {% endpaginate %}
 {% endif %}
 </div>
