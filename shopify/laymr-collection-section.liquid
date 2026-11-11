@@ -976,7 +976,7 @@ body.sub header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--war
 <div class="plist" id="grid">
 {% paginate collection.products by 250 %}
 {% for p in collection.products %}
-  {%- if p.id == 15537348313459 -%}{%- continue -%}{%- endif -%}
+  {%- if p.id == 15537348313459 or p.id == 15050137174387 -%}{%- continue -%}{%- endif -%}
   <a class="pc" href="{{ p.url }}" data-avail="{{ p.available }}" data-price="{{ p.price }}" data-new="{{ p.published_at }}" data-opts="{% for v in p.variants %}{% if v.available %}{% for o in v.options %}|{{ o }}{% endfor %}|{% endif %}{% endfor %}|">
     <div class="pc-img">{% if p.featured_image %}<img loading="lazy" src="{{ p.featured_image | image_url: width: 700 }}" alt="{{ p.title | escape }}">{% endif %}</div>
     <div class="pc-panel">
@@ -991,7 +991,7 @@ body.sub header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--war
 <div class="empty" id="empty" hidden>אין פריטים שמתאימים לסינון</div>
 </main>
 <footer>
-  <div class="ft-top" data-reveal>
+  <div class="ft-top">
     <div class="ft-cta">
       <img class="ft-cta-mark" src="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/logo-lm.png?v=1794400614" alt="LAYMR">
       <span class="ft-kick"><i></i>Newsletter</span>
