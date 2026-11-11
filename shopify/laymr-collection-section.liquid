@@ -660,6 +660,8 @@ body.sub .ticker{margin-top:52px}
 }
 .empty{padding:60px 0;text-align:center;color:#6f6252}
 .pg.collection{padding-top:52px;padding-bottom:0}
+body.sub header{color:#fff;background:#1d1a17;border-bottom:1px solid rgba(255,255,255,.08)}
+body.sub header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--warm) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--warm-line)}
 .pg.collection .plist{margin-bottom:0}
 .col-bar{position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px;height:62px;padding:0 var(--pad);margin:0 calc(-1*var(--pad)) 3px;border-bottom:1px solid var(--line)}
 .col-name{margin:0;font-family:var(--font-he);font-weight:500;font-size:16px;letter-spacing:0;display:flex;align-items:baseline;gap:8px;white-space:nowrap}
@@ -940,6 +942,10 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
   </div>
 </header>
 <main class="pg collection" dir="rtl">
+<div class="ticker" dir="ltr" aria-label="הודעות משלוח">
+  <div class="ticker__inner" id="tickerA"></div>
+  <div class="ticker__inner" aria-hidden="true" id="tickerB"></div>
+</div>
 <div class="col-bar">
   <h1 class="col-name"><span id="colTitle">{{ collection.title | escape }}</span><small id="count"></small></h1>
   <nav class="col-cats" id="colCats" aria-label="קטגוריות"></nav>
@@ -1096,6 +1102,11 @@ body,h1,h2,h3,h4,h5,h6,p,a,span,li,button,input,select,textarea,label{font-famil
 </aside>
 <script>
 (function(){
+  document.body.classList.add('sub');
+  const TICKER_MSGS = ['משלוח חינם בקנייה מעל 199 ₪', 'עד 199 ₪ — משלוח ב-29 ₪ בלבד', 'משלוח מהיר עד 5 ימי עסקים עם שליח עד הבית', 'LAYMR — SUMMER SALE'];
+  const tickerHTML = TICKER_MSGS.concat(TICKER_MSGS).map(m => '<span dir="rtl">' + m + '</span>').join('');
+  document.getElementById('tickerA').innerHTML = tickerHTML;
+  document.getElementById('tickerB').innerHTML = tickerHTML;
   const $ = s => document.querySelector(s);
   const NAV = [
   {t:'חדש', u:'/collections/%D7%A7%D7%99%D7%A5-new'},
