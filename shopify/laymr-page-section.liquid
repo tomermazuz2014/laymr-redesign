@@ -616,6 +616,31 @@ footer{position:relative;overflow:hidden}
 .pg-404 p{margin:0 0 22px;font-size:16px}
 .pg-404 a{display:inline-block;border:1px solid var(--warm-ink);padding:12px 26px;border-radius:999px;font-size:14px}
 
+/* ===== מדריך מידות (טבלאות מידה לחולצות ולמכנסיים) ===== */
+.sg-page header{color:var(--ink);background:var(--bg);border-bottom:1px solid var(--line)}
+.sg-page header.scrolled{background:var(--bg)}
+.sg-page .h-mark-text{opacity:0}
+.sg-page .h-mark-logo{opacity:1}
+.sg{padding:clamp(28px,5vw,64px) var(--pad) clamp(50px,6vw,90px)}
+.sg-in{max-width:640px;margin:0 auto}
+.sg-h{font-family:var(--font-he);font-weight:600;font-size:clamp(30px,4vw,48px);line-height:1.1;margin:0 0 12px;color:var(--ink)}
+.sg-lead{font-size:15px;line-height:1.7;color:#4a4a46;margin:0 0 28px;max-width:52ch}
+.sg-tabs{display:flex;border-bottom:1px solid var(--line);margin:0 0 6px}
+.sg-tabs a{flex:1;text-align:center;padding:12px 0;font-size:14px;color:#6a6a66;border-bottom:1.5px solid transparent;margin-bottom:-1px;transition:color .3s}
+.sg-tabs a[aria-current="page"]{color:var(--ink);font-weight:600;border-bottom-color:var(--ink)}
+.sg-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:15px;color:var(--ink)}
+.sg-cap{caption-side:top;text-align:start;font-size:13px;font-weight:600;padding:18px 0 10px}
+.sg-table th,.sg-table td{padding:14px 8px;text-align:center;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.sg-table thead th{font-size:12px;font-weight:600;color:#6a6a66;line-height:1.35;border-bottom:1px solid var(--ink);padding:10px 8px}
+.sg-table tbody th{font-weight:700}
+.sg-table td{direction:ltr;unicode-bidi:isolate}
+@media(max-width:560px){
+  .sg-table{font-size:14px}
+  .sg-table th,.sg-table td{padding:12px 4px}
+  .sg-table thead th{font-size:11px;padding:8px 4px}
+  .sg-tabs a{font-size:13px}
+}
+
 </style>
 
 
@@ -643,12 +668,55 @@ footer{position:relative;overflow:hidden}
   <div class="ticker__inner" aria-hidden="true" id="tickerB"></div>
 </div>
 
-<main id="main">
+{%- assign sg_pants = 'טבלת-מידות-מכנסיים-דגמחים-ברמודות-בגדי-ים' -%}
+{%- assign sg_shirts = 'copy-of-טבלת-מידות-מכנסיים-דגמחים-ברמודות-בגדי-ים' -%}
+{%- assign sg_on = false -%}
+{%- if page.handle == sg_pants or page.handle == sg_shirts -%}{%- assign sg_on = true -%}{%- endif -%}
+<main id="main"{% if sg_on %} class="sg-page"{% endif %}>
   {%- if request.page_type == '404' -%}
   <section class="pg-404">
     <h1 class="pg-h">העמוד לא נמצא</h1>
     <p>הקישור אולי השתנה, או שהעמוד הוסר מהאתר.</p>
     <a href="/">חזרה לדף הבית</a>
+  </section>
+  {%- elsif sg_on -%}
+  <section class="sg">
+    <div class="sg-in">
+      <nav class="sg-tabs" aria-label="קטגוריות מידות">
+        <a href="/pages/{{ sg_shirts | url_escape }}"{% if page.handle == sg_shirts %} aria-current="page"{% endif %}>חולצות</a>
+        <a href="/pages/{{ sg_pants | url_escape }}"{% if page.handle == sg_pants %} aria-current="page"{% endif %}>מכנסיים</a>
+      </nav>
+      <h1 class="sg-h">מדריך מידות</h1>
+      {%- if page.handle == sg_shirts -%}
+      <p class="sg-lead">טבלת המידות לחולצות, בסנטימטרים.</p>
+      <table class="sg-table">
+        <caption class="sg-cap">חולצות</caption>
+        <thead>
+          <tr><th scope="col">מידה</th><th scope="col">היקף חזה (ס״מ)</th><th scope="col">היקף צוואר (ס״מ)</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">S</th><td>90–93</td><td>38.5</td></tr>
+          <tr><th scope="row">M</th><td>94–98</td><td>39.5</td></tr>
+          <tr><th scope="row">L</th><td>99–102</td><td>40.5</td></tr>
+          <tr><th scope="row">XL</th><td>103–107</td><td>41.5</td></tr>
+        </tbody>
+      </table>
+      {%- else -%}
+      <p class="sg-lead">טבלת המידות למכנסיים, דגמחים, ברמודות ובגדי ים.</p>
+      <table class="sg-table">
+        <caption class="sg-cap">מכנסיים</caption>
+        <thead>
+          <tr><th scope="col">מידה</th><th scope="col">היקף מותנים</th><th scope="col">היקף אגן</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">S</th><td>76–79</td><td>89–92</td></tr>
+          <tr><th scope="row">M</th><td>80–83</td><td>93–95</td></tr>
+          <tr><th scope="row">L</th><td>84–86</td><td>96–99</td></tr>
+          <tr><th scope="row">XL</th><td>88–90</td><td>100–103</td></tr>
+        </tbody>
+      </table>
+      {%- endif -%}
+    </div>
   </section>
   {%- else -%}
   <section class="pg">
