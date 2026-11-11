@@ -1003,7 +1003,7 @@ const cartDrawer = document.getElementById('cartDrawer');
 function closeAll(){ scrim.classList.remove('open'); menuOverlay.classList.remove('open'); cartDrawer.classList.remove('open'); const ad = document.getElementById('acctDrawer'); if (ad) ad.classList.remove('open'); document.getElementById('aboutOverlay').classList.remove('open'); const av = document.querySelector('.about-video'); if (av && !av.paused) av.pause(); }
 document.getElementById('menuOpen').onclick = () => { if (matchMedia('(min-width:1181px)').matches){ const h = document.querySelector('header'); const o = h.classList.toggle('nav-open'); document.getElementById('menuOpen').setAttribute('aria-expanded', o); } else menuOverlay.classList.add('open'); };
 document.getElementById('menuClose').onclick = closeAll;
-document.getElementById('cartOpen').onclick = () => { scrim.classList.add('open'); cartDrawer.classList.add('open'); };
+document.getElementById('cartOpen').onclick = () => { scrim.classList.add('open'); cartDrawer.classList.add('open'); loadCart(); };
 document.getElementById('cartClose').onclick = closeAll;
 const aboutVid = document.querySelector('.about-video');
 const openAbout = () => { closeAll(); const ov = document.getElementById('aboutOverlay'); ov.classList.add('open'); ov.classList.remove('scrolled'); ov.querySelector('.about-body').scrollTop = 0; if (aboutVid){ if (!aboutVid.dataset.loaded){ aboutVid.dataset.loaded = 1; if (matchMedia('(max-width:860px)').matches){ const se = aboutVid.querySelector('source'); se.src = aboutVid.dataset.msrc; aboutVid.poster = aboutVid.dataset.mposter; const pi = aboutVid.parentNode.querySelector('.vposter'); if (pi) pi.src = aboutVid.poster; } aboutVid.preload = 'auto'; aboutVid.load(); } aboutVid.play().catch(() => {}); } };
@@ -1016,6 +1016,24 @@ if (location.hash === '#about'){ openAbout(); history.replaceState(null, '', loc
 scrim.onclick = closeAll;
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
 
+  const $ = s => document.querySelector(s);
+  /* Shopify cart drawer (cart.js API) */
+  const money = v => '₪' + (Number(v) / 100).toLocaleString('he-IL', {maximumFractionDigits: 2}).replace(/\.00$/, '');
+  const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const cartCall = async (url, body) => (await fetch(url, {method: body ? 'POST' : 'GET', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: body ? JSON.stringify(body) : undefined})).json();
+  function renderCart(c){
+    $('#cdCount').textContent = c.item_count;
+    const body = $('#cdBody'), foot = $('#cdFoot');
+    if (!c.items.length){ body.innerHTML = '<div class="cd-empty"><h4>העגלה שלך ריקה</h4><p>הפריטים שתוסיפו יופיעו כאן.</p><a class="btn-line" href="/collections/all">המשך בקנייה</a></div>'; foot.innerHTML = ''; return; }
+    body.innerHTML = c.items.map(it => '<div class="cd-item"><a href="' + esc(it.url) + '"><img src="' + esc(it.image) + '" alt=""></a><div><a class="cd-ttl" href="' + esc(it.url) + '">' + esc(it.product_title) + '</a>' + (it.variant_title && it.variant_title !== 'Default Title' ? '<div class="cd-var">' + esc(it.variant_title) + '</div>' : '') +
+      '<div class="cd-row"><div class="cd-qty"><button data-k="' + esc(it.key) + '" data-q="' + (it.quantity + 1) + '" aria-label="יותר">+</button><span>' + it.quantity + '</span><button data-k="' + esc(it.key) + '" data-q="' + (it.quantity - 1) + '" aria-label="פחות">−</button></div><span class="cd-pr">' + money(it.final_line_price) + '</span></div>' +
+      '<button class="cd-rm" data-k="' + esc(it.key) + '" data-q="0">הסרה</button></div></div>').join('');
+    foot.innerHTML = '<div class="cd-sub"><span>סה"כ</span><span>' + money(c.total_price) + '</span></div><a class="cd-go" href="/checkout"><span>לתשלום</span><span>' + money(c.total_price) + '</span></a><a class="cd-more" href="/collections/all">המשך בקנייה</a>';
+    body.querySelectorAll('button[data-k]').forEach(b => b.onclick = async () => renderCart(await cartCall('/cart/change.js', {id: b.dataset.k, quantity: Math.max(0, +b.dataset.q)})));
+  }
+  const loadCart = async () => { try { renderCart(await cartCall('/cart.js')); } catch (e) {} };
+  document.addEventListener('cart:updated', loadCart);
+  loadCart();
 /* ניוזלטר (דמו) */
 document.getElementById('newsForm').addEventListener('submit', e => {
   e.preventDefault();
@@ -1094,7 +1112,6 @@ onScr(); addEventListener('scroll', onScr, {passive:true});
 
 
 
-<script src="https://tomermazuz2014.github.io/laymr-redesign/assets/cart.js"></script>
 <script src="https://tomermazuz2014.github.io/laymr-redesign/assets/account.js"></script>
 
 {% schema %}
