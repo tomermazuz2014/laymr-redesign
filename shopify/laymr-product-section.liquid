@@ -952,6 +952,10 @@ body.sub .ticker{margin-top:52px}
     </div>
   </div>
 </header>
+<div class="ticker" dir="ltr" aria-label="הודעות משלוח">
+  <div class="ticker__inner" id="tickerA"></div>
+  <div class="ticker__inner" aria-hidden="true" id="tickerB"></div>
+</div>
 <main class="pg product" dir="rtl">
 <div class="pdp">
   <div class="pdp-gal">
@@ -1255,6 +1259,17 @@ body.sub .ticker{margin-top:52px}
   };
 
   $('#pdesc').innerHTML = P.body || '<p>פריט מקולקציית LAYMR.</p>';
+})();
+</script>
+
+<script>
+(function(){
+  document.body.classList.add('sub');
+  const MSGS = ['משלוח חינם בקנייה מעל 199 ₪', 'עד 199 ₪ — משלוח ב-29 ₪ בלבד', 'משלוח מהיר עד 5 ימי עסקים עם שליח עד הבית', 'LAYMR — SUMMER SALE'];
+  const html = MSGS.concat(MSGS, MSGS).map(m => '<span dir="rtl">' + m + '</span>').join('');
+  const a = document.getElementById('tickerA'), b = document.getElementById('tickerB');
+  if (a) a.innerHTML = html;
+  if (b) b.innerHTML = html;
 })();
 </script>
 

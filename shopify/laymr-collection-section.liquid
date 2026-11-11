@@ -974,6 +974,7 @@ body.sub header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--war
     </div>
   </div>
 </div>
+<button class="mfilter" id="mFilterBtn" type="button">סינון<svg viewBox="0 0 24 24"><path d="M4 7h16M7 12h10M10 17h4"/></svg></button>
 <div class="plist" id="grid">
 {% paginate collection.products by 250 %}
 {% for p in collection.products %}
@@ -1276,6 +1277,7 @@ body.sub header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--war
   $('#fpClear').onclick = () => { state.sort = 'featured'; state.size = null; state.hideOut = false; $('#hideOut').checked = false; $('#sortOpts').querySelectorAll('button').forEach((x, i) => x.classList.toggle('on', i === 0)); $('#sizeOpts').querySelectorAll('button').forEach(x => x.classList.remove('on')); draw(); };
   const pop = $('#filterPop'), fbtn = $('#filterBtn');
   fbtn.onclick = () => { const o = pop.classList.toggle('open'); fbtn.setAttribute('aria-expanded', o); };
+  const mf = document.getElementById('mFilterBtn'); if (mf) mf.onclick = e => { e.stopPropagation(); const o = pop.classList.toggle('open'); fbtn.setAttribute('aria-expanded', o); };
   document.addEventListener('click', e => { if (!e.target.closest('.col-filter')) pop.classList.remove('open'); });
   draw();
 })();

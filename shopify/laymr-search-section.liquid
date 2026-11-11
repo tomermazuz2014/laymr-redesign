@@ -958,15 +958,17 @@ body.sub .ticker{margin-top:52px}
     </div>
   </div>
 </header>
-<main class="pg search" dir="rtl">
-<div class="col-bar">
-  <h1 class="col-name">חיפוש</h1>
-  <form class="search-form" action="/search" method="get" role="search">
-    <input type="hidden" name="type" value="product">
-    <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="מה תרצו למצוא?" aria-label="חיפוש" autocomplete="off">
-    <button type="submit">חיפוש</button>
-  </form>
+<div class="ticker" dir="ltr" aria-label="הודעות משלוח">
+  <div class="ticker__inner" id="tickerA"></div>
+  <div class="ticker__inner" aria-hidden="true" id="tickerB"></div>
 </div>
+<main class="pg search" dir="rtl">
+<nav class="crumbs" aria-label="פירורי לחם"><a href="/">בית</a><i></i><span>חיפוש</span></nav>
+<form class="sform search-form" action="/search" method="get" role="search">
+  <input type="hidden" name="type" value="product">
+  <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="מה תרצו למצוא?" aria-label="חיפוש" autocomplete="off">
+  <button type="submit">חיפוש</button>
+</form>
 <div id="searchResults" aria-live="polite">
 {% if search.performed %}
   {% if search.results_count == 0 %}<p class="empty">לא נמצאו תוצאות עבור "{{ search.terms | escape }}"</p>{% else %}<p class="search-count">{{ search.results_count }} תוצאות עבור "{{ search.terms | escape }}"</p>{% endif %}
@@ -1244,6 +1246,17 @@ body.sub .ticker{margin-top:52px}
     input.value = p.get('q') || '';
     load(current(), parseInt(p.get('page') || '1', 10), false);
   });
+})();
+</script>
+
+<script>
+(function(){
+  document.body.classList.add('sub');
+  const MSGS = ['משלוח חינם בקנייה מעל 199 ₪', 'עד 199 ₪ — משלוח ב-29 ₪ בלבד', 'משלוח מהיר עד 5 ימי עסקים עם שליח עד הבית', 'LAYMR — SUMMER SALE'];
+  const html = MSGS.concat(MSGS, MSGS).map(m => '<span dir="rtl">' + m + '</span>').join('');
+  const a = document.getElementById('tickerA'), b = document.getElementById('tickerB');
+  if (a) a.innerHTML = html;
+  if (b) b.innerHTML = html;
 })();
 </script>
 
