@@ -1144,11 +1144,11 @@ body.sub .ticker{margin-top:52px}
   function inertOthers(panel, on){ let node = panel; while (node && node.parentElement && node !== document.body){ Array.from(node.parentElement.children).forEach(s => { if (s === node || s.tagName === 'SCRIPT') return; if (on) s.setAttribute('inert', ''); else if (!laymrPanels.includes(s)) s.removeAttribute('inert'); }); node = node.parentElement; } }
   function openPanel(panel, opener, focusEl){ panel.inert = false; panelOpeners.set(panel, opener); panel.classList.add('open'); inertOthers(panel, true); if (focusEl) focusEl.focus(); }
 document.addEventListener('keydown', e => { if (e.key !== 'Tab') return; const open = laymrPanels.find(p => p.classList.contains('open')); if (!open) return; const f = [...open.querySelectorAll('a[href],button:not([disabled]),input,textarea,select,[tabindex]:not([tabindex="-1"])')].filter(el => el.getBoundingClientRect().height > 0); if (!f.length) return; const first = f[0], last = f[f.length-1]; const inside = open.contains(document.activeElement); if (e.shiftKey && (document.activeElement === first || !inside)) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && (document.activeElement === last || !inside)) { e.preventDefault(); first.focus(); } });
-  function closeAll(restore){ const opened = laymrPanels.filter(p => p.classList.contains('open')); const wasMenu = menuOverlay.classList.contains('open'); const opener = opened.length ? panelOpeners.get(opened[opened.length - 1]) : null; scrim.classList.remove('open'); opened.forEach(p => { p.classList.remove('open'); p.inert = true; panelOpeners.delete(p); inertOthers(p, false); }); if (wasMenu) document.getElementById('menuOpen').setAttribute('aria-expanded', 'false'); const av = document.querySelector('.about-video'); if (av && !av.paused) av.pause(); if (restore !== false && opener && opener.isConnected) { for (let n = opener; n && n !== document.body; n = n.parentElement) { if (!laymrPanels.includes(n)) n.removeAttribute('inert'); } opener.focus(); setTimeout(() => { if (document.activeElement !== opener && opener.isConnected) opener.focus(); if (document.activeElement === document.body) { const fb = document.getElementById('cartOpen'); if (fb) fb.focus(); } }, 60); } }
+  function closeAll(restore){ const opened = laymrPanels.filter(p => p.classList.contains('open')); const wasMenu = menuOverlay.classList.contains('open'); const opener = opened.length ? panelOpeners.get(opened[opened.length - 1]) : null; scrim.classList.remove('open'); opened.forEach(p => { p.classList.remove('open'); p.inert = true; panelOpeners.delete(p); inertOthers(p, false); }); if (wasMenu) document.getElementById('menuOpen').setAttribute('aria-expanded', 'false'); const av = document.querySelector('.about-video'); if (av && !av.paused) av.pause(); if (restore !== false && opener && opener.isConnected) { for (let n = opener; n && n !== document.body; n = n.parentElement) { if (!laymrPanels.includes(n)) n.removeAttribute('inert'); } opener.focus(); setTimeout(() => { if (document.activeElement !== opener && opener.isConnected) opener.focus(); }, 60); } }
   $('#menuOpen').onclick = () => { if (matchMedia('(min-width:1181px)').matches){ const h = document.querySelector('header'); const o = h.classList.toggle('nav-open'); $('#menuOpen').setAttribute('aria-expanded', o); } else { openPanel(menuOverlay, document.getElementById('menuOpen'), document.getElementById('menuClose')); scrim.classList.add('open'); $('#menuOpen').setAttribute('aria-expanded', 'true'); } };
   $('#menuClose').onclick = closeAll;
-  $('#cartOpen').onclick = () => { scrim.classList.add('open'); openPanel(cartDrawer, document.getElementById('cartOpen'), document.getElementById('cartClose')); loadCart(); };
-  window.laymrSetCartOpener = el => panelOpeners.set(cartDrawer, el);
+  window.laymrOpenCart = opener => { scrim.classList.add('open'); openPanel(cartDrawer, opener || document.getElementById('cartOpen'), document.getElementById('cartClose')); loadCart(); };
+  $('#cartOpen').onclick = () => window.laymrOpenCart(document.getElementById('cartOpen'));
   $('#cartClose').onclick = closeAll;
   const goAccount = e => { if (e) e.preventDefault(); location.href = '/account'; };
   $('#acctOpen').onclick = goAccount;
@@ -1258,16 +1258,23 @@ document.addEventListener('keydown', e => { if (e.key !== 'Tab') return; const o
   drawOpts(); drawPrice();
 
   /* add to cart (Shopify Cart AJAX API) */
+  let addBusy = false;
   addBtn.onclick = async () => {
-    const v = variantFor(); if (!v.avail) return;
-    addBtn.disabled = true; addBtn.textContent = 'מוסיף...';
+    const v = variantFor(); if (!v.avail || addBusy) return;
+    addBusy = true; addBtn.disabled = true; addBtn.textContent = 'מוסיף...';
+    let ok = false;
     try {
       const r = await fetch('/cart/add.js', {method: 'POST', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: JSON.stringify({items: [{id: v.id, quantity: 1}]})});
       if (!r.ok) throw new Error(await r.text());
-      addBtn.textContent = 'נוסף לסל ✓';
-      document.dispatchEvent(new CustomEvent('cart:updated')); document.getElementById('cartOpen').click(); if (window.laymrSetCartOpener) window.laymrSetCartOpener(addBtn);
+      ok = true;
     } catch (e) { addBtn.textContent = 'שגיאה, נסה שוב'; }
-    setTimeout(() => { addBtn.disabled = false; drawPrice(); }, 1400);
+    addBusy = false; addBtn.disabled = false;
+    if (ok) {
+      addBtn.textContent = 'נוסף לסל ✓';
+      document.dispatchEvent(new CustomEvent('cart:updated'));
+      if (window.laymrOpenCart) window.laymrOpenCart(addBtn); else document.getElementById('cartOpen').click();
+    }
+    setTimeout(() => { if (!addBusy) drawPrice(); }, 1400);
   };
 
   $('#pdesc').innerHTML = P.body || '<p>פריט מקולקציית LAYMR.</p>';
