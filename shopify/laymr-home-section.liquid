@@ -157,11 +157,12 @@ video.vfade.playing{opacity:1}
 
 /* ===== קרוסלת מוצרים ===== */
 .pcar-wrap{margin-top:clamp(40px,6vw,80px);padding-bottom:clamp(64px,7vw,110px)}
-.pcar{overflow:hidden;padding:clamp(76px,9.2vw,140px) 0}
+/* גודל הכרטיס נגזר מגובה המסך: הפריט המרכזי (x1.5) נכנס בשלמותו מתחת להדר */
+.pcar{--pw:clamp(150px,calc((100vh - 330px)/2),320px);overflow:hidden;padding:calc(var(--pw)/3 + 8px) 0}
 .pcar-track{display:flex;gap:clamp(14px,2vw,26px);transition:transform .65s var(--ease);align-items:center}
-.pcar-item{position:relative;flex:0 0 min(26%,320px);aspect-ratio:3/4;background:transparent;transform:scale(.56);transition:transform .7s var(--ease);cursor:pointer}
+.pcar-item{position:relative;flex:0 0 var(--pw);aspect-ratio:3/4;background:transparent;transform:scale(.56);transition:transform .7s var(--ease);cursor:pointer}
 @media (prefers-reduced-motion: reduce){.pcar-track,.pcar-track .pcar-item{transition:none !important}}
-@media(max-width:720px){.pcar-item{flex:0 0 56%}}
+@media(max-width:720px){.pcar{--pw:clamp(150px,min(56vw,calc((100vh - 330px)/2)),320px)}}
 .pcar-item.is-center{transform:scale(1.5);z-index:2}.pcar-track.noanim,.pcar-track.noanim .pcar-item{transition:none}
 .pcar-item img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
 .pcar-bottom{display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:14px}
@@ -989,12 +990,16 @@ addEventListener('resize', () => carPlace(carIdx, true), {passive:true});
   const box = carTrack.parentElement;
   let sx = 0, sy = 0, tracking = false;
   box.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse') return; sx = e.clientX; sy = e.clientY; tracking = true; }, {passive:true});
+  let swipedAt = 0;
   box.addEventListener('pointerup', e => {
     if (!tracking) return; tracking = false;
     const dx = e.clientX - sx, dy = e.clientY - sy;
     if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+    swipedAt = Date.now();
     carGo(carIdx + (dx < 0 ? 1 : -1));
   }, {passive:true});
+  /* החלקה שהסתיימה מעל כרטיס לא פותחת את קישור המוצר */
+  box.addEventListener('click', e => { if (Date.now() - swipedAt < 600){ e.preventDefault(); e.stopPropagation(); } }, true);
   box.addEventListener('pointercancel', () => { tracking = false; }, {passive:true});
 })();
 carPlace(carIdx, true);
