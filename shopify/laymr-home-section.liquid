@@ -181,6 +181,14 @@ header{top:var(--tkoff,0px)}
 .pcar-kick{display:block;font-family:var(--font-lat);font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
 .pcar-title{font-size:clamp(28px,3.2vw,46px);font-weight:600;line-height:1.05;margin:0}
 
+/* באנר ה-SALE מהמערכת במקום סצנת ה-SALE המונפשת; סצנת הקמפיין הוסרה */
+.hero .hsale{background:#ff3030;--bw:min(94vw,1500px,calc((100svh - 230px) * 2.8))}.hsale-word[hidden],.hsale-strip[hidden]{display:none}
+.hsale-ban{position:relative;display:block;width:var(--bw);opacity:0}
+.hsale-ban img{display:block;width:100%;height:auto}
+.hero.sale-on .hsale-ban{animation:hcUp .9s var(--ease) .25s forwards}
+.hsale-excl{position:relative;font-family:var(--font-he);font-weight:600;font-size:clamp(16px,1.5vw,24px);letter-spacing:.02em;opacity:0;margin-top:calc(var(--bw) * -.098)}
+.hero.sale-on .hsale-excl{animation:hcUp .9s var(--ease) .8s forwards}
+@media(max-width:700px){.hero .hsale{--bw:min(84vw,calc((100svh - 300px) * .75))}.hsale-excl{margin-top:calc(var(--bw) * -.13)}}
 /* ===== קרוסלת מוצרים ===== */
 .pcar-wrap{margin-top:clamp(40px,6vw,80px);padding-bottom:clamp(64px,7vw,110px)}
 /* גודל הכרטיס נגזר מגובה המסך: הפריט המרכזי (x1.5) נכנס בשלמותו מתחת להדר */
@@ -657,23 +665,11 @@ footer{position:relative;overflow:hidden}
       <source src="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/hero.mp4?v=1794400620" type="video/mp4">
     </video>
       <div class="hsale" id="heroSale" dir="ltr" aria-hidden="true">
-        <div class="hsale-bg" aria-hidden="true"><span>SALE</span></div>
-        <div class="hsale-word" id="hsaleWord" aria-label="LAYMR SALE"></div>
-        <div class="hsale-card" dir="rtl">
-          <div class="hsale-price">כל האתר <b>69–99</b><span class="ils">₪</span></div>
-          <div class="hsale-note">*לא כולל הקולקציה החדשה</div>
-        </div>
+        <div class="hsale-word" id="hsaleWord" aria-label="LAYMR SALE" hidden></div>
+        <picture class="hsale-ban"><source media="(max-width:700px)" srcset="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/dccef2babfffeab0c3edd02859402684_9b2915b7-5b2b-4adc-890d-3bd9ae77623c.jpg?v=1794439068&width=900" width="1200" height="1600"><img src="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/a8eb4c12e3adedc17c493035a7610a9c_5a0d2ad1-a924-415c-96e2-a19aab678773.jpg?v=1794438997&width=2000" alt="" width="2000" height="714"></picture>
+        <div class="hsale-excl" dir="rtl">*למעט אקססוריז</div>
         <a class="hero-cta hsale-cta" href="/collections/%D7%A7%D7%95%D7%9C%D7%A7%D7%A6%D7%99%D7%99%D7%AA-%D7%A7%D7%99%D7%A5" dir="rtl">לצפייה ב-SALE</a>
-        <div class="hsale-strip" id="hsaleStrip" aria-hidden="true"></div>
-      </div>
-      <div class="hrep" id="heroRep" dir="rtl" aria-hidden="true">
-        <div class="hrep-text">
-          <span class="hrep-line"></span>
-          <h1 class="hrep-h"><span class="hl"><span>לא משאירים</span></span><span class="hl"><span>אף אחד</span></span><span class="hl hl-acc"><span>להילחם לבד.</span></span></h1>
-          <p class="hrep-sub"><span class="hl"><span>יחד מעלים מודעות</span></span><span class="hl"><span>לפוסט-טראומה בקרב לוחמים</span></span></p>
-          <a class="hero-cta hrep-cta" href="/collections/all">לצפייה בקולקציה</a>
-        </div>
-        <div class="hrep-photo"><video id="heroRepVideo" muted playsinline preload="auto" poster="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/hero-rep.jpg?v=1794400615" data-msrc="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/hero-rep-m.mp4?v=1794400625" data-mposter="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/hero-rep-m.jpg?v=1794400614"><source src="https://cdn.shopify.com/s/files/1/0906/9717/1315/files/hero-rep.mp4?v=1794400626" type="video/mp4"></video></div>
+        <div class="hsale-strip" id="hsaleStrip" aria-hidden="true" hidden></div>
       </div>
       <script>(function(){if(!matchMedia("(max-width:700px)").matches)return;document.querySelectorAll("video[data-msrc]").forEach(function(v){var s=v.querySelector("source");if(!s)return;s.src=v.dataset.msrc;if(v.dataset.mposter)v.poster=v.dataset.mposter;v.load();});})();</script>
       <div class="hero-campaign" data-reveal>
@@ -1149,7 +1145,7 @@ if (hv && heroEl){
   const reduceNow = () => document.documentElement.classList.contains('laymr-a11y-motion') || matchMedia('(prefers-reduced-motion: reduce)').matches;
   const HOLD_MS = 8000;
   let seqT = 0;
-  const showSale = () => { if (reduceNow()){ clearTimeout(seqT); return; } heroEl.classList.add('sale-on'); clearTimeout(seqT); seqT = setTimeout(showRep, SALE_MS); };
+  const showSale = () => { if (reduceNow()){ clearTimeout(seqT); return; } heroEl.classList.add('sale-on'); clearTimeout(seqT); seqT = setTimeout(backToVideo, SALE_MS); };
   const rv = document.getElementById('heroRepVideo');
   const showRep = () => { heroEl.classList.add('rep-on'); if (rv && !reduceNow()){ rv.currentTime = 0; const q = rv.play(); if (q && q.catch) q.catch(() => {}); } setTimeout(() => heroEl.classList.remove('sale-on'), 1000); clearTimeout(seqT); seqT = setTimeout(backToVideo, REP_MS); };
   const backToVideo = () => { heroEl.classList.remove('sale-on', 'rep-on'); if (rv) rv.pause(); clearTimeout(seqT);
