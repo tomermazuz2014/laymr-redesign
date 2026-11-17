@@ -64,8 +64,6 @@ header.scrolled{color:var(--ink);background:color-mix(in srgb,var(--warm) 92%,tr
 .h-nav{max-width:0;overflow:hidden;opacity:0;transition:max-width .7s var(--ease),opacity .4s;pointer-events:none}
 .h-nav a{opacity:0;transform:translateX(14px);transition:opacity .45s var(--ease),transform .55s var(--ease)}
 header.nav-open .h-nav{max-width:min(900px,calc(100vw - 2*var(--pad) - 220px));opacity:1;pointer-events:auto}
-/* open desktop menu runs past the centre: fade the centred wordmark so no link hides under it */
-.h-mark{transition:opacity .3s}header.nav-open .h-mark{opacity:0;pointer-events:none}
 header.nav-open .h-nav a{opacity:1;transform:none}
 header.nav-open .h-nav a:nth-child(1){transition-delay:.05s}header.nav-open .h-nav a:nth-child(2){transition-delay:.09s}header.nav-open .h-nav a:nth-child(3){transition-delay:.13s}header.nav-open .h-nav a:nth-child(4){transition-delay:.17s}header.nav-open .h-nav a:nth-child(5){transition-delay:.21s}header.nav-open .h-nav a:nth-child(6){transition-delay:.25s}header.nav-open .h-nav a:nth-child(7){transition-delay:.29s}header.nav-open .h-nav a:nth-child(8){transition-delay:.33s}header.nav-open .h-nav a:nth-child(9){transition-delay:.37s}header.nav-open .h-nav a:nth-child(10){transition-delay:.41s}
 }
@@ -158,6 +156,30 @@ video.vfade.playing{opacity:1}
 .tile:hover img,.tile:hover video{transform:scale(1.045)}
 .tile-lead::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,.55),rgba(10,10,10,.18) 38%,transparent 60%);pointer-events:none}
 .tile-title{text-shadow:0 1px 12px rgba(0,0,0,.45);position:absolute;bottom:clamp(14px,1.4vw,24px);left:clamp(14px,1.4vw,24px);right:14px;z-index:2;color:#fff;font-family:var(--font-lat);direction:ltr;text-align:left;display:flex;flex-direction:column;gap:clamp(8px,.8vw,13px);pointer-events:none}.tt-kick{display:flex;align-items:center;gap:10px;font-size:clamp(9px,.72vw,11px);font-weight:500;letter-spacing:.42em;text-transform:uppercase;white-space:nowrap}.tt-kick i{display:block;width:22px;height:1px;background:currentColor;flex:none}.tt-main{display:flex;flex-direction:column;align-items:flex-start;font-stretch:118%;font-size:clamp(30px,3.6vw,64px);line-height:.82;letter-spacing:-.03em}.tt-solid{font-weight:860}.tt-hollow{font-weight:800;font-style:italic;color:transparent;-webkit-text-stroke:clamp(1px,.12vw,2px) #fff;padding-left:.05em;transition:color .5s var(--ease)}.tile-lead:hover .tt-hollow{color:#fff}.tt-kick,.tt-main{opacity:0;transform:translateY(22px);transition:opacity .9s var(--ease),transform .9s var(--ease)}.in .tt-main{opacity:1;transform:none;transition-delay:.35s}.in .tt-kick{opacity:.92;transform:none;transition-delay:.6s}
+
+
+/* announcement strip at the very top; the fixed header sits under it until it scrolls away */
+.ticker-top{position:relative;z-index:71}
+header{top:var(--tkoff,0px)}
+.hero video{height:calc(100svh - var(--tkh,0px))}
+
+/* ===== קטגוריות: חצי מסך לכל קטגוריה, שם וכפתור בפינה השמאלית התחתונה ===== */
+.cats{padding:6px 0 0}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cat{position:relative;display:block;overflow:hidden;height:clamp(440px,calc(100svh - 60px),64vw);background:#d9d5ce;color:#fff}
+.cat video,.cat img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%;transition:transform 1s var(--ease)}
+.cat:hover video,.cat:hover img{transform:scale(1.035)}
+.cat::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,.62),rgba(10,10,10,.2) 34%,transparent 58%);pointer-events:none}
+.cat-txt{position:absolute;left:clamp(20px,2.6vw,44px);bottom:clamp(22px,2.8vw,48px);z-index:2;direction:ltr;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:10px;text-shadow:0 1px 12px rgba(0,0,0,.35)}
+.cat-name{font-family:var(--font-lat);font-weight:700;font-size:clamp(30px,3vw,48px);line-height:1;letter-spacing:.01em}
+.cat-he{font-family:var(--font-he);font-size:clamp(14px,1.05vw,17px);font-weight:500;letter-spacing:.02em;opacity:.92}
+.cat-btn{margin-top:8px;font-family:var(--font-he);font-size:14px;letter-spacing:.04em;border:1px solid #fff;border-radius:999px;padding:12px 28px;background:rgba(10,10,10,.28);backdrop-filter:blur(3px);transition:background .3s,color .3s;text-shadow:none}
+.cat:hover .cat-btn,.cat:focus-visible .cat-btn{background:#fff;color:var(--ink)}
+@media(max-width:720px){.cat-grid{grid-template-columns:1fr;gap:6px}.cat{height:min(80svh,128vw)}}
+/* כותרת קרוסלת האביזרים */
+.pcar-head{text-align:center;padding:0 var(--pad);margin-bottom:clamp(8px,1.4vw,18px)}
+.pcar-kick{display:block;font-family:var(--font-lat);font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.pcar-title{font-size:clamp(28px,3.2vw,46px);font-weight:600;line-height:1.05;margin:0}
 
 /* ===== קרוסלת מוצרים ===== */
 .pcar-wrap{margin-top:clamp(40px,6vw,80px);padding-bottom:clamp(64px,7vw,110px)}
@@ -609,6 +631,10 @@ footer{position:relative;overflow:hidden}
 
 <!-- Header -->
 <style>.skip-link{position:absolute;right:12px;top:-200px;z-index:10000;background:#121212;color:#fff;padding:10px 16px;font-size:14px;text-decoration:none;border-radius:4px}.skip-link:focus{top:12px;outline:2px solid #fff;outline-offset:2px}</style><a class="skip-link" href="#main">דלג לתוכן הראשי</a>
+<div class="ticker ticker-top" id="tickerTop" dir="ltr" aria-label="הודעות משלוח">
+  <div class="ticker__inner" id="tickerA"></div>
+  <div class="ticker__inner" aria-hidden="true" id="tickerB"></div>
+</div>
 <header>
   <div class="header-row">
     <div class="h-start">
@@ -661,26 +687,12 @@ footer{position:relative;overflow:hidden}
   </div>
 </div>
 
-<div class="ticker" dir="ltr" aria-label="הודעות משלוח">
-  <div class="ticker__inner" id="tickerA"></div>
-  <div class="ticker__inner" aria-hidden="true" id="tickerB"></div>
-</div>
 
 <main id="main">
 
-  <!-- 01 חדש באתר -->
-  <section class="section">
-    <div class="tile-grid" id="tiles-new" data-reveal></div>
-  </section>
-
-  <!-- 02 קיץ SALE -->
-  <section class="section">
-    <div class="tile-grid" id="tiles-sale" data-reveal></div>
-  </section>
-
-  <!-- 03 BEST SELLERS -->
-  <section class="section">
-    <div class="tile-grid" id="tiles-best" data-reveal></div>
+  <!-- קטגוריות: חצי מסך לכל קטגוריה -->
+  <section class="cats" aria-label="קטגוריות">
+    <div class="cat-grid" id="catGrid"></div>
   </section>
 
   <!-- פס שירות נע -->
@@ -690,8 +702,9 @@ footer{position:relative;overflow:hidden}
   </div>
 
   <!-- קרוסלת מוצרים -->
-  <section class="section">
+  <section class="section" aria-labelledby="pcarTitle">
     <div class="pcar-wrap" data-reveal>
+      <div class="pcar-head"><span class="pcar-kick">LAYMR Accessories</span><h2 class="pcar-title" id="pcarTitle">אביזרים</h2></div>
       <div class="pcar" dir="ltr">
         <div class="pcar-track" id="pcarTrack"></div>
       </div>
@@ -701,7 +714,7 @@ footer{position:relative;overflow:hidden}
           <span class="pcar-count" id="pcarCount"></span>
           <button id="pcarNext" aria-label="הבא">→</button>
         </div>
-        <a class="pcar-all" href="/collections/all?sort_by=created-descending">הצגת הכל</a>
+        <a class="pcar-all" href="/collections/%D7%92%D7%95%D7%A4%D7%99%D7%95%D7%AA">לכל האביזרים</a>
       </div>
     </div>
   </section>
@@ -863,6 +876,9 @@ const TICKER_MSGS = [
   'LAYMR — SUMMER SALE'
 ];
 
+const ACC_PRODUCTS = [
+{% for p in collections['גופיות'].products limit: 12 %}{% if p.available %}{handle:{{ p.handle | json }},title:{{ p.title | json }},url:{{ p.url | json }},img:{{ p.featured_image | image_url: width: 900 | json }}},{% endif %}{% endfor %}
+];
 const NEW_PRODUCTS = [
 {% assign recent = collections.all.products | where: 'available', true | reject: 'id', 15537348313459 | sort: 'created_at' | reverse %}{% for p in recent limit: 8 %}{handle:{{ p.handle | json }},title:{{ p.title | json }},url:{{ p.url | json }},img:{{ p.featured_image | image_url: width: 900 | json }},hov:{% if p.images.size > 1 %}{{ p.images[1] | image_url: width: 900 | json }}{% else %}null{% endif %},sale:{{ p.price | divided_by: 100.0 }},reg:{% if p.compare_at_price > p.price %}{{ p.compare_at_price | divided_by: 100.0 }}{% else %}null{% endif %},plain:{% if p.compare_at_price > p.price %}null{% else %}{{ p.price | divided_by: 100.0 }}{% endif %},soldout:{% unless p.available %}true{% else %}false{% endunless %}}{% unless forloop.last %},{% endunless %}{% endfor %}
 ];
@@ -919,23 +935,29 @@ const TILES = [
   lead:'EyalGolanbrand0093.jpg?v=1743068610',
   imgs:['IMG_4301_copy.jpg?v=1743258635','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/cut-best-0501.png?v=1794400615','https://cdn.shopify.com/s/files/1/0906/9717/1315/files/cut-best-0870.png?v=1794400615']}
 ];
-TILES.forEach(t => {
-  const lead = '<a class="tile tile-lead" href="' + t.url + '">' +
-    '<video autoplay muted loop playsinline poster="' + CDN(t.lead) + '"><source src="' + t.video + '" type="video/mp4"></video>' +
-    '<span class="tile-title"><span class="tt-kick"><i></i>' + t.kick + '</span>' +
-    '<span class="tt-main"><span class="tt-solid">' + t.t1 + '</span><span class="tt-hollow">' + t.t2 + '</span></span></span></a>';
-  const imgs = t.imgs.map(f => { const loc = /^https?:/.test(f) || f.startsWith('images/');
-    return '<a class="tile' + (loc ? ' tile-cut' : '') + '" href="' + t.url + '"><img loading="lazy" src="' + (loc ? (/^https?:/.test(f) ? f : BASE + f) : CDN(f)) + '" alt=""></a>'; }).join('');
-  document.getElementById(t.el).innerHTML = t.leadEnd ? (imgs + lead) : (lead + imgs);
-});
+TILES.push({el:'acc', title:'ACCESSORIES', he:'אביזרים', url:'/collections/%D7%92%D7%95%D7%A4%D7%99%D7%95%D7%AA', img:'https://cdn.shopify.com/s/files/1/0906/9717/1315/files/kova.jpg?v=1783414305'});
+const CAT_HE = {'tiles-new':'חדש באתר', 'tiles-sale':'עד 50% הנחה', 'tiles-best':'הנמכרים ביותר'};
+document.getElementById('catGrid').innerHTML = TILES.map(t => {
+  const media = t.video
+    ? '<video autoplay muted loop playsinline preload="metadata" poster="' + CDN(t.lead) + '"><source src="' + t.video + '" type="video/mp4"></video>'
+    : '<img loading="lazy" src="' + t.img + '" alt="">';
+  return '<a class="cat" href="' + t.url + '" aria-label="' + t.title + ' – ' + (t.he || CAT_HE[t.el]) + '">' + media +
+    '<span class="cat-txt"><span class="cat-name">' + t.title + '</span><span class="cat-he" dir="rtl">' + (t.he || CAT_HE[t.el]) + '</span><span class="cat-btn" dir="rtl">לצפייה</span></span></a>';
+}).join('');
 if (matchMedia('(prefers-reduced-motion: reduce)').matches){
-  document.querySelectorAll('.tile video').forEach(v => { v.removeAttribute('autoplay'); v.pause(); });
+  document.querySelectorAll('.cat video').forEach(v => { v.removeAttribute('autoplay'); v.pause(); });
 }
 
 /* טיקר */
 const tickerHTML = TICKER_MSGS.concat(TICKER_MSGS).map(m => '<span dir="rtl">' + m + '</span>').join('');
 document.getElementById('tickerA').innerHTML = tickerHTML;
 document.getElementById('tickerB').innerHTML = tickerHTML;
+/* פס ההודעות בראש האתר: ההדר הקבוע יושב מתחתיו עד שהוא נגלל */
+(function(){ var tk = document.getElementById('tickerTop'), hd = document.querySelector('header'); if (!tk || !hd) return;
+  var h = 0, set = function(){ hd.style.setProperty('--tkoff', Math.max(0, h - scrollY) + 'px'); };
+  var measure = function(){ h = tk.offsetHeight; document.documentElement.style.setProperty('--tkh', h + 'px'); set(); };
+  measure(); addEventListener('scroll', set, {passive:true}); addEventListener('resize', measure); })();
+
 const SERVICE_MSGS = ['משלוח והחלפה עד הבית','שירות לקוחות','מועדון לקוחות','תשלום מאובטח'];
 const serviceHTML = SERVICE_MSGS.concat(SERVICE_MSGS, SERVICE_MSGS).map(m => '<span dir="rtl">' + m + '</span>').join('');
 document.getElementById('tickerSA').innerHTML = serviceHTML;
@@ -964,7 +986,8 @@ const PACK = ['https://cdn.shopify.com/s/files/1/0906/9717/1315/files/car-cap.pn
 const CUT = {'חולצה-10': 'https://cdn.shopify.com/s/files/1/0906/9717/1315/files/carousel-tee-black-washed.png?v=1794408790', 'מכנס-בד-מתרחב': 'https://cdn.shopify.com/s/files/1/0906/9717/1315/files/carousel-pants-wide-brown.png?v=1794408790', 'חולצת-אובר-סייז-ווש': 'https://cdn.shopify.com/s/files/1/0906/9717/1315/files/carousel-tee-brown-rep-washed.png?v=1794410003', 'חליפת-פרנץ-טרי': 'https://cdn.shopify.com/s/files/1/0906/9717/1315/files/carousel-set-white-french-terry.png?v=1794410003', 'חולצת-אובר-סייז-פרנץ-טרי': 'https://cdn.shopify.com/s/files/1/0906/9717/1315/files/carousel-tee-brown-plain.png?v=1794410003', 'חולצת-אובר-סייז': 'https://cdn.shopify.com/s/files/1/0906/9717/1315/files/carousel-tee-pink.png?v=1794410003', 'מכנס-ברמודה-טאי-דאי': 'https://cdn.shopify.com/s/files/1/0906/9717/1315/files/carousel-bermuda-tie-dye-gray.png?v=1794410003', 'מכנס-בד-גומי-אפור-בהיר': 'https://cdn.shopify.com/s/files/1/0906/9717/1315/files/carousel-trousers-light-gray.png?v=1794410003'};
 /* וריאנט (צבע מידה M) שתואם לתמונה בכל כרטיס קרוסלה: עמוד המוצר נפתח בצבע הנכון. מזהי וריאנטים בלבד, המוצר לא משתנה */
 const CAR_VARIANT = {'חולצה-10': '64617275883891', 'חולצת-אובר-סייז-ווש': '63832713494899', 'מכנס-בד-מתרחב': '63832057053555', 'חליפת-פרנץ-טרי': '63831937417587', 'חולצת-אובר-סייז-פרנץ-טרי': '63831564779891', 'חולצת-אובר-סייז': '63831541186931', 'מכנס-ברמודה-טאי-דאי': '63830135308659', 'מכנס-בד-גומי-אפור-בהיר': '63830088384883'};
-const CAR_BASE = NEW_PRODUCTS.length ? NEW_PRODUCTS.map(p => ({src: CUT[p.handle] || CDN(p.img), url: p.url + (CAR_VARIANT[p.handle] ? '?variant=' + CAR_VARIANT[p.handle] : ''), alt: p.title})) : GEN.concat(PACK).map(src => ({src, url: '/collections/all?sort_by=created-descending', alt: ''}));
+const CAR_SRC = ACC_PRODUCTS.length >= 3 ? ACC_PRODUCTS : NEW_PRODUCTS;
+const CAR_BASE = CAR_SRC.length ? CAR_SRC.map(p => ({src: CUT[p.handle] || CDN(p.img), url: p.url + (CAR_VARIANT[p.handle] ? '?variant=' + CAR_VARIANT[p.handle] : ''), alt: p.title})) : GEN.concat(PACK).map(src => ({src, url: '/collections/all?sort_by=created-descending', alt: ''}));
 const CAR_N = CAR_BASE.length;
 const CAR_LIST = CAR_BASE.concat(CAR_BASE, CAR_BASE); /* x3 - קרוסלה אינסופית */
 document.getElementById('pcarTrack').innerHTML = CAR_LIST.map(it =>
@@ -1161,6 +1184,8 @@ onScr(); addEventListener('scroll', onScr, {passive:true});
 
 
 
+
+{% render 'laymr-menu' %}
 {% schema %}
 {
   "name": "LAYMR Home (full page)",
